@@ -6,12 +6,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 /**
- * Represents a node in a configuration structure.
- * A ConfigNode is identified by a unique key and may optionally have an associated
- * value and a parent in the configuration hierarchy. It can also be part of a
- * hierarchical configuration tree with parent-child relationships.
+ * Represents a configuration node in a hierarchical structure. Each configuration node can store
+ * a value, maintain a unique key, and be a part of a tree-like hierarchy. It supports optional
+ * parent-child relationships and provides methods to manage its value and hierarchy.
+ *
+ * @param <T> the type of the value held by this configuration node
  */
-public interface ConfigNode extends WithConfigNodeChildren {
+public interface ConfigNode<T> extends WithConfigNodeChildren {
     /**
      * Retrieves the unique key that identifies this configuration node.
      *
@@ -20,15 +21,22 @@ public interface ConfigNode extends WithConfigNodeChildren {
     @NotNull String key();
 
     /**
-     * Retrieves the value associated with this configuration node, if present.
-     * The value is wrapped in an Optional, allowing the presence of a value to be
-     * explicitly checked.
+     * Retrieves the value associated with this configuration node, if one exists.
+     * The value is optional and may not be present for all configuration nodes.
      *
-     * @param <T> The type of the value associated with this configuration node.
-     * @return An Optional containing the value associated with this node, or an empty
-     * Optional if no value is present.
+     * @return an {@link Optional} containing the value associated with this configuration node,
+     * or an empty optional if no value is set.
      */
-    <T> @NotNull Optional<ConfigValue<T>> value();
+    @NotNull Optional<T> value();
+
+    /**
+     * Sets the value associated with this configuration node.
+     * The value may be null to indicate that the node does not hold a value.
+     *
+     * @param value the value to associate with this configuration node,
+     *              or null to unset the value.
+     */
+    void setValue(@Nullable T value);
 
     /**
      * Retrieves the parent of this configuration node, if one exists. The parent node
