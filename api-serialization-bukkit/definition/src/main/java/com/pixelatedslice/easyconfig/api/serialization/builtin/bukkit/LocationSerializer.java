@@ -1,18 +1,17 @@
 package com.pixelatedslice.easyconfig.api.serialization.builtin.bukkit;
 
-import com.pixelatedslice.easyconfig.api.serialization.SerializedElement;
+import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.serialization.builtin.BuiltInBukkitSerializer;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A specialized serializer interface for handling the serialization and deserialization of
- * {@link Location} objects in the context of Bukkit applications. This interface extends
- * {@link BuiltInBukkitSerializer} and provides the required type information for
- * {@link Location}.
+ * An interface for serializing and deserializing {@link Location} objects into and from
+ * {@link ConfigSection}s. This serializer provides mechanisms to handle the conversion
+ * of {@link Location} data to a structured configuration format and vice versa.
  * <p>
- * The implementation of this interface is responsible for converting {@link Location}
- * objects to and from their serialized representation using {@link SerializedElement} instances.
+ * It is a specialized serializer that extends the {@link BuiltInBukkitSerializer} interface,
+ * specifically targeting the {@link Location} type.
  */
 public interface LocationSerializer extends BuiltInBukkitSerializer<Location> {
     /**

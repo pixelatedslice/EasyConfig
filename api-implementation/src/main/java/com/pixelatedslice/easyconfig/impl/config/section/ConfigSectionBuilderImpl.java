@@ -1,0 +1,101 @@
+package com.pixelatedslice.easyconfig.impl.config.section;
+
+import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
+import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
+import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeBuilderImpl;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+
+public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
+    private final List<ConfigNode<?>> childNodes = new ArrayList<>();
+    private final List<ConfigSection> nestedSections = new ArrayList<>();
+    private final List<String> comments = new ArrayList<>();
+    private String key;
+    private ConfigSection parent;
+
+    @Override
+    public ConfigSectionBuilder key(@NotNull String key) {
+        this.key = key;
+        return this;
+    }
+
+    @Override
+    public ConfigSectionBuilder parent(@NotNull ConfigSection parent) {
+        this.parent = parent;
+        return this;
+    }
+
+    @Override
+    public <T> ConfigSectionBuilder node(@NotNull String key, @NotNull Class<T> type,
+            @NotNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
+        var builder = new ConfigNodeBuilderImpl<T>();
+        nodeBuilder.accept(builder);
+        builder.key(key);
+        this.childNodes.add(builder.build());
+
+        return this;
+    }
+
+    @Override
+    public <T> ConfigSectionBuilder node(@NotNull String key,
+            @NotNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
+        var builder = new ConfigNodeBuilderImpl<T>();
+        nodeBuilder.accept(builder);
+        builder.key(key);
+        this.childNodes.add(builder.build());
+
+        return this;
+    }
+
+    @Override
+    public <T> ConfigSectionBuilder node(@NotNull Class<T> type,
+            @NotNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
+        var builder = new ConfigNodeBuilderImpl<T>();
+        nodeBuilder.accept(builder);
+        this.childNodes.add(builder.build());
+        return this;
+    }
+
+    @Override
+    public <T> ConfigSectionBuilder node(@NotNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
+        var builder = new ConfigNodeBuilderImpl<T>();
+        nodeBuilder.accept(builder);
+        this.childNodes.add(builder.build());
+        return this;
+    }
+
+    @Override
+    public ConfigSectionBuilder comment(@NotNull String... comment) {
+        Collections.addAll(this.comments, comment);
+        return this;
+    }
+
+    @Override
+    public ConfigSectionBuilder nestedSection(@NotNull String key,
+            @NotNull Consumer<? super ConfigSectionBuilder> nestedSectionBuilder) {
+        var builder = new ConfigSectionBuilderImpl();
+        nestedSectionBuilder.accept(builder);
+        builder.key(key);
+        this.nestedSections.add(builder.build());
+        return this;
+    }
+
+    @Override
+    public ConfigSectionBuilder nestedSection(@NotNull Consumer<? super ConfigSectionBuilder> nestedSectionBuilder) {
+        var builder = new ConfigSectionBuilderImpl();
+        nestedSectionBuilder.accept(builder);
+        this.nestedSections.add(builder.build());
+        return this;
+    }
+
+    @Override
+    public @NotNull ConfigSection build() {
+        return new ConfigSectionImpl(this.key, this.parent, this.childNodes, this.nestedSections, this.comments);
+    }
+}

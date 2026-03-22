@@ -1,16 +1,15 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
+import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.serialization.builtin.BuiltInSerializer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 /**
- * Defines a contract for serialization and deserialization of objects of type {@code T}.
- * Implementations of this interface are responsible for converting objects to and from
- * a serialized representation composed of {@link SerializedElement} instances.
+ * Represents a contract for serializing and deserializing objects of a specific type.
+ * Implementations of this interface provide mechanisms to convert objects of type {@code T}
+ * to and from a {@link ConfigSection}, which serves as a serialized representation.
  *
- * @param <T> the type of the objects handled by this serializer
+ * @param <T> the type of objects that this serializer is capable of handling
  */
 public interface Serializer<T> {
     /**
@@ -33,25 +32,21 @@ public interface Serializer<T> {
     @NotNull Class<@NotNull T> forClass();
 
     /**
-     * Serializes the provided value into a map where each entry represents a serialized component
-     * of the value. The key of each entry is an integer identifier, and the value is the corresponding
-     * {@link SerializedElement} instance that contains the serialized representation.
+     * Serializes the provided value into a {@link ConfigSection}.
      *
-     * @param value the object of type {@code T} to serialize; must not be {@code null}.
-     * @return a non-null map containing the serialized representation of the input object, where each
-     * key is a non-null integer identifier and each value is a non-null {@link SerializedElement}.
-     * @throws NullPointerException if the {@code value} parameter is {@code null}.
+     * @param value the non-null value to be serialized
+     * @return the non-null {@link ConfigSection} representation of the serialized value
+     * @throws NullPointerException if the provided {@code value} is {@code null}
      */
-    @NotNull Map<@NotNull Integer, @NotNull SerializedElement<?>> serialize(@NotNull T value);
+    @NotNull ConfigSection serialize(@NotNull T value);
 
     /**
-     * Deserializes a map of serialized elements back into an object of type {@code T}.
+     * Deserializes the provided configuration section into an object of type {@code T}.
      *
-     * @param elements a non-null map where each key represents an identifier and each value
-     *                 is a non-null {@link SerializedElement} containing the data to be deserialized.
-     *                 The map must not contain null keys or values.
-     * @return the object of type {@code T} reconstructed from the serialized elements.
-     * @throws NullPointerException if the {@code elements} parameter is {@code null}.
+     * @param section the non-null {@link ConfigSection} representing the serialized data
+     *                to be converted into an object of type {@code T}.
+     * @return the deserialized object of type {@code T}.
+     * @throws NullPointerException if the provided {@code section} is {@code null}.
      */
-    @NotNull T deserialize(@NotNull Map<@NotNull Integer, ? extends @NotNull SerializedElement<?>> elements);
+    @NotNull T deserialize(@NotNull ConfigSection section);
 }

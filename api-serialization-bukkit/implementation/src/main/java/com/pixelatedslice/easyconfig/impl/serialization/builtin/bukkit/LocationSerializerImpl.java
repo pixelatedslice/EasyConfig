@@ -1,17 +1,15 @@
 package com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
 
-import com.pixelatedslice.easyconfig.api.serialization.SerializedElement;
+import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
+import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
+import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
 import com.pixelatedslice.easyconfig.api.serialization.builtin.bukkit.LocationSerializer;
-import com.pixelatedslice.easyconfig.impl.serialization.SerializedElementImpl;
+import com.pixelatedslice.easyconfig.impl.config.section.ConfigSectionBuilderImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class LocationSerializerImpl implements LocationSerializer {
     private static volatile LocationSerializerImpl INSTANCE;
@@ -32,40 +30,61 @@ public final class LocationSerializerImpl implements LocationSerializer {
     }
 
     @Override
-    public @NotNull Map<@NotNull Integer, @NotNull SerializedElement<?>> serialize(@NotNull Location value) {
-        var elements = new HashMap<Integer, SerializedElement<?>>(6);
+    public @NotNull ConfigSection serialize(@NotNull Location value) {
+        ConfigSectionBuilder section = new ConfigSectionBuilderImpl();
 
         if (value.getWorld() != null) {
-            elements.put(0, new SerializedElementImpl<>("world", value.getWorld().getName()));
+            section.node("world", String.class, (ConfigNodeBuilder<String> builder) -> {
+                builder.value(value.getWorld().getName());
+            });
         }
 
-        elements.put(1, new SerializedElementImpl<>("x", value.getX()));
-        elements.put(2, new SerializedElementImpl<>("y", value.getY()));
-        elements.put(3, new SerializedElementImpl<>("z", value.getZ()));
+        section.node("x", Double.class, (ConfigNodeBuilder<Double> builder) -> {
+            builder.value(value.getX());
+        });
+        section.node("y", Double.class, (ConfigNodeBuilder<Double> builder) -> {
+            builder.value(value.getY());
+        });
+        section.node("z", Double.class, (ConfigNodeBuilder<Double> builder) -> {
+            builder.value(value.getZ());
+        });
+        section.node("yaw", Float.class, (ConfigNodeBuilder<Float> builder) -> {
+            builder.value(value.getYaw());
+        });
+        section.node("pitch", Float.class, (ConfigNodeBuilder<Float> builder) -> {
+            builder.value(value.getPitch());
+        });
 
-        elements.put(4, new SerializedElementImpl<>("yaw", value.getYaw()));
-        elements.put(5, new SerializedElementImpl<>("pitch", value.getPitch()));
-
-        return elements;
+        return section.build();
     }
 
     @Override
-    public @NonNull Location deserialize(
-            @NotNull Map<@NotNull Integer, ? extends @NotNull SerializedElement<?>> elements
-    ) {
-        @Nullable var worldNameElement = elements.get(0);
-        @Nullable World world = null;
-        if (worldNameElement != null) {
-            world = worldNameElement.<String>cast().value().map(Bukkit::getWorld).orElse(null);
-        }
+    public @NonNull Location deserialize(@NotNull ConfigSection section) {
+        var world = section
+                .childNode(String.class, "world")
+                .flatMap(ConfigNode::value)
+                .map(Bukkit::getWorld)
+                .orElse(null);
+        var x = section.childNode(Double.class, "x")
+                .flatMap(ConfigNode::value)
+                .orElseThrow();
+        var y = section.childNode(Double.class, "y")
+                .flatMap(ConfigNode::value)
+                .orElseThrow();
+        var z = section.childNode(Double.class, "z")
+                .flatMap(ConfigNode::value)
+                .orElseThrow();
+        var yaw = section.childNode(Float.class, "yaw")
+                .flatMap(ConfigNode::value)
+                .orElseThrow();
+        var pitch = section.childNode(Float.class, "pitch")
+                .flatMap(ConfigNode::value)
+                .orElseThrow();
 
-        var x = elements.get(1).<Double>cast().value().orElse(0.0);
-        var y = elements.get(2).<Double>cast().value().orElse(0.0);
-        var z = elements.get(3).<Double>cast().value().orElse(0.0);
-
-        var yaw = elements.get(4).<Float>cast().value().orElse(0f);
-        var pitch = elements.get(5).<Float>cast().value().orElse(0f);
-
-        return new Location(world, x, y, z, yaw, pitch);
+        return new Location(
+                world,
+                x, y, z,
+                yaw, pitch
+        );
     }
 }

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Defines the contract for a configuration system supporting the registration
@@ -15,6 +16,17 @@ import java.util.Optional;
  * file format providers.
  */
 public interface EasyConfig {
+    /**
+     * A regular expression pattern used to validate the format of configuration node keys.
+     * The key must:
+     * - Contain alphanumeric characters, periods (.), underscores (_), or hyphens (-).
+     * - End with an alphanumeric character (letters or digits).
+     * <p>
+     * This pattern ensures that node keys adhere to the expected structure, which is required
+     * for proper parsing and navigation within the configuration hierarchy.
+     */
+    Pattern KEY_REGEX = Pattern.compile("^[a-zA-Z0-9._-]*[a-zA-Z0-9]$");
+
     /**
      * Creates and returns a new copy of the current {@code EasyConfig} instance.
      * The returned copy will have the same configurations and registered serializers

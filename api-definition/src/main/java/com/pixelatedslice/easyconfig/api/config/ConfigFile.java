@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.api.config;
 
+import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -7,11 +8,16 @@ import java.nio.file.Path;
 import java.text.ParseException;
 
 /**
- * Represents a configuration file containing hierarchical configuration nodes.
- * Provides methods to access, modify, and manage configuration nodes as well as
- * functionality to persist and load the configuration file.
+ * Represents a configuration file that provides mechanisms for interacting with
+ * the file-based configuration storage. This interface extends {@link ConfigSection},
+ * inheriting its methods for hierarchical configuration management.
+ * <p>
+ * Implementations of this interface are responsible for managing the lifecycle of
+ * configuration data, including saving, loading, and reloading the configuration
+ * from the associated file path. It also allows retrieving the file path of the
+ * configuration file.
  */
-public interface ConfigFile extends WithConfigNodeChildren {
+public interface ConfigFile extends ConfigSection {
     /**
      * Retrieves the file path associated with the configuration file.
      * The path represents the location of the file used for loading
