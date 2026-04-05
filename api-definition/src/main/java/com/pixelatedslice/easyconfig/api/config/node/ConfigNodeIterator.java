@@ -2,19 +2,21 @@ package com.pixelatedslice.easyconfig.api.config.node;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.EasyConfig;
-import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionIterator;
+import com.pixelatedslice.easyconfig.api.config.section.WithNestedConfigSection;
 import com.pixelatedslice.easyconfig.api.exception.BrokenNodeKeyException;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
 public interface ConfigNodeIterator extends Iterator<ConfigNode<?>> {
     @SuppressWarnings("unchecked")
-    static <T> @NonNull Optional<@NonNull ConfigNode<T>> findNode(@NonNull ConfigSection rootSection,
-            @NonNull TypeToken<@NonNull T> typeToken, @NonNull String... providedKeys) {
-        Objects.requireNonNull(rootSection);
+    static <T, C extends WithConfigNodeChildren & WithNestedConfigSection> @NonNull Optional<@NonNull ConfigNode<T>>
+    findNode(
+            @NonNull C rootContainer,
+            @NonNull TypeToken<@NonNull T> typeToken, @NonNull String @NonNull ... providedKeys
+    ) {
+        Objects.requireNonNull(rootContainer);
         Objects.requireNonNull(typeToken);
         Objects.requireNonNull(providedKeys);
         if (providedKeys.length == 0) {
@@ -22,13 +24,15 @@ public interface ConfigNodeIterator extends Iterator<ConfigNode<?>> {
         }
         if (providedKeys.length == 1) {
             var nodeKey = providedKeys[0];
-            for (var node : rootSection.nodes()) {
-                if (!node.key().equals(nodeKey)) {
+            for (var node : rootContainer.nodes()) {
+                var descriptor = node.descriptor();
+                if (!descriptor.key().equals(nodeKey)) {
                     continue;
                 }
-                if (!node.typeToken().equals(typeToken)) {
-                    throw new IllegalStateException(String.format("The node (%s) is not of the expected typeToken",
-                            nodeKey));
+                if (!descriptor.typeToken().equals(typeToken)) {
+                    throw new IllegalStateException(String.format(
+                            "The node (%s) is not of the expected typeToken", nodeKey
+                    ));
                 }
                 return Optional.of((ConfigNode<T>) node);
             }
@@ -36,14 +40,15 @@ public interface ConfigNodeIterator extends Iterator<ConfigNode<?>> {
         }
         String[] parentKeys = Arrays.copyOf(providedKeys, providedKeys.length - 1);
         var nodeKey = providedKeys[providedKeys.length - 1];
-        var sectionOptional = ConfigSectionIterator.findSection(rootSection.sections(), parentKeys);
-        return sectionOptional.flatMap((@NonNull ConfigSection section) -> section.node(typeToken, nodeKey));
+        var sectionOptional = ConfigSectionIterator.findSection(rootContainer.sections(), parentKeys);
+        return sectionOptional.flatMap((@NonNull WithConfigNodeChildren section) -> section.node(typeToken, nodeKey));
     }
 
     @SuppressWarnings("DuplicatedCode")
-    static <T> @NonNull Optional<@NonNull ConfigNode<T>> findNodeButInTheBukkitAPIStyle(
-            @NonNull ConfigSection rootSection, @NonNull TypeToken<@NonNull T> typeToken, @NonNull String key) {
-        Objects.requireNonNull(rootSection);
+    static <T, C extends WithConfigNodeChildren & WithNestedConfigSection> @NonNull Optional<@NonNull ConfigNode<T>>
+    findNodeButInTheBukkitAPIStyle(
+            @NonNull C rootContainer, @NonNull TypeToken<@NonNull T> typeToken, @NonNull String key) {
+        Objects.requireNonNull(rootContainer);
         Objects.requireNonNull(typeToken);
         Objects.requireNonNull(key);
         List<String> keys;
@@ -52,14 +57,6 @@ public interface ConfigNodeIterator extends Iterator<ConfigNode<?>> {
         }
         keys = List.of(key.split("\\."));
 
-        return findNode(rootSection, typeToken, keys.toArray(new String[0]));
+        return findNode(rootContainer, typeToken, keys.toArray(String[]::new));
     }
-
-
-    @Override
-    boolean hasNext();
-
-
-    @Override
-    @Nullable ConfigNode<?> next();
 }

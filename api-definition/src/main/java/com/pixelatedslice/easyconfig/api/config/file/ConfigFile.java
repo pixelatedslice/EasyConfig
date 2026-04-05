@@ -1,19 +1,17 @@
 package com.pixelatedslice.easyconfig.api.config.file;
 
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormat;
 import org.jspecify.annotations.NonNull;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.text.ParseException;
+import java.util.ServiceLoader;
 
-public interface ConfigFile extends ConfigSection {
+public interface ConfigFile {
+    static @NonNull ConfigFileBuilder builder() {
+        return ServiceLoader.load(ConfigFileBuilder.class).findFirst().orElseThrow();
+    }
+
+    @NonNull ConfigSection rootSection();
+
     @NonNull Path filePathWithoutExtension();
-
-    @NonNull Class<? extends FileFormat> fileFormatClass();
-
-    void save() throws IOException, ParseException;
-
-    ConfigFile reload() throws IOException, ParseException;
 }

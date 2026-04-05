@@ -1,30 +1,54 @@
 package com.pixelatedslice.easyconfig.api.config.node;
 
-import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.Commentable;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
+import com.pixelatedslice.easyconfig.api.descriptor.WithDescriptor;
+import com.pixelatedslice.easyconfig.api.descriptor.config.node.ConfigNodeDescriptor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.ServiceLoader;
 
-public interface ConfigNode<T> extends Commentable {
-    @NonNull String key();
+/**
+ * public interface ConfigNode<T> extends Commentable, WithDescriptor<ConfigNodeDescriptor<T>> {
+ *
+ * @SuppressWarnings("unchecked") static <T> @NonNull ConfigNodeBuilder<T> builder() {
+ * final var builderLoader = ServiceLoader.load(ConfigNodeBuilder.class);
+ * return (ConfigNodeBuilder<T>) builderLoader.findFirst().orElseThrow();
+ * }
+ * @NonNull String key();
+ * @NonNull Optional<@ NonNull T> value();
+ * <p>
+ * ConfigNode<T> setValue(@Nullable T value);
+ * @NonNull Optional<@ NonNull T> defaultValue();
+ * <p>
+ * ConfigNode<T> setDefaultValue(@Nullable T defaultValue);
+ * <p>
+ * default @NonNull TypeToken<T> typeToken() {
+ * return new TypeToken<>(this.getClass()) {
+ * };
+ * }
+ * @NonNull Optional<@ NonNull ConfigSection> parent();
+ * @NonNull ConfigNode<T> setParent(@Nullable ConfigSection parent);
+ * }
+ */
+
+public interface ConfigNode<T> extends WithDescriptor<ConfigNodeDescriptor<T>> {
+    @SuppressWarnings("unchecked")
+    static <T> @NonNull ConfigNodeBuilder<T> builder() {
+        final var builderLoader = ServiceLoader.load(ConfigNodeBuilder.class);
+        return (ConfigNodeBuilder<T>) builderLoader.findFirst().orElseThrow();
+    }
 
     @NonNull Optional<@NonNull T> value();
 
-    ConfigNode<T> setValue(@Nullable T value);
+    void setValue(@Nullable T value);
 
     @NonNull Optional<@NonNull T> defaultValue();
 
-    ConfigNode<T> setDefaultValue(@Nullable T defaultValue);
-
-    default @NonNull TypeToken<T> typeToken() {
-        return new TypeToken<>(this.getClass()) {
-        };
-    }
+    void setDefaultValue(@Nullable T defaultValue);
 
     @NonNull Optional<@NonNull ConfigSection> parent();
 
-    @NonNull ConfigNode<T> setParent(@Nullable ConfigSection parent);
+    void setParent(@Nullable ConfigSection parent);
 }

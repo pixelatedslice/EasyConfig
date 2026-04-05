@@ -7,11 +7,11 @@ import java.util.Collection;
 public interface Commentable {
     @NonNull Collection<String> comments();
 
-    Commentable addComment(@NonNull String comment);
+    void addComment(@NonNull String comment);
 
-    Commentable removeComment(@NonNull String comment);
+    void removeComment(@NonNull String comment);
 
-    Commentable removeComment(int index);
+    void removeComment(int index);
 
-    Commentable clearComments();
+    void clearComments();
 }

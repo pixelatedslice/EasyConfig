@@ -6,17 +6,17 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public interface ConfigNodeBuilder<T> {
-    ConfigNodeBuilder<T> key(@NonNull String key);
+    @NonNull ConfigNodeBuilder<T> comments(@NonNull String @NonNull ... comment);
 
-    ConfigNodeBuilder<T> value(@Nullable T value);
+    @NonNull ConfigNodeBuilder<T> key(@NonNull String key);
 
-    ConfigNodeBuilder<T> defaultValue(@Nullable T defaultValue);
+    @NonNull ConfigNodeBuilder<T> value(@Nullable T value);
 
-    ConfigNodeBuilder<T> typeToken(@NonNull TypeToken<T> typeToken);
+    @NonNull ConfigNodeBuilder<T> defaultValue(@Nullable T defaultValue);
 
-    ConfigNodeBuilder<T> parent(@NonNull ConfigSection parent);
+    @NonNull ConfigNodeBuilder<T> typeToken(@NonNull TypeToken<T> typeToken);
 
-    ConfigNodeBuilder<T> comment(@NonNull String... comment);
+    @NonNull ConfigNodeBuilder<T> parent(@NonNull ConfigSection parent);
 
     @NonNull ConfigNode<T> build();
 }

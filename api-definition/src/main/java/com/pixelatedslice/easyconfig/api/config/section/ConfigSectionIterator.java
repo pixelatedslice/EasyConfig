@@ -4,27 +4,26 @@ import com.pixelatedslice.easyconfig.api.EasyConfig;
 import com.pixelatedslice.easyconfig.api.exception.BrokenNodeKeyException;
 import org.jspecify.annotations.NonNull;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public interface ConfigSectionIterator extends Iterator<ConfigSection> {
-    static @NonNull Optional<@NonNull ConfigSection> findSection(@NonNull List<@NonNull ConfigSection> nestedSections,
-            @NonNull String... providedKeys) {
+    static @NonNull Optional<@NonNull ConfigSection> findSection(
+            @NonNull Collection<? extends @NonNull ConfigSection> nestedSections,
+            @NonNull String... providedKeys
+    ) {
         Objects.requireNonNull(nestedSections);
         Objects.requireNonNull(providedKeys);
         if (providedKeys.length == 0) {
             return Optional.empty();
         }
         List<String> keys = List.of(providedKeys);
-        List<ConfigSection> currentNestedSections = nestedSections;
+        var currentNestedSections = nestedSections;
         int last = keys.size() - 1;
         for (int i = 0; i <= last; i++) {
             String wanted = keys.get(i);
             ConfigSection next = null;
             for (ConfigSection section : currentNestedSections) {
-                if (section.key().equals(wanted)) {
+                if (section.descriptor().key().equals(wanted)) {
                     next = section;
                     break;
                 }
@@ -42,7 +41,7 @@ public interface ConfigSectionIterator extends Iterator<ConfigSection> {
 
     @SuppressWarnings("DuplicatedCode")
     static @NonNull Optional<@NonNull ConfigSection> findSectionButInTheBukkitAPIStyle(
-            @NonNull List<@NonNull ConfigSection> nestedSections, @NonNull String key) {
+            @NonNull Collection<@NonNull ConfigSection> nestedSections, @NonNull String key) {
         Objects.requireNonNull(nestedSections);
         Objects.requireNonNull(key);
         List<String> keys;
@@ -50,14 +49,6 @@ public interface ConfigSectionIterator extends Iterator<ConfigSection> {
             throw new BrokenNodeKeyException(key, EasyConfig.KEY_REGEX.pattern());
         }
         keys = List.of(key.split("\\."));
-        return findSection(nestedSections, keys.toArray(new String[0]));
+        return findSection(nestedSections, keys.toArray(String[]::new));
     }
-
-    @Override
-    boolean hasNext();
-
-
-    @Override
-    @NonNull
-    ConfigSection next();
 }
