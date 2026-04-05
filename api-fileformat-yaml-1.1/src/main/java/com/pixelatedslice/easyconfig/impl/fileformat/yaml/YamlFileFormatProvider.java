@@ -1,4 +1,4 @@
-package com.pixelatedslice.easyconfig.impl.fileformat;
+package com.pixelatedslice.easyconfig.impl.fileformat.yaml;
 
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormat;
@@ -73,7 +73,12 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
             throw new ParseException("The File content is invalid YAML", 0);
         }
 
-        var builder = new ConfigFileBuilderImpl().filePath(path).fileFormat(this.fileFormatClass());
+        var builder = new ConfigFileBuilderImpl().filePath(path);
         return (C) builder.build();
+    }
+
+    @Override
+    public <C extends ConfigFile> void reload(C config) throws IOException, ParseException {
+
     }
 }

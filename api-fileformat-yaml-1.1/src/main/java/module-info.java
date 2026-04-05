@@ -1,4 +1,4 @@
-open module com.pixelatedslice.easyconfig.api.fileformat {
+open module com.pixelatedslice.easyconfig.impl.fileformat {
     requires com.google.common;
     requires org.jspecify;
     requires org.yaml.snakeyaml;
@@ -6,5 +6,5 @@ open module com.pixelatedslice.easyconfig.api.fileformat {
     requires com.pixelatedslice.easyconfig.impl;
     requires jdk.compiler;
 
-    exports com.pixelatedslice.easyconfig.impl.fileformat;
+    exports com.pixelatedslice.easyconfig.impl.fileformat.yaml;
 }
