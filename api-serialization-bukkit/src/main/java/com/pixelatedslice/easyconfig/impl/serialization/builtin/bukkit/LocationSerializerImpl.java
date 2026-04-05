@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jspecify.annotations.NonNull;
 
+import java.util.ServiceLoader;
+
 public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Location> {
     private static volatile LocationSerializerImpl INSTANCE;
 
@@ -28,7 +30,7 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
 
     @Override
     public @NonNull ConfigSection serialize(@NonNull Location value) {
-        ConfigSectionBuilder sectionBuilder = new ConfigSectionBuilderImpl();
+        ConfigSectionBuilder sectionBuilder = ServiceLoader.load(ConfigSectionBuilder.class).findFirst().orElseThrow();
         if (value.getWorld() != null) {
             sectionBuilder.node("world", value.getWorld().getName(), TypeToken.of(String.class));
         }
@@ -43,17 +45,17 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
     @Override
     public @NonNull Location deserialize(@NonNull ConfigSection section) {
         var world = section
-                .node(String.class, "world")
+                .node(TypeToken.of(String.class), "world")
                 .flatMap(ConfigNode::value)
                 .map(Bukkit::getWorld)
                 .orElse(null);
-        var x = section.node(Double.class, "x").flatMap(ConfigNode::value).orElseThrow();
-        var y = section.node(Double.class, "y").flatMap(ConfigNode::value).orElseThrow();
-        var z = section.node(Double.class, "z").flatMap(ConfigNode::value).orElseThrow();
-        var yaw = section.node(Float.class, "yaw")
+        var x = section.node(TypeToken.of(Double.class), "x").flatMap(ConfigNode::value).orElseThrow();
+        var y = section.node(TypeToken.of(Double.class), "y").flatMap(ConfigNode::value).orElseThrow();
+        var z = section.node(TypeToken.of(Double.class), "z").flatMap(ConfigNode::value).orElseThrow();
+        var yaw = section.node(TypeToken.of(Float.class), "yaw")
                 .flatMap(ConfigNode::value)
                 .orElseThrow();
-        var pitch = section.node(Float.class, "pitch")
+        var pitch = section.node(TypeToken.of(Float.class), "pitch")
                 .flatMap(ConfigNode::value)
                 .orElseThrow();
 
@@ -63,9 +65,10 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
                 yaw, pitch
         );
     }
-    
+
     @Override
-    default @NonNull Class<Location> forClass() {
+    @NonNull
+    public Class<Location> forClass() {
         return Location.class;
     }
 }
