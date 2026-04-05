@@ -4,13 +4,12 @@ import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
-import com.pixelatedslice.easyconfig.api.serialization.builtin.bukkit.LocationSerializer;
-import com.pixelatedslice.easyconfig.impl.config.section.ConfigSectionBuilderImpl;
+import com.pixelatedslice.easyconfig.api.serialization.builtin.BuiltInBukkitSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jspecify.annotations.NonNull;
 
-public final class LocationSerializerImpl implements LocationSerializer {
+public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Location> {
     private static volatile LocationSerializerImpl INSTANCE;
 
     private LocationSerializerImpl() {
@@ -63,5 +62,10 @@ public final class LocationSerializerImpl implements LocationSerializer {
                 x, y, z,
                 yaw, pitch
         );
+    }
+    
+    @Override
+    default @NonNull Class<Location> forClass() {
+        return Location.class;
     }
 }
