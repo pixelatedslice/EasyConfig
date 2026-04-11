@@ -6,7 +6,6 @@ import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -52,7 +51,7 @@ final class TypeTokenTypeComparer {
                 if (item == null) {
                     return false;
                 }
-                
+
                 if (!genericClass.isInstance(item) || !hasCorrectType(item, generic)) {
                     return false;
                 }
@@ -109,10 +108,5 @@ final class TypeTokenTypeComparer {
         }
 
         return true;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new TypeToken<List<List<String>>>() {
-        });
     }
 }

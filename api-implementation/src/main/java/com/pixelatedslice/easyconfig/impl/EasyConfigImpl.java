@@ -7,9 +7,9 @@ import com.pixelatedslice.easyconfig.api.exception.BuiltInSerializerUnregisterEx
 import com.pixelatedslice.easyconfig.api.exception.ModificationOfNonCopiedEasyConfigInstanceException;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.HoconFileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFileFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.XmlFileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFileFormat;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
@@ -196,8 +196,8 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         }
 
         @Override
-        public @NonNull Optional<@NonNull FileFormatProvider<HoconFileFormat>> hocon() {
-            return this.easyConfig.provider(HoconFileFormat.class);
+        public @NonNull Optional<@NonNull FileFormatProvider<XmlFileFormat>> hocon() {
+            return this.easyConfig.provider(XmlFileFormat.class);
         }
 
         @Override

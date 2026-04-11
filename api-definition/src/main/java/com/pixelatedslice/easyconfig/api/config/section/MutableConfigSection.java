@@ -6,9 +6,13 @@ import com.pixelatedslice.easyconfig.api.mutability.immutable.WithImmutableVaria
 import com.pixelatedslice.easyconfig.api.mutability.mutable.MutableVariant;
 import org.jspecify.annotations.NonNull;
 
+import java.util.Collection;
+
 public interface MutableConfigSection extends MutableVariant, WithImmutableVariant<ConfigSection>,
         MutableAndCommentable {
     void addNodes(@NonNull ConfigNode<?> @NonNull ... nodes);
+
+    void setNodes(@NonNull Collection<? extends @NonNull ConfigNode<?>> nodes);
 
     void removeNodes(@NonNull ConfigNode<?> @NonNull ... nodes);
 
@@ -17,6 +21,8 @@ public interface MutableConfigSection extends MutableVariant, WithImmutableVaria
     void clearNodes();
 
     void addSections(@NonNull ConfigSection @NonNull ... sections);
+
+    void setSections(@NonNull Collection<? extends @NonNull ConfigSection> sections);
 
     void removeSections(@NonNull ConfigSection @NonNull ... sections);
 

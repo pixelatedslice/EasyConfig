@@ -30,6 +30,14 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
     }
 
     @Override
+    public void setNodes(@NonNull Collection<? extends @NonNull ConfigNode<?>> nodes) {
+        this.nodeUpdates.add((@NonNull Collection<@NonNull ConfigNode<?>> list) -> {
+            list.clear();
+            list.addAll(nodes);
+        });
+    }
+
+    @Override
     public void removeNodes(@NonNull ConfigNode<?> @NonNull ... nodes) {
         this.nodeUpdates.add((@NonNull Collection<@NonNull ConfigNode<?>> list) -> {
             for (var node : nodes) {
@@ -56,6 +64,14 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
     public void addSections(@NonNull ConfigSection @NonNull ... sections) {
         this.sectionUpdates.add((Collection<@NonNull ConfigSection> list) -> {
             Collections.addAll(list, sections);
+        });
+    }
+
+    @Override
+    public void setSections(@NonNull Collection<? extends @NonNull ConfigSection> sections) {
+        this.sectionUpdates.add((@NonNull Collection<@NonNull ConfigSection> list) -> {
+            list.clear();
+            list.addAll(sections);
         });
     }
 

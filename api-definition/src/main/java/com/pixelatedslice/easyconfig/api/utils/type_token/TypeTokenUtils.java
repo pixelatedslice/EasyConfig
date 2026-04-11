@@ -48,9 +48,4 @@ public final class TypeTokenUtils {
         }
         return Collections.unmodifiableList(generics);
     }
-
-    /**
-     * How would I write to file with SnakeYaml? There is no method like Yaml::load where I can pass a Map<String,
-     * Object> or similar
-     */
 }
