@@ -3,7 +3,6 @@ package com.pixelatedslice.easyconfig.impl.config.node;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.node.MutableConfigNode;
-import com.pixelatedslice.easyconfig.api.config.node.MutableConfigNodeValueUpdate;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.impl.comments.AbstractCommentable;
 import org.jspecify.annotations.NonNull;
@@ -13,17 +12,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode<T> {
     private final @NonNull String key;
     private final @NonNull TypeToken<T> typeToken;
     private final @Nullable ConfigSection parent;
-    private final @NonNull BlockingQueue<@Nullable MutableConfigNodeValueUpdate<T>> valueUpdateQueue =
-            new LinkedBlockingQueue<>();
-    private volatile @Nullable T value;
+    private final @Nullable T defaultValue;
+    private final @NonNull AtomicReference<@Nullable T> value;
 
     public ConfigNodeImpl(
             @NonNull String key,
@@ -33,50 +31,23 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
             @Nullable ConfigSection parent,
             @NonNull List<@NonNull String> comments
     ) {
-        super(key, comments);
+        super(comments);
 
         this.key = key;
         this.typeToken = typeToken;
-        this.value = value;
+        this.value = new AtomicReference<>(value);
+        this.defaultValue = defaultValue;
         this.parent = parent;
-
-        this.startProcessorThread();
     }
 
-    private void startProcessorThread() {
-        Thread.ofVirtual()
-                .name(String.format("virtual-thread-%s-newValue-queue-processor", this.key))
-                .start(this::processValueUpdateQueue);
-    }
-
-    void pushChangesToQueue(
-            @NonNull MutableConfigNodeValueUpdate<T> newValue,
-            @NonNull Iterable<? extends @NonNull Consumer<@NonNull Collection<@NonNull String>>> commentUpdates
+    void setValueAndComments(
+            @Nullable T newValue,
+            @NonNull Collection<? extends @NonNull Consumer<@NonNull Collection<@NonNull String>>> commentUpdates
     ) {
-        Thread.ofVirtual().start(() -> {
-            try {
-                this.valueUpdateQueue.put(newValue);
-            } catch (InterruptedException e) {
-                System.out.printf("Got interrupted while trying to add a update for the newValue of %s", this.key);
-            }
-        });
-        Thread.ofVirtual().start(() -> {
-            try {
-                super.pushChangesToQueue(commentUpdates);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    private void processValueUpdateQueue() {
-        while (true) {
-            try {
-                this.value = this.valueUpdateQueue.take().newValue();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.printf("%s interrupted!%n", Thread.currentThread().getName());
-                break;
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            executor.submit(() -> this.value.set(newValue));
+            if (!commentUpdates.isEmpty()) {
+                executor.submit(() -> this.updateComments(commentUpdates));
             }
         }
     }
@@ -87,13 +58,18 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
     }
 
     @Override
-    public @NonNull Optional<T> value() {
-        return Optional.ofNullable(this.value);
+    public @NonNull Optional<@NonNull T> value() {
+        return Optional.ofNullable(this.value.get());
     }
 
     @Override
-    public @NonNull Optional<T> defaultValue() {
-        return Optional.empty();
+    public @NonNull Optional<@NonNull T> defaultValue() {
+        return Optional.ofNullable(this.defaultValue);
+    }
+
+    @Override
+    public @NonNull Optional<@NonNull T> valueOrDefault() {
+        return this.value().or(this::defaultValue);
     }
 
     @Override

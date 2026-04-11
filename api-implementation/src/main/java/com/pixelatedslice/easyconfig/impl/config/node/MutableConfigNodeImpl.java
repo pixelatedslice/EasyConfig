@@ -19,6 +19,6 @@ public class MutableConfigNodeImpl<T> extends AbstractMutableAndCommentable impl
 
     @Override
     public void apply() {
-        this.originalNode.pushChangesToQueue(new MutableConfigNodeValueUpdateImpl<>(this.value), this.commentUpdates);
+        this.originalNode.setValueAndComments(this.value, this.commentUpdates);
     }
 }

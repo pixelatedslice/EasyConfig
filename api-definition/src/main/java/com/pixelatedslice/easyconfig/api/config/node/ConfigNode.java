@@ -22,6 +22,8 @@ public interface ConfigNode<T> extends Commentable, WithMutableVariant<MutableCo
 
     @NonNull Optional<@NonNull T> defaultValue();
 
+    @NonNull Optional<@NonNull T> valueOrDefault();
+
     @NonNull Optional<? extends @NonNull ConfigSection> parent();
 
     @NonNull TypeToken<T> typeToken();
