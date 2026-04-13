@@ -3,12 +3,15 @@ package com.pixelatedslice.easyconfig.impl.fileformat.yaml;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFileFormat;
+import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonConfigFile;
 import org.jspecify.annotations.NonNull;
+import tools.jackson.core.JsonEncoding;
+import tools.jackson.core.ObjectReadContext;
+import tools.jackson.core.ObjectWriteContext;
 import tools.jackson.dataformat.yaml.YAMLFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.ParseException;
 
 public final class YamlFileFormatProvider implements FileFormatProvider<YamlFileFormat> {
     private static final YamlFileFormat fileFormatInstance = YamlFileFormat.instance();
@@ -42,7 +45,7 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
 
     @Override
     public <C extends ConfigFile> void write(@NonNull C configFile
-    ) throws IOException, ParseException {
+    ) throws IOException {
         var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
 
         Files.createDirectories(path.getParent());
@@ -50,27 +53,29 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
             Files.createFile(path);
         }
 
-        try (var generator = this.factory.createGenerator()) {
-
+        try (var outStream = Files.newOutputStream(path)) {
+            try (var generator = this.factory.createGenerator(
+                    ObjectWriteContext.empty(),
+                    outStream,
+                    JsonEncoding.UTF8
+            )) {
+                JacksonConfigFile.write(generator, configFile);
+            }
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <C extends ConfigFile> void load(@NonNull C configFile)
-            throws IOException, ParseException {
+            throws IOException {
         var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
         if (!Files.exists(path)) {
             throw new IOException("The File does not exist!");
         }
 
-    }
-
-    @Override
-    public <C extends ConfigFile> void reload(@NonNull C configFile) throws IOException, ParseException {
-        try (var mutable = configFile.rootSection().mutable()) {
-            mutable.setNodes(configFile.rootSection().nodes());
-            mutable.setSections(configFile.rootSection().sections());
+        try (var inStream = Files.newInputStream(path)) {
+            try (var parser = this.factory.createParser(ObjectReadContext.empty(), inStream)) {
+                JacksonConfigFile.read(parser, configFile);
+            }
         }
     }
 }
