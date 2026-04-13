@@ -29,13 +29,15 @@ public interface ConfigSection
     ) {
         Objects.requireNonNull(typeToken);
         Objects.requireNonNull(providedKeys);
-        if (providedKeys.length == 0) {
-            return Optional.empty();
-        }
 
-        return ((providedKeys.length == 1) && providedKeys[0].contains("."))
-                ? ConfigNodeIterator.findButInTheBukkitAPIStyle(this, typeToken, providedKeys[0])
-                : ConfigNodeIterator.find(this, typeToken, providedKeys);
+        return (providedKeys.length == 0) ? Optional.empty() : ConfigNodeIterator.find(this, typeToken, providedKeys);
+
+    }
+
+    @Override
+    @NonNull
+    default Optional<TypeToken<?>> nodeTypeToken(@NonNull String... providedKeys) {
+        return (providedKeys.length == 0) ? Optional.empty() : ConfigNodeIterator.findTypeToken(this, providedKeys);
     }
 
     default Optional<TypeToken<ConfigSection>> typeToken() {

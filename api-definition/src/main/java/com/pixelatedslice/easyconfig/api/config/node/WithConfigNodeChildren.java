@@ -13,6 +13,10 @@ public interface WithConfigNodeChildren {
             @NonNull String... providedKeys
     );
 
+    @NonNull Optional<TypeToken<?>> nodeTypeToken(
+            @NonNull String... providedKeys
+    );
+
     @NonNull Collection<@NonNull ConfigNode<?>> nodes();
 
     @NonNull

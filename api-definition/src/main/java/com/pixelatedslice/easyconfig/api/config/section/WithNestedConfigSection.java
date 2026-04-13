@@ -11,12 +11,8 @@ import java.util.ServiceLoader;
 public interface WithNestedConfigSection {
     default @NonNull Optional<@NonNull ConfigSection> section(@NonNull String @NonNull ... providedKeys) {
         Objects.requireNonNull(providedKeys);
-        if (providedKeys.length == 0) {
-            return Optional.empty();
-        }
-
-        return ((providedKeys.length == 1) && providedKeys[0].contains("."))
-                ? ConfigSectionIterator.findButInTheBukkitAPIStyle(this.sections(), providedKeys[0])
+        return (providedKeys.length == 0)
+                ? Optional.empty()
                 : ConfigSectionIterator.findSection(this.sections(), providedKeys);
     }
 

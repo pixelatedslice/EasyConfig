@@ -1,7 +1,5 @@
 package com.pixelatedslice.easyconfig.api.config.section;
 
-import com.pixelatedslice.easyconfig.api.EasyConfig;
-import com.pixelatedslice.easyconfig.api.exception.BrokenNodeKeyException;
 import org.jspecify.annotations.NonNull;
 
 import java.util.*;
@@ -37,18 +35,5 @@ public interface ConfigSectionIterator extends Iterator<ConfigSection> {
             currentNestedSections = next.sections();
         }
         return Optional.empty();
-    }
-
-    @SuppressWarnings("DuplicatedCode")
-    static @NonNull Optional<@NonNull ConfigSection> findButInTheBukkitAPIStyle(
-            @NonNull Collection<? extends @NonNull ConfigSection> nestedSections, @NonNull String key) {
-        Objects.requireNonNull(nestedSections);
-        Objects.requireNonNull(key);
-        List<String> keys;
-        if (!EasyConfig.KEY_REGEX.matcher(key).matches()) {
-            throw new BrokenNodeKeyException(key, EasyConfig.KEY_REGEX.pattern());
-        }
-        keys = List.of(key.split("\\."));
-        return findSection(nestedSections, keys.toArray(String[]::new));
     }
 }
