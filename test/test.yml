@@ -1,0 +1,10 @@
+---
+names:
+- "Josh Robertson"
+- "Stefan Mark"
+- "Kevin James"
+database:
+  username: "admin"
+  password: "admin"
+  port: 3636
+  url: "host"

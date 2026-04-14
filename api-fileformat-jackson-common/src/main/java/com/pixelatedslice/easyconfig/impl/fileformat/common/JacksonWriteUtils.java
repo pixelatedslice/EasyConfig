@@ -6,6 +6,7 @@ import tools.jackson.core.JsonGenerator;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 
 public final class JacksonWriteUtils {
 
@@ -17,39 +18,34 @@ public final class JacksonWriteUtils {
             case null -> generator.writeNull();
 
             case String string -> generator.writeString(string);
-            case String[] string -> writeArray(generator, string);
 
             case Boolean bool -> generator.writeBoolean(bool);
-            case Boolean[] booleans -> writeArray(generator, booleans);
             case boolean[] booleans -> writeArray(generator, booleans);
 
             case Short number -> generator.writeNumber(number);
-            case Short[] numbers -> writeArray(generator, numbers);
             case short[] numbers -> writeArray(generator, numbers);
 
             case Integer number -> generator.writeNumber(number);
-            case Integer[] numbers -> writeArray(generator, numbers);
             case int[] numbers -> writeArray(generator, numbers);
 
             case Long number -> generator.writeNumber(number);
-            case Long[] numbers -> writeArray(generator, numbers);
             case long[] numbers -> writeArray(generator, numbers);
 
             case BigInteger number -> generator.writeNumber(number);
-            case BigInteger[] numbers -> writeArray(generator, numbers);
 
             case Double number -> generator.writeNumber(number);
-            case Double[] numbers -> writeArray(generator, numbers);
             case double[] numbers -> writeArray(generator, numbers);
 
             case Float number -> generator.writeNumber(number);
-            case Float[] numbers -> writeArray(generator, numbers);
             case float[] numbers -> writeArray(generator, numbers);
 
             case BigDecimal number -> generator.writeNumber(number);
-            case BigDecimal[] numbers -> writeArray(generator, numbers);
 
             case byte[] binary -> generator.writeBinary(binary);
+
+            case Object[] objects -> writeArray(generator, objects);
+
+            case Collection<?> collection -> writeArray(generator, collection.toArray());
 
             default -> throw new IllegalStateException("Value with unexpected type: " + value);
         }

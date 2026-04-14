@@ -10,16 +10,13 @@ import com.pixelatedslice.easyconfig.api.utils.type_token.TypeTokenUtils;
 import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeBuilderImpl;
 import org.jspecify.annotations.NonNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 @AutoService(ConfigSectionBuilder.class)
 public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
-    private final List<ConfigNodeBuilder<?>> childNodes = new ArrayList<>();
-    private final List<ConfigSectionBuilder> nestedSections = new ArrayList<>();
+    private final Collection<ConfigNodeBuilder<?>> childNodes = new ArrayList<>();
+    private final Collection<ConfigSectionBuilder> nestedSections = new ArrayList<>();
     private final List<String> comments = new ArrayList<>();
     private String key;
     private ConfigSection parent;

@@ -3,6 +3,7 @@ package com.pixelatedslice.easyconfig.api.utils.type_token;
 import com.google.common.reflect.TypeToken;
 import org.jspecify.annotations.NonNull;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +13,18 @@ public final class TypeTokenUtils {
     }
 
     public static boolean isSimpleTypeToken(@NonNull TypeToken<?> typeToken) {
-        return typeToken.getType() instanceof Class<?>;
+        Type type = typeToken.getType();
+
+        if (!(type instanceof Class<?> clazz)) {
+            return false;
+        }
+
+        Class<?> leafType = clazz;
+        while (leafType.isArray()) {
+            leafType = leafType.getComponentType();
+        }
+
+        return leafType.getTypeParameters().length == 0;
     }
 
     public static <T> boolean hasCorrectType(@NonNull T value, @NonNull TypeToken<?> typeToken) {

@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.node.MutableConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
+import com.pixelatedslice.easyconfig.api.utils.primitive.TypeUtils;
 import com.pixelatedslice.easyconfig.impl.comments.AbstractCommentable;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
 public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode<T> {
     private final @NonNull String key;
     private final @NonNull TypeToken<T> typeToken;
-    private final @Nullable ConfigSection parent;
+    private final @NonNull ConfigSection parent;
     private final @Nullable T defaultValue;
     private final @NonNull AtomicReference<@Nullable T> value;
     private final int hashCode;
@@ -29,7 +30,7 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
             @NonNull TypeToken<T> typeToken,
             @Nullable T value,
             @Nullable T defaultValue,
-            @Nullable ConfigSection parent,
+            @NonNull ConfigSection parent,
             @NonNull List<@NonNull String> comments
     ) {
         super(comments);
@@ -86,11 +87,16 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
     }
 
     @Override
+    public MutableConfigNode<T> mutable() {
+        return new MutableConfigNodeImpl<>(this);
+    }
+
+    @Override
     public boolean equals(Object o) {
         return (this == o)
                 || ((o instanceof ConfigNode<?> that)
                 && this.key.equals(that.key())
-                && Objects.equals(this.parent, that.parent().orElse(null))
+                && this.parent.equals(that.parent().orElse(null))
         );
 
     }
@@ -100,8 +106,25 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
         return this.hashCode;
     }
 
+
     @Override
-    public MutableConfigNode<T> mutable() {
-        return new MutableConfigNodeImpl<>(this);
+    public String toString() {
+        var sb = new StringBuilder().append("ConfigNode{")
+                .append("key=").append(this.key).append(", ");
+
+        if (this.typeToken.isArray()) {
+            sb.append("value=").append(TypeUtils.toString(this.value.get())).append(", ")
+                    .append("defaultValue=").append(TypeUtils.toString(this.defaultValue)).append(", ");
+        } else {
+            sb.append("value=").append(this.value).append(", ")
+                    .append("defaultValue=").append(this.defaultValue).append(", ");
+        }
+
+        sb.append("typeToken=").append(this.typeToken).append(", ")
+                .append("parent=").append(this.parent.key()).append(", ")
+                .append("hashCode=").append(this.hashCode)
+                .append("}");
+
+        return sb.toString();
     }
 }

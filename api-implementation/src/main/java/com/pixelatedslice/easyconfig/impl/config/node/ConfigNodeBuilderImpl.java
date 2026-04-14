@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("rawtypes")
 @AutoService(ConfigNodeBuilder.class)
 public class ConfigNodeBuilderImpl<T> implements ConfigNodeBuilder<T> {
     private final List<String> comments = new ArrayList<>();

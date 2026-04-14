@@ -14,10 +14,13 @@ public final class JacksonConfigSection {
     private JacksonConfigSection() {
     }
 
-    public static void write(@NonNull JsonGenerator generator, @NonNull ConfigSection section) {
-        generator.writeStartObject();
-
+    public static void write(
+            @NonNull JsonGenerator generator,
+            @NonNull ConfigSection section
+    ) {
         generator.writeName(section.key());
+
+        generator.writeStartObject();
 
         for (ConfigNode<?> node : section.nodes()) {
             JacksonConfigNode.write(generator, node);
@@ -36,11 +39,12 @@ public final class JacksonConfigSection {
 
         while (parser.nextToken() != JsonToken.END_OBJECT) {
             var key = parser.currentName();
+
             if (parser.nextToken() == JsonToken.START_OBJECT) {
                 var nested = section.section(key)
                         .orElseThrow(() -> new IllegalStateException(String.format(
                                 "The section with the key %s doesn't exist in the provided parent section",
-                                parser.currentName()
+                                key
                         )));
                 sections.add(read(parser, nested));
             } else {
@@ -53,7 +57,7 @@ public final class JacksonConfigSection {
                 var node = section.node(token, key)
                         .orElseThrow(() -> new IllegalStateException(String.format(
                                 "The node with the key %s doesn't exist in the provided parent section",
-                                parser.currentName()
+                                key
                         )));
 
                 nodes.add(JacksonConfigNode.read(parser, node));

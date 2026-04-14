@@ -4,7 +4,6 @@ import com.pixelatedslice.easyconfig.api.fileformat.FileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFileFormat;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.XmlFileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFileFormat;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
@@ -40,8 +39,6 @@ public interface EasyConfig {
     @NonNull CommonFormatProviders commonFormatProviders();
 
     interface CommonFormatProviders {
-        @NonNull Optional<@NonNull FileFormatProvider<XmlFileFormat>> hocon();
-
         @NonNull Optional<@NonNull FileFormatProvider<JsonFileFormat>> json();
 
         @NonNull Optional<@NonNull FileFormatProvider<TomlFileFormat>> toml();

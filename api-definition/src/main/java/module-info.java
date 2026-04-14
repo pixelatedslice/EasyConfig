@@ -25,6 +25,7 @@ open module com.pixelatedslice.easyconfig.api {
     exports com.pixelatedslice.easyconfig.api.serialization.builtin
             to com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
     exports com.pixelatedslice.easyconfig.api.comments;
+    exports com.pixelatedslice.easyconfig.api.utils.primitive;
     exports com.pixelatedslice.easyconfig.api.utils.type_token;
     exports com.pixelatedslice.easyconfig.api.builder.config;
     exports com.pixelatedslice.easyconfig.api.mutability.immutable;

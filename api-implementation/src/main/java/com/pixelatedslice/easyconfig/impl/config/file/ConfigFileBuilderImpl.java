@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFileBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
@@ -17,11 +18,14 @@ import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Consumer;
 
 @AutoService(ConfigFileBuilder.class)
 public class ConfigFileBuilderImpl implements ConfigFileBuilder {
     private final ConfigSection rootSection = ConfigSectionImpl.newRootSection();
+    private final Collection<ConfigNode<?>> nodes = new ArrayList<>();
+    private final Collection<ConfigSection> sections = new ArrayList<>();
     private Path filePathWithoutExtension;
 
     @Override
@@ -45,19 +49,16 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
     @Override
     public <T> @NonNull ConfigFileBuilder node(@NonNull String key, @NonNull TypeToken<T> typeToken,
             @NonNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
-        var builder = new ConfigNodeBuilderImpl<T>(this.rootSection);
+        var builder = new ConfigNodeBuilderImpl<>(key, typeToken, null, null, this.rootSection);
         nodeBuilder.accept(builder);
-        builder.key(key);
-        builder.typeToken(typeToken);
         builder.parent(this.rootSection);
-        this.rootSection.addNode(builder.build());
-
+        this.nodes.add(builder.build());
         return this;
     }
 
     @Override
     public <T> @NonNull ConfigFileBuilder node(@NonNull String key, @NonNull TypeToken<T> typeToken) {
-        this.rootSection.addNode(ConfigNodeImpl.of(key, typeToken, this.rootSection));
+        this.nodes.add(new ConfigNodeImpl<>(key, typeToken, null, null, this.rootSection, new ArrayList<>()));
         return this;
     }
 
@@ -74,15 +75,7 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
 
     @Override
     public <T> @NonNull ConfigFileBuilder node(@NonNull String key, @NonNull T value, @NonNull TypeToken<T> typeToken) {
-        var descriptor = new ConfigNodeDescriptorImpl<>(
-                typeToken,
-                key,
-                null,
-                this.rootSection,
-                new ArrayList<>()
-        );
-
-        this.rootSection.addNode(new ConfigNodeImpl<>(descriptor, value, this.rootSection));
+        this.nodes.add(new ConfigNodeImpl<>(key, typeToken, value, null, this.rootSection, new ArrayList<>()));
         return this;
     }
 
@@ -98,31 +91,31 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
     @Override
     public <T> @NonNull ConfigFileBuilder node(@NonNull String key,
             @NonNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
-        var builder = new ConfigNodeBuilderImpl<T>(this.rootSection);
+        var builder = new ConfigNodeBuilderImpl<T>();
         nodeBuilder.accept(builder);
         builder.key(key);
         builder.parent(this.rootSection);
-        this.rootSection.addNode(builder.build());
+        this.nodes.add(builder.build());
         return this;
     }
 
     @Override
     public <T> @NonNull ConfigFileBuilder node(@NonNull TypeToken<T> typeToken,
             @NonNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
-        var builder = new ConfigNodeBuilderImpl<T>(this.rootSection);
+        var builder = new ConfigNodeBuilderImpl<T>();
         nodeBuilder.accept(builder);
         builder.typeToken(typeToken);
         builder.parent(this.rootSection);
-        this.rootSection.addNode(builder.build());
+        this.nodes.add(builder.build());
         return this;
     }
 
     @Override
     public <T> @NonNull ConfigFileBuilder node(@NonNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
-        var builder = new ConfigNodeBuilderImpl<T>(this.rootSection);
+        var builder = new ConfigNodeBuilderImpl<T>();
         nodeBuilder.accept(builder);
         builder.parent(this.rootSection);
-        this.rootSection.addNode(builder.build());
+        this.nodes.add(builder.build());
         return this;
     }
 
@@ -133,7 +126,7 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
         nestedSectionBuilder.accept(builder);
         builder.key(key);
         builder.parent(this.rootSection);
-        this.rootSection.addSection(builder.build());
+        this.sections.add(builder.build());
         return this;
     }
 
@@ -142,12 +135,17 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
         var builder = new ConfigSectionBuilderImpl(this.rootSection);
         nestedSectionBuilder.accept(builder);
         builder.parent(this.rootSection);
-        this.rootSection.addSection(builder.build());
+        this.sections.add(builder.build());
         return this;
     }
 
     @Override
     public @NonNull ConfigFile build() {
+        try (var mut = this.rootSection.mutable()) {
+            mut.setNodes(this.nodes);
+            mut.setSections(this.sections);
+        }
+
         return new ConfigFileImpl(
                 this.rootSection,
                 this.filePathWithoutExtension

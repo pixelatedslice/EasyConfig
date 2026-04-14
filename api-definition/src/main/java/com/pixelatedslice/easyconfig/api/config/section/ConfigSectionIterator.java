@@ -7,7 +7,7 @@ import java.util.*;
 public interface ConfigSectionIterator extends Iterator<ConfigSection> {
     static @NonNull Optional<@NonNull ConfigSection> findSection(
             @NonNull Collection<? extends @NonNull ConfigSection> nestedSections,
-            @NonNull String... providedKeys
+            @NonNull String @NonNull ... providedKeys
     ) {
         Objects.requireNonNull(nestedSections);
         Objects.requireNonNull(providedKeys);

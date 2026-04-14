@@ -101,10 +101,18 @@ public class ConfigSectionImpl extends AbstractCommentable implements ConfigSect
     }
 
     @Override
+    public MutableConfigSection mutable() {
+        return new MutableConfigSectionImpl(this);
+    }
+
+    @Override
     public boolean equals(Object o) {
         return (this == o)
                 || ((o instanceof ConfigSection that)
                 && this.key.equals(that.key())
+                && this.nodes.equals(that.nodes())
+                && this.sections.equals(that.sections())
+                && Objects.equals(this.parent, that.parent().orElse(null))
         );
     }
 
@@ -114,7 +122,26 @@ public class ConfigSectionImpl extends AbstractCommentable implements ConfigSect
     }
 
     @Override
-    public MutableConfigSection mutable() {
-        return new MutableConfigSectionImpl(this);
+    public String toString() {
+        var sb = new StringBuilder();
+
+        if (!this.key.equals("root")) {
+            sb.append("ConfigSection{")
+                    .append("key=").append(this.key).append(", ");
+        } else {
+            sb.append("{");
+        }
+
+        sb.append("nodes=").append(this.nodes).append(", ")
+                .append("sections=").append(this.sections).append(", ");
+
+        if (this.parent != null) {
+            sb.append("parent=").append(this.parent.key()).append(", ");
+        }
+
+        sb.append("hashCode=").append(this.hashCode)
+                .append('}');
+
+        return sb.toString();
     }
 }

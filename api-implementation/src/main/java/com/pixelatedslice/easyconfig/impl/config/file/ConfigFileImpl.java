@@ -11,11 +11,15 @@ import java.util.Objects;
 public class ConfigFileImpl implements ConfigFile {
     private final ConfigSection rootSection;
     private final Path filePathWithoutExtension;
+    private final int hashCode;
 
     public ConfigFileImpl(@NonNull Path filePathWithoutExtension) {
         Objects.requireNonNull(filePathWithoutExtension);
+
         this.rootSection = ConfigSectionImpl.newRootSection();
         this.filePathWithoutExtension = filePathWithoutExtension;
+
+        this.hashCode = Objects.hash(this.rootSection, this.filePathWithoutExtension);
     }
 
     ConfigFileImpl(@NonNull ConfigSection rootSection, @NonNull Path filePathWithoutExtension) {
@@ -24,6 +28,8 @@ public class ConfigFileImpl implements ConfigFile {
 
         this.rootSection = rootSection;
         this.filePathWithoutExtension = filePathWithoutExtension;
+
+        this.hashCode = Objects.hash(this.rootSection, this.filePathWithoutExtension);
     }
 
     @Override
@@ -47,6 +53,15 @@ public class ConfigFileImpl implements ConfigFile {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.rootSection, this.filePathWithoutExtension);
+        return this.hashCode;
+    }
+
+    @Override
+    public String toString() {
+        return "ConfigFile{" +
+                "filePathWithoutExtension=" + this.filePathWithoutExtension.toAbsolutePath() + ", " +
+                "root=" + this.rootSection + ", " +
+                "hashCode=" + this.hashCode +
+                '}';
     }
 }

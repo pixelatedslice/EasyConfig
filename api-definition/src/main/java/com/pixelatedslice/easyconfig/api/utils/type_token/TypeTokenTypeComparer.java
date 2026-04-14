@@ -1,7 +1,7 @@
 package com.pixelatedslice.easyconfig.api.utils.type_token;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.utils.primitive.PrimitiveUtils;
+import com.pixelatedslice.easyconfig.api.utils.primitive.TypeUtils;
 import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Array;
@@ -40,7 +40,7 @@ final class TypeTokenTypeComparer {
 
     private static boolean iterable(@NonNull Object container, @NonNull TypeToken<?> typeToken) {
         var generic = TypeTokenUtils.generics(typeToken).get(0);
-        var genericClass = PrimitiveUtils.wrap(generic.getRawType());
+        var genericClass = TypeUtils.primitiveToWrapper(generic.getRawType());
 
         if (container instanceof Iterable<?> iterable) {
             if ((container instanceof Collection<?> collection) && collection.isEmpty()) {

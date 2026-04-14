@@ -1,0 +1,89 @@
+package com.pixelatedslice.easyconfig.impl.fileformat.json;
+
+
+import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
+import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFileFormat;
+import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonConfigFile;
+import org.jspecify.annotations.NonNull;
+import tools.jackson.core.JsonEncoding;
+import tools.jackson.core.ObjectReadContext;
+import tools.jackson.core.ObjectWriteContext;
+import tools.jackson.core.json.JsonFactory;
+import tools.jackson.core.util.DefaultPrettyPrinter;
+
+import java.io.IOException;
+import java.nio.file.Files;
+
+public final class JsonFileFormatProvider implements FileFormatProvider<JsonFileFormat> {
+    private static final JsonFileFormat fileFormatInstance = JsonFileFormat.instance();
+    private static volatile JsonFileFormatProvider INSTANCE;
+    private final JsonFactory factory = new JsonFactory();
+    private final ObjectWriteContext objectWriteContext = new ObjectWriteContext.Base() {
+        @Override
+        public tools.jackson.core.PrettyPrinter getPrettyPrinter() {
+            return new DefaultPrettyPrinter();
+        }
+    };
+
+    private JsonFileFormatProvider() {
+    }
+
+    public static JsonFileFormatProvider instance() {
+        if (INSTANCE == null) {
+            synchronized (JsonFileFormatProvider.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new JsonFileFormatProvider();
+                }
+            }
+        }
+
+        return INSTANCE;
+    }
+
+    @Override
+    public Class<JsonFileFormat> fileFormatClass() {
+        return JsonFileFormat.class;
+    }
+
+    @Override
+    public JsonFileFormat fileFormatInstance() {
+        return fileFormatInstance;
+    }
+
+    @Override
+    public <C extends ConfigFile> void write(@NonNull C configFile
+    ) throws IOException {
+        var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
+
+        Files.createDirectories(path.getParent());
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        }
+
+        try (var outStream = Files.newOutputStream(path)) {
+            try (var generator = this.factory.createGenerator(
+                    this.objectWriteContext,
+                    outStream,
+                    JsonEncoding.UTF8
+            )) {
+                JacksonConfigFile.write(generator, configFile);
+            }
+        }
+    }
+
+    @Override
+    public <C extends ConfigFile> void load(@NonNull C configFile)
+            throws IOException {
+        var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
+        if (!Files.exists(path)) {
+            throw new IOException("The File does not exist!");
+        }
+
+        try (var inStream = Files.newInputStream(path)) {
+            try (var parser = this.factory.createParser(ObjectReadContext.empty(), inStream)) {
+                JacksonConfigFile.read(parser, configFile);
+            }
+        }
+    }
+}
