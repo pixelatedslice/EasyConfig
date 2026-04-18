@@ -14,6 +14,7 @@ structures like List<Map<String, Integer>>.
 
 <details>
 <summary>Licenses used</summary>
+
 - Apache-2.0:
     - api-definition
     - api-implementation
@@ -24,6 +25,7 @@ structures like List<Map<String, Integer>>.
 
 - GPLv3:
     - api-serialization-bukkit (*The Bukkit/Spigot API is GPLv3 licensed.*)
+
 </details>
 
 ## Why use it?
@@ -42,7 +44,7 @@ project, [see Maven Central](https://central.sonatype.com/namespace/com.pixelate
 
 ## Config File
 
-[Open File](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/file/ConfigFile.java)
+[Open File](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/file/ConfigFile.java) <br />
 [Open Implementation File](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/file/ConfigFileImpl.java)
 
 ### Usage Examples
@@ -50,9 +52,9 @@ project, [see Maven Central](https://central.sonatype.com/namespace/com.pixelate
 <details>
 <summary>Creating a Config File</summary>
 
-[Also see ConfigFileBuilder.java](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/file/ConfigFileBuilder.java)
-[Also see ConfigFileBuilderImpl.java](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/file/ConfigFileBuilderImpl.java)
-[Also see ConfigSectionBuilderImpl.java](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/section/ConfigSectionBuilderImpl.java)
+[Also see ConfigFileBuilder.java](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/file/ConfigFileBuilder.java) <br />
+[Also see ConfigFileBuilderImpl.java](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/file/ConfigFileBuilderImpl.java) <br />
+[Also see ConfigSectionBuilderImpl.java](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/section/ConfigSectionBuilderImpl.java) <br />
 [Also see ConfigNodeBuilderImpl.java](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/node/ConfigNodeBuilderImpl.java)
 
 ```java
@@ -80,7 +82,7 @@ ConfigFile myConfig = new ConfigFile.builder()
 
 ## Config Sections
 
-[Open File](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/section/ConfigSection.java)
+[Open File](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/section/ConfigSection.java) <br />
 [Open Implementation File](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/section/ConfigSectionImpl.java)
 
 <details>
@@ -95,7 +97,7 @@ ConfigSection section = myConfig.section("my", "cool", "section");
 <details>
 <summary>Modify an section</summary>
 
-[Also see MutableConfigSection](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/section/MutableConfigSection.java)
+[Also see MutableConfigSection](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/section/MutableConfigSection.java) <br />
 [Also see MutableConfigSectionImpl](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/section/MutableConfigSectionImpl.java)
 
 ```java
@@ -113,7 +115,7 @@ mutable.close();
 
 ## Config Nodes
 
-[Open File](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/node/ConfigNode.java)
+[Open File](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/node/ConfigNode.java) <br />
 [Open Implementation File](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/node/ConfigNodeImpl.java)
 
 <details>
@@ -128,7 +130,7 @@ ConfigNode node = myConfig.section("my", "cool", "section").<String>node("node")
 <details>
 <summary>Modify an node</summary>
 
-[Also see MutableConfigNode](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/node/MutableConfigNode.java)
+[Also see MutableConfigNode](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/config/node/MutableConfigNode.java) <br />
 [Also see MutableConfigNodeImpl](./api-implementation/src/main/java/com/pixelatedslice/easyconfig/impl/config/node/MutableConfigNodeImpl.java)
 
 ```java
@@ -144,10 +146,12 @@ mutable.close();
 
 </details>
 
+## File Formats & File Format Providers
+[Also see FileFormatProvider](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/fileformat/FileFormatProvider.java)
+[Also see FileFormat](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/fileformat/FileFormat.java)
+
 <details>
 <summary>Write a file to disk</summary>
-
-[Also see FileFormatProvider](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/fileformat/FileFormatProvider.java)
 
 ```java
 CopiedEasyConfig easyConfig = EasyConfig.instance().copy();
@@ -175,8 +179,6 @@ easyConfig.provider(YamlFileFormat.class).save(easyConfig, myConfig);
 
 <details>
 <summary>Read a file from disk</summary>
-
-[Also see FileFormatProvider](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/fileformat/FileFormatProvider.java)
 
 ```java
 CopiedEasyConfig easyConfig = EasyConfig.instance().copy();
