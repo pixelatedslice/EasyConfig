@@ -4,20 +4,20 @@ import com.pixelatedslice.easyconfig.api.fileformat.builtin.BuiltInFileFormat;
 import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Path;
+import java.util.Objects;
 
+@SuppressWarnings("unused")
 @FunctionalInterface
 public interface FileFormat {
     static boolean isBuiltIn(@NonNull FileFormat fileFormat) {
+        Objects.requireNonNull(fileFormat);
         return fileFormat instanceof BuiltInFileFormat;
-    }
-
-    static Path toMetaFilePath(@NonNull Path filePathWithExtension) {
-        return filePathWithExtension.resolveSibling("." + filePathWithExtension.getFileName() + ".meta");
     }
 
     String fileExtension();
 
     default Path pathWithExtension(@NonNull Path path) {
+        Objects.requireNonNull(path);
         return path.resolveSibling(path.getFileName() + "." + this.fileExtension()).toAbsolutePath();
     }
 }

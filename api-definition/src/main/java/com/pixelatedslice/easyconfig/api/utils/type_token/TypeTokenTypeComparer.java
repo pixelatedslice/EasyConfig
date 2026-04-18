@@ -19,7 +19,6 @@ final class TypeTokenTypeComparer {
         Objects.requireNonNull(typeToken);
 
         var baseType = typeToken.getRawType();
-        var type = typeToken.getType();
 
         if (!baseType.isInstance(value)) {
             return false;
@@ -39,6 +38,9 @@ final class TypeTokenTypeComparer {
     }
 
     private static boolean iterable(@NonNull Object container, @NonNull TypeToken<?> typeToken) {
+        Objects.requireNonNull(container);
+        Objects.requireNonNull(typeToken);
+
         var generic = TypeTokenUtils.generics(typeToken).get(0);
         var genericClass = TypeUtils.primitiveToWrapper(generic.getRawType());
 
@@ -84,6 +86,9 @@ final class TypeTokenTypeComparer {
     }
 
     private static boolean map(@NonNull Map<?, ?> map, @NonNull TypeToken<?> typeToken) {
+        Objects.requireNonNull(map);
+        Objects.requireNonNull(typeToken);
+
         if (map.isEmpty()) {
             return true;
         }

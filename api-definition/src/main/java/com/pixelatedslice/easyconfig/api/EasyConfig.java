@@ -1,6 +1,7 @@
 package com.pixelatedslice.easyconfig.api;
 
 import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.exception.ModificationOfNonCopiedEasyConfigInstanceException;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFileFormat;
@@ -10,19 +11,31 @@ import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.ServiceLoader;
 
 @SuppressWarnings("unused")
 public interface EasyConfig {
+    static EasyConfig instance() {
+        return ServiceLoader.load(EasyConfig.class)
+                .findFirst()
+                .orElseThrow(() ->
+                        new NoSuchElementException("No implementation for EasyConfig found on the classpath.")
+                );
+    }
+
     @NonNull CopiedEasyConfig copy();
 
     @NonNull Map<@NonNull TypeToken<?>, @NonNull Serializer<?>> serializers();
 
     <T> @NonNull Optional<@NonNull Serializer<T>> serializer(@NonNull TypeToken<T> clazz);
 
-    @NonNull EasyConfig registerSerializers(@NonNull Serializer<?> @NonNull ... serializers);
+    void registerSerializers(@NonNull Serializer<?> @NonNull ... serializers)
+            throws ModificationOfNonCopiedEasyConfigInstanceException;
 
-    @NonNull EasyConfig unregisterSerializers(@NonNull TypeToken<?> @NonNull ... classes);
+    void unregisterSerializers(@NonNull TypeToken<?> @NonNull ... classes)
+            throws ModificationOfNonCopiedEasyConfigInstanceException;
 
     @NonNull Map<@NonNull Class<? extends FileFormat>, @NonNull FileFormatProvider<?>> providers();
 
@@ -30,9 +43,11 @@ public interface EasyConfig {
             @NonNull Class<T> fileFormatClass
     );
 
-    EasyConfig registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
+    void registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers)
+            throws ModificationOfNonCopiedEasyConfigInstanceException;
 
-    EasyConfig unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
+    void unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers)
+            throws ModificationOfNonCopiedEasyConfigInstanceException;
 
     @NonNull CommonFormatProviders commonFormatProviders();
 

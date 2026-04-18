@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl;
 
+import com.google.auto.service.AutoService;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.EasyConfig;
@@ -16,6 +17,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
+@AutoService(EasyConfig.class)
 public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfigImpl {
     private static volatile EasyConfigImpl INSTANCE;
     private final CommonFormatProviders commonFormatProviders;
@@ -32,9 +34,16 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
             @NonNull Map<@NonNull Class<? extends FileFormat>, @NonNull FileFormatProvider<?>> providers,
             @NonNull Map<@NonNull TypeToken<?>, @NonNull Serializer<?>> serializers
     ) {
-        this.providers = Objects.requireNonNull(providers);
-        this.serializers = Objects.requireNonNull(serializers);
+        Objects.requireNonNull(providers);
+        Objects.requireNonNull(serializers);
+        this.providers = providers;
+        this.serializers = serializers;
         this.commonFormatProviders = new CommonFormatProvidersImpl(this);
+    }
+
+    // For service loader
+    public static EasyConfig provider() {
+        return INSTANCE;
     }
 
     public static EasyConfigImpl instance() {
@@ -55,16 +64,15 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         }
     }
 
-    @NonNull
-    public CopiedEasyConfig copy() {
-        return new CopiedEasyConfigImpl(this.providers, this.serializers);
+    @Override
+    public @NonNull CopiedEasyConfig copy() {
+        return new CopiedEasyConfigImpl(new HashMap<>(this.providers), new HashMap<>(this.serializers));
     }
-
 
     @Override
     @NonNull
     public Map<@NonNull TypeToken<?>, @NonNull Serializer<?>> serializers() {
-        return this.serializers;
+        return Collections.unmodifiableMap(this.serializers);
     }
 
 
@@ -72,12 +80,14 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
     @Override
     @NonNull
     public <T> Optional<@NonNull Serializer<T>> serializer(@NonNull TypeToken<T> clazz) {
+        Objects.requireNonNull(clazz);
         return Optional.ofNullable((Serializer<T>) this.serializers.get(Objects.requireNonNull(clazz)));
     }
 
 
     @Override
-    public @NonNull EasyConfig registerSerializers(@NonNull Serializer<?> @NonNull ... serializers) {
+    public void registerSerializers(@NonNull Serializer<?> @NonNull ... serializers)
+            throws ModificationOfNonCopiedEasyConfigInstanceException {
         this.copiedInstanceCheck();
 
         Objects.requireNonNull(serializers);
@@ -105,13 +115,11 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         for (var ser : serializers) {
             this.serializers.put(ser.forType(), ser);
         }
-
-        return this;
     }
 
 
     @Override
-    public @NonNull EasyConfig unregisterSerializers(@NonNull TypeToken<?> @NonNull ... typeTokens) {
+    public void unregisterSerializers(@NonNull TypeToken<?> @NonNull ... typeTokens) {
         this.copiedInstanceCheck();
 
         Objects.requireNonNull(typeTokens);
@@ -138,15 +146,13 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         for (var serializer : typeTokens) {
             this.serializers.remove(serializer);
         }
-
-        return this;
     }
 
 
     @Override
     @NonNull
     public Map<@NonNull Class<? extends FileFormat>, @NonNull FileFormatProvider<?>> providers() {
-        return this.providers;
+        return Collections.unmodifiableMap(this.providers);
     }
 
 
@@ -155,6 +161,8 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
     public <T extends FileFormat> @NonNull Optional<@NonNull FileFormatProvider<T>> provider(
             @NonNull Class<T> fileFormatClass
     ) {
+        Objects.requireNonNull(fileFormatClass);
+
         var found = this.providers.get(Objects.requireNonNull(fileFormatClass));
         if (found == null) {
             return Optional.empty();
@@ -167,7 +175,8 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
     }
 
     @Override
-    public @NonNull EasyConfig registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers) {
+    public void registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers)
+            throws ModificationOfNonCopiedEasyConfigInstanceException {
         this.copiedInstanceCheck();
 
         Objects.requireNonNull(providers);
@@ -177,13 +186,12 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
             map.put(provider.fileFormatClass(), provider);
         }
         this.providers.putAll(map);
-
-        return this;
     }
 
 
     @Override
-    public @NonNull EasyConfig unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers) {
+    public void unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers)
+            throws ModificationOfNonCopiedEasyConfigInstanceException {
         this.copiedInstanceCheck();
 
         Objects.requireNonNull(providers);
@@ -191,8 +199,6 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         for (FileFormatProvider<?> provider : providers) {
             this.providers.remove(provider.fileFormatClass());
         }
-
-        return this;
     }
 
     @Override

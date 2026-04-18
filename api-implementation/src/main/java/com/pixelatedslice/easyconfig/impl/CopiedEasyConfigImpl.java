@@ -10,7 +10,6 @@ import org.jspecify.annotations.NonNull;
 import java.util.Map;
 
 public final class CopiedEasyConfigImpl extends EasyConfigImpl implements CopiedEasyConfig {
-
     CopiedEasyConfigImpl(
             @NonNull Map<@NonNull Class<? extends FileFormat>, @NonNull FileFormatProvider<?>> providers,
             @NonNull Map<@NonNull TypeToken<?>, @NonNull Serializer<?>> serializers) {
@@ -18,22 +17,22 @@ public final class CopiedEasyConfigImpl extends EasyConfigImpl implements Copied
     }
 
     @Override
-    public @NonNull CopiedEasyConfig registerSerializers(@NonNull Serializer<?> @NonNull ... serializers) {
-        return (CopiedEasyConfig) super.registerSerializers(serializers);
+    public void registerSerializers(@NonNull Serializer<?> @NonNull ... serializers) {
+        super.registerSerializers(serializers);
     }
 
     @Override
-    public @NonNull CopiedEasyConfig unregisterSerializers(@NonNull TypeToken<?> @NonNull ... typeTokens) {
-        return (CopiedEasyConfig) super.unregisterSerializers(typeTokens);
+    public void unregisterSerializers(@NonNull TypeToken<?> @NonNull ... classes) {
+        super.unregisterSerializers(classes);
     }
 
     @Override
-    public @NonNull CopiedEasyConfig registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers) {
-        return (CopiedEasyConfig) super.registerProviders(providers);
+    public void registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers) {
+        super.registerProviders(providers);
     }
 
     @Override
-    public @NonNull CopiedEasyConfig unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers) {
-        return (CopiedEasyConfig) super.unregisterProviders(providers);
+    public void unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers) {
+        super.unregisterProviders(providers);
     }
 }

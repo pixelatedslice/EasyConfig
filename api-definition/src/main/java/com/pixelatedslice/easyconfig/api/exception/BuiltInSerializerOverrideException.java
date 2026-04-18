@@ -4,6 +4,7 @@ import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class BuiltInSerializerOverrideException extends RuntimeException {
     private static final String FORMAT = "- %s: %s -> %s\n";
@@ -11,6 +12,7 @@ public class BuiltInSerializerOverrideException extends RuntimeException {
     public BuiltInSerializerOverrideException(
             @NonNull Map<? extends @NonNull Serializer<?>, /* Built-in Serializer*/            ?
                     extends @NonNull Serializer<?> /* Overriding Serializer */> serializers) {
+        Objects.requireNonNull(serializers);
         super(message(serializers));
     }
 

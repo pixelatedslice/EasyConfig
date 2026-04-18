@@ -9,6 +9,7 @@ import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class MutableConfigSectionImpl extends AbstractMutableAndCommentable implements MutableConfigSection {
@@ -24,11 +25,13 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
 
     @Override
     public void addNodes(@NonNull ConfigNode<?> @NonNull ... nodes) {
+        Objects.requireNonNull(nodes);
         this.nodeUpdates.add((Collection<@NonNull ConfigNode<?>> list) -> Collections.addAll(list, nodes));
     }
 
     @Override
     public void setNodes(@NonNull Collection<? extends @NonNull ConfigNode<?>> nodes) {
+        Objects.requireNonNull(nodes);
         this.nodeUpdates.add((@NonNull Collection<@NonNull ConfigNode<?>> list) -> {
             list.clear();
             list.addAll(nodes);
@@ -37,6 +40,7 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
 
     @Override
     public void removeNodes(@NonNull ConfigNode<?> @NonNull ... nodes) {
+        Objects.requireNonNull(nodes);
         this.nodeUpdates.add((@NonNull Collection<@NonNull ConfigNode<?>> list) -> {
             for (var node : nodes) {
                 list.remove(node);
@@ -46,6 +50,7 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
 
     @Override
     public void removeNodes(@NonNull String @NonNull ... keys) {
+        Objects.requireNonNull(keys);
         this.nodeUpdates.add((@NonNull Collection<@NonNull ConfigNode<?>> list) -> {
             for (var key : keys) {
                 list.removeIf((ConfigNode<?> node) -> node.key().equals(key));
@@ -60,11 +65,13 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
 
     @Override
     public void addSections(@NonNull ConfigSection @NonNull ... sections) {
+        Objects.requireNonNull(sections);
         this.sectionUpdates.add((Collection<@NonNull ConfigSection> list) -> Collections.addAll(list, sections));
     }
 
     @Override
     public void setSections(@NonNull Collection<? extends @NonNull ConfigSection> sections) {
+        Objects.requireNonNull(sections);
         this.sectionUpdates.add((@NonNull Collection<@NonNull ConfigSection> list) -> {
             list.clear();
             list.addAll(sections);
@@ -73,6 +80,7 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
 
     @Override
     public void removeSections(@NonNull ConfigSection @NonNull ... sections) {
+        Objects.requireNonNull(sections);
         this.sectionUpdates.add((Collection<@NonNull ConfigSection> list) -> {
             for (var section : sections) {
                 list.remove(section);
@@ -82,6 +90,7 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
 
     @Override
     public void removeSections(@NonNull String @NonNull ... keys) {
+        Objects.requireNonNull(keys);
         this.sectionUpdates.add((Collection<@NonNull ConfigSection> list) -> {
             for (var key : keys) {
                 list.removeIf((ConfigSection section) -> section.key().equals(key));

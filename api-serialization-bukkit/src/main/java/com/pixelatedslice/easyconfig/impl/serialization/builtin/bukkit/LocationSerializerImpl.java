@@ -10,6 +10,8 @@ import org.bukkit.Location;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
+
 public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Location> {
     private static volatile LocationSerializerImpl INSTANCE;
 
@@ -29,6 +31,8 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
 
     @Override
     public void serialize(@Nullable Location value, @NonNull ConfigSectionBuilder sectionBuilder) {
+        Objects.requireNonNull(sectionBuilder);
+
         sectionBuilder.node(
                 "world",
                 ((value != null) && (value.getWorld() != null)) ? value.getWorld().getName() : null,
@@ -43,6 +47,8 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
 
     @Override
     public @NonNull Location deserialize(@NonNull ConfigSection section) {
+        Objects.requireNonNull(section);
+
         var world = section
                 .node(TypeToken.of(String.class), "world")
                 .flatMap(ConfigNode::value)

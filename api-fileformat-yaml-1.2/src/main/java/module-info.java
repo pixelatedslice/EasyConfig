@@ -6,7 +6,6 @@ open module com.pixelatedslice.easyconfig.impl.fileformat.yaml {
     requires jdk.compiler;
     requires tools.jackson.dataformat.yaml;
     requires tools.jackson.core;
-    requires com.pixelatedslice.easyconfig.impl;
 
     exports com.pixelatedslice.easyconfig.impl.fileformat.yaml;
 }

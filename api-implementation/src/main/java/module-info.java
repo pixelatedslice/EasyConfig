@@ -11,6 +11,8 @@ open module com.pixelatedslice.easyconfig.impl {
     exports com.pixelatedslice.easyconfig.impl.config.section;
     exports com.pixelatedslice.easyconfig.impl.config.file;
 
+    provides com.pixelatedslice.easyconfig.api.EasyConfig
+            with com.pixelatedslice.easyconfig.impl.EasyConfigImpl;
     provides com.pixelatedslice.easyconfig.api.config.file.ConfigFileBuilder
             with com.pixelatedslice.easyconfig.impl.config.file.ConfigFileBuilderImpl;
     provides com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder

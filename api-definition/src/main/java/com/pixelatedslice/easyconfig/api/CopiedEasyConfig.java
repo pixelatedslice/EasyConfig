@@ -7,14 +7,14 @@ import org.jspecify.annotations.NonNull;
 
 public interface CopiedEasyConfig extends EasyConfig {
     @Override
-    @NonNull CopiedEasyConfig registerSerializers(@NonNull Serializer<?> @NonNull ... serializers);
+    void registerSerializers(@NonNull Serializer<?> @NonNull ... serializers);
 
     @Override
-    @NonNull CopiedEasyConfig unregisterSerializers(@NonNull TypeToken<?> @NonNull ... classes);
+    void unregisterSerializers(@NonNull TypeToken<?> @NonNull ... classes);
 
     @Override
-    @NonNull CopiedEasyConfig registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
+    void registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
 
     @Override
-    @NonNull CopiedEasyConfig unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
+    void unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
 }

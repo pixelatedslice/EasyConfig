@@ -1,9 +1,9 @@
 package com.pixelatedslice.easyconfig.test.bukkit;
 
 import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
+import com.pixelatedslice.easyconfig.api.EasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
-import com.pixelatedslice.easyconfig.impl.EasyConfigImpl;
 import com.pixelatedslice.easyconfig.impl.fileformat.yaml.YamlFileFormatProvider;
 import com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit.LocationSerializerImpl;
 import org.bukkit.Location;
@@ -18,10 +18,12 @@ public class TestLocationSerializerImpl {
                     Location.class,
                     (ConfigNodeBuilder<Location> nb) -> nb.value(new Location(null, 1.0, 2.0, 3.0, 4f, 5f))
             ).build();
-    private final CopiedEasyConfig ec = EasyConfigImpl
-            .instance()
-            .copy()
-            .registerSerializers(LocationSerializerImpl.instance());
+    private final CopiedEasyConfig ec;
+
+    public TestLocationSerializerImpl() {
+        this.ec = EasyConfig.instance().copy();
+        this.ec.registerSerializers(LocationSerializerImpl.instance());
+    }
 
     @Test
     void shouldAddNodesToSection() throws IOException {

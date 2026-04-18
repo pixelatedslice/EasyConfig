@@ -14,6 +14,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
+@SuppressWarnings("DuplicatedCode")
 @AutoService(ConfigSectionBuilder.class)
 public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     private final Collection<ConfigNodeBuilder<?>> childNodes = new ArrayList<>();
@@ -24,6 +25,7 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
 
     public ConfigSectionBuilderImpl(@NonNull ConfigSection parent) {
         Objects.requireNonNull(parent);
+
         this.parent = parent;
     }
 
@@ -32,12 +34,14 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
 
     @Override
     public @NonNull ConfigSectionBuilder key(@NonNull String key) {
+        Objects.requireNonNull(key);
         this.key = key;
         return this;
     }
 
     @Override
     public @NonNull ConfigSectionBuilder parent(@NonNull ConfigSection parent) {
+        Objects.requireNonNull(parent);
         this.parent = parent;
         return this;
     }
@@ -45,6 +49,10 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     @Override
     public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @NonNull Class<T> simpleType,
             @NonNull Consumer<ConfigNodeBuilder<T>> nodeBuilder) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(simpleType);
+        Objects.requireNonNull(nodeBuilder);
+
         var typeToken = TypeToken.of(simpleType);
 
         if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
@@ -57,23 +65,33 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     @Override
     public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @NonNull TypeToken<T> typeToken,
             @NonNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(typeToken);
+        Objects.requireNonNull(nodeBuilder);
+
         var builder = new ConfigNodeBuilderImpl<T>();
         nodeBuilder.accept(builder);
+
         builder.key(key);
         builder.typeToken(typeToken);
-        this.node(builder);
 
+        this.node(builder);
         return this;
     }
 
     @Override
     public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @NonNull TypeToken<T> typeToken) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(typeToken);
         this.node(new ConfigNodeBuilderImpl<T>().key(key).typeToken(typeToken));
         return this;
     }
 
     @Override
     public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @NonNull Class<T> simpleType) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(simpleType);
+
         var typeToken = TypeToken.of(simpleType);
 
         if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
@@ -86,6 +104,8 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     @Override
     public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @Nullable T value,
             @NonNull TypeToken<T> typeToken) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(typeToken);
         this.node(new ConfigNodeBuilderImpl<T>().key(key).value(value).typeToken(typeToken));
         return this;
     }
@@ -93,6 +113,9 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     @Override
     public @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @Nullable T value,
             @NonNull Class<T> simpleType) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(simpleType);
+
         var typeToken = TypeToken.of(simpleType);
 
         if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
@@ -105,19 +128,29 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     @SuppressWarnings("unchecked")
     @Override
     public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @NonNull T valueWithSimpleType) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(valueWithSimpleType);
+
         TypeToken<T> typeToken = TypeToken.of((Class<T>) valueWithSimpleType.getClass());
+
         if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
             throw new ComplexInsteadOfSimpleTypeUsedException();
         }
+
         return this.node(key, valueWithSimpleType, typeToken);
     }
 
     @Override
     public <T> @NonNull ConfigSectionBuilder node(@NonNull String key,
             @NonNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(nodeBuilder);
+
         var builder = new ConfigNodeBuilderImpl<T>();
         nodeBuilder.accept(builder);
+
         builder.key(key);
+
         this.node(builder);
         return this;
     }
@@ -125,22 +158,31 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     @Override
     public <T> @NonNull ConfigSectionBuilder node(@NonNull TypeToken<T> typeToken,
             @NonNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
+        Objects.requireNonNull(typeToken);
+        Objects.requireNonNull(nodeBuilder);
+
         var builder = new ConfigNodeBuilderImpl<T>();
         nodeBuilder.accept(builder);
+
         builder.typeToken(typeToken);
+
         this.node(builder);
         return this;
     }
 
     @Override
     public <T> @NonNull ConfigSectionBuilder node(@NonNull Consumer<? super ConfigNodeBuilder<T>> nodeBuilder) {
+        Objects.requireNonNull(nodeBuilder);
+
         var builder = new ConfigNodeBuilderImpl<T>();
         nodeBuilder.accept(builder);
+
         this.node(builder);
         return this;
     }
 
     private void node(@NonNull ConfigNodeBuilder<?> nodeBuilder) {
+        Objects.requireNonNull(nodeBuilder);
         this.childNodes.add(nodeBuilder);
     }
 

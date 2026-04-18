@@ -1,3 +1,4 @@
+import com.pixelatedslice.easyconfig.api.EasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFileBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeIterator;
@@ -13,6 +14,7 @@ open module com.pixelatedslice.easyconfig.api {
     uses ConfigSectionBuilder;
     uses ConfigNodeIterator;
     uses ConfigSectionIterator;
+    uses EasyConfig;
 
     exports com.pixelatedslice.easyconfig.api;
     exports com.pixelatedslice.easyconfig.api.config.file;

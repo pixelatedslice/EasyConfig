@@ -22,6 +22,7 @@ public interface ConfigSection
 
     @NonNull
     default ConfigSectionBuilder builderForNested(@NonNull String key) {
+        Objects.requireNonNull(key);
         return builder().key(key).parent(this);
     }
 
@@ -59,6 +60,7 @@ public interface ConfigSection
     @Override
     @NonNull
     default Optional<TypeToken<?>> nodeTypeToken(@NonNull String @NonNull ... providedKeys) {
+        Objects.requireNonNull(providedKeys);
         return (providedKeys.length == 0) ? Optional.empty() : ConfigNodeIterator.findTypeToken(this, providedKeys);
     }
 

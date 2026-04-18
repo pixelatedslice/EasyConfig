@@ -5,6 +5,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 public final class TypeUtils {
     private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER = Map.of(
@@ -23,6 +24,7 @@ public final class TypeUtils {
     }
 
     public static Class<?> primitiveToWrapper(@NonNull Class<?> clazz) {
+        Objects.requireNonNull(clazz);
         return PRIMITIVE_TO_WRAPPER.getOrDefault(clazz, clazz);
     }
 

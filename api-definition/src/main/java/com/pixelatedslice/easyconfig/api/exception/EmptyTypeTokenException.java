@@ -1,7 +1,13 @@
 package com.pixelatedslice.easyconfig.api.exception;
 
+import org.jspecify.annotations.NonNull;
+
+import java.util.Objects;
+
+@SuppressWarnings("unused")
 public final class EmptyTypeTokenException extends RuntimeException {
-    private EmptyTypeTokenException(String message) {
+    private EmptyTypeTokenException(@NonNull String message) {
+        Objects.requireNonNull(message);
         super(message);
     }
 

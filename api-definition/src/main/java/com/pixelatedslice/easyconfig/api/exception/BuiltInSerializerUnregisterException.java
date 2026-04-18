@@ -5,9 +5,11 @@ import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Objects;
 
 public class BuiltInSerializerUnregisterException extends RuntimeException {
     public BuiltInSerializerUnregisterException(@NonNull Collection<? extends @NonNull TypeToken<?>> classes) {
+        Objects.requireNonNull(classes);
         super(message(classes));
     }
 

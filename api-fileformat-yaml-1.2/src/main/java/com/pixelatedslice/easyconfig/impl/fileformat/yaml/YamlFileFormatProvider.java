@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
+import java.util.Objects;
 
 public final class YamlFileFormatProvider implements FileFormatProvider<YamlFileFormat> {
     private static final YamlFileFormat fileFormatInstance = YamlFileFormat.instance();
@@ -50,6 +51,9 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
 
     @Override
     public <C extends ConfigFile> String writeToString(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) {
+        Objects.requireNonNull(easyConfig);
+        Objects.requireNonNull(configFile);
+
         var stringWriter = new StringWriter();
 
         try (var generator = this.factory.createGenerator(ObjectWriteContext.empty(), stringWriter)) {
@@ -62,6 +66,9 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
     @Override
     public <C extends ConfigFile> void save(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile
     ) throws IOException {
+        Objects.requireNonNull(easyConfig);
+        Objects.requireNonNull(configFile);
+
         var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
 
         Files.createDirectories(path.getParent());
@@ -83,6 +90,9 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
     @Override
     public <C extends ConfigFile> void load(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile)
             throws IOException {
+        Objects.requireNonNull(easyConfig);
+        Objects.requireNonNull(configFile);
+
         var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
         if (!Files.exists(path)) {
             throw new IOException("The File does not exist!");
@@ -98,6 +108,9 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
     @Override
     public <C extends ConfigFile> void parseFromString(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile,
             @NonNull String content) throws IOException {
+        Objects.requireNonNull(easyConfig);
+        Objects.requireNonNull(configFile);
+
         try (var parser = this.factory.createParser(ObjectReadContext.empty(), new StringReader(content))) {
             new JacksonTreeReader(parser, easyConfig.serializers()).read(configFile.rootSection());
         }
