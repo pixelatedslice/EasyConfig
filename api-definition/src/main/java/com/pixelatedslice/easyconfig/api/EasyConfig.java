@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.api;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFileFormat;
@@ -10,21 +11,18 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
+@SuppressWarnings("unused")
 public interface EasyConfig {
-    Pattern KEY_REGEX = Pattern.compile("^[a-zA-Z0-9._-]*[a-zA-Z0-9]$");
-    int QUEUE_DRAINED_INITIAL_CAPACITY = 32;
+    @NonNull CopiedEasyConfig copy();
 
-    @NonNull EasyConfig copy();
+    @NonNull Map<@NonNull TypeToken<?>, @NonNull Serializer<?>> serializers();
 
-    @NonNull Map<@NonNull Class<?>, @NonNull Serializer<?>> serializers();
+    <T> @NonNull Optional<@NonNull Serializer<T>> serializer(@NonNull TypeToken<T> clazz);
 
-    <T> @NonNull Optional<@NonNull Serializer<T>> serializer(@NonNull Class<T> clazz);
+    @NonNull EasyConfig registerSerializers(@NonNull Serializer<?> @NonNull ... serializers);
 
-    void registerSerializers(@NonNull Serializer<?> @NonNull ... serializers);
-
-    void unregisterSerializers(@NonNull Class<?> @NonNull ... classes);
+    @NonNull EasyConfig unregisterSerializers(@NonNull TypeToken<?> @NonNull ... classes);
 
     @NonNull Map<@NonNull Class<? extends FileFormat>, @NonNull FileFormatProvider<?>> providers();
 
@@ -32,9 +30,9 @@ public interface EasyConfig {
             @NonNull Class<T> fileFormatClass
     );
 
-    void registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
+    EasyConfig registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
 
-    void unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
+    EasyConfig unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers);
 
     @NonNull CommonFormatProviders commonFormatProviders();
 
@@ -44,7 +42,5 @@ public interface EasyConfig {
         @NonNull Optional<@NonNull FileFormatProvider<TomlFileFormat>> toml();
 
         @NonNull Optional<@NonNull FileFormatProvider<YamlFileFormat>> yaml();
-
-        void reloadFormatProviderInstances();
     }
 }

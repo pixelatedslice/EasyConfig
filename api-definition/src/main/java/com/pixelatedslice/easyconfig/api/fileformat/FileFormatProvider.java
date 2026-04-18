@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.api.fileformat;
 
+import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import org.jspecify.annotations.NonNull;
 
@@ -10,7 +11,7 @@ public interface FileFormatProvider<F extends FileFormat> {
 
     F fileFormatInstance();
 
-    <C extends ConfigFile> void write(@NonNull C configFile) throws IOException;
+    <C extends ConfigFile> void write(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) throws IOException;
 
-    <C extends ConfigFile> void load(@NonNull C configFile) throws IOException;
+    <C extends ConfigFile> void load(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) throws IOException;
 }

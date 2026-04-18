@@ -1,10 +1,12 @@
 package com.pixelatedslice.easyconfig.impl.fileformat.json;
 
 
+import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
 import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFileFormat;
-import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonConfigFile;
+import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeReader;
+import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeWriter;
 import org.jspecify.annotations.NonNull;
 import tools.jackson.core.JsonEncoding;
 import tools.jackson.core.ObjectReadContext;
@@ -52,7 +54,7 @@ public final class JsonFileFormatProvider implements FileFormatProvider<JsonFile
     }
 
     @Override
-    public <C extends ConfigFile> void write(@NonNull C configFile
+    public <C extends ConfigFile> void write(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile
     ) throws IOException {
         var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
 
@@ -67,13 +69,13 @@ public final class JsonFileFormatProvider implements FileFormatProvider<JsonFile
                     outStream,
                     JsonEncoding.UTF8
             )) {
-                JacksonConfigFile.write(generator, configFile);
+                new JacksonTreeWriter(generator, easyConfig.serializers()).write(configFile.rootSection());
             }
         }
     }
 
     @Override
-    public <C extends ConfigFile> void load(@NonNull C configFile)
+    public <C extends ConfigFile> void load(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile)
             throws IOException {
         var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
         if (!Files.exists(path)) {
@@ -82,7 +84,7 @@ public final class JsonFileFormatProvider implements FileFormatProvider<JsonFile
 
         try (var inStream = Files.newInputStream(path)) {
             try (var parser = this.factory.createParser(ObjectReadContext.empty(), inStream)) {
-                JacksonConfigFile.read(parser, configFile);
+                new JacksonTreeReader(parser, easyConfig.serializers()).read(configFile.rootSection());
             }
         }
     }

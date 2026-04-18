@@ -24,9 +24,7 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
 
     @Override
     public void addNodes(@NonNull ConfigNode<?> @NonNull ... nodes) {
-        this.nodeUpdates.add((Collection<@NonNull ConfigNode<?>> list) -> {
-            Collections.addAll(list, nodes);
-        });
+        this.nodeUpdates.add((Collection<@NonNull ConfigNode<?>> list) -> Collections.addAll(list, nodes));
     }
 
     @Override
@@ -62,9 +60,7 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
 
     @Override
     public void addSections(@NonNull ConfigSection @NonNull ... sections) {
-        this.sectionUpdates.add((Collection<@NonNull ConfigSection> list) -> {
-            Collections.addAll(list, sections);
-        });
+        this.sectionUpdates.add((Collection<@NonNull ConfigSection> list) -> Collections.addAll(list, sections));
     }
 
     @Override
@@ -99,7 +95,7 @@ public class MutableConfigSectionImpl extends AbstractMutableAndCommentable impl
     }
 
     @Override
-    public void apply() {
+    public void close() {
         this.originalSection.pushChangesToQueue(this.nodeUpdates, this.sectionUpdates, this.commentUpdates);
     }
 }

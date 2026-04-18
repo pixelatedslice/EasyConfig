@@ -1,113 +1,68 @@
 package com.pixelatedslice.easyconfig.impl.fileformat.common;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.utils.type_token.TypeTokenUtils;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.JsonToken;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
 public final class JacksonReadUtils {
-    private static final TypeToken<BigDecimal> bigDecimalTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<BigInteger> bigIntegerTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<boolean[]> booleanArrayTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<Boolean> booleanTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<byte[]> byteArrayTypeToken = new TypeToken<>() {
-    };
+    private static final Map<TypeToken<?>, TypeReader> FLAT_REGISTRY = new HashMap<>();
+    private static final Map<Class<?>, TypeTokenTypeReader> TYPE_TOKEN_REGISTRY = new HashMap<>();
     private static final TypeToken<Collection<?>> collectionTypeToken = new TypeToken<>() {
     };
-    private static final TypeToken<Deque<?>> dequeTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<double[]> doubleArrayTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<Double> doubleTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<float[]> floatArrayTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<Float> floatTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<int[]> integerArrayTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<Integer> integerTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<List<?>> listTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<long[]> longArrayTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<Long> longTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<Object[]> objectArrayTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<Set<?>> setTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<short[]> shortArrayTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<Short> shortTypeToken = new TypeToken<>() {
-    };
-    private static final TypeToken<String> stringTypeToken = new TypeToken<>() {
-    };
+
+    static {
+        // Register Primitives
+        FLAT_REGISTRY.put(TypeToken.of(BigDecimal.class), JsonParser::getDecimalValue);
+        FLAT_REGISTRY.put(TypeToken.of(BigInteger.class), JsonParser::getBigIntegerValue);
+        FLAT_REGISTRY.put(TypeToken.of(boolean[].class), JacksonReadUtils::readBooleanArray);
+        FLAT_REGISTRY.put(TypeToken.of(Boolean.class), JsonParser::getBooleanValue);
+        FLAT_REGISTRY.put(TypeToken.of(byte[].class), JsonParser::getBinaryValue);
+        TYPE_TOKEN_REGISTRY.put(Deque.class, JacksonReadUtils::readDeque);
+        FLAT_REGISTRY.put(TypeToken.of(double[].class), JacksonReadUtils::readDoubleArray);
+        FLAT_REGISTRY.put(TypeToken.of(Double.class), JsonParser::getDoubleValue);
+        FLAT_REGISTRY.put(TypeToken.of(float[].class), JacksonReadUtils::readFloatArray);
+        FLAT_REGISTRY.put(TypeToken.of(Float.class), JsonParser::getFloatValue);
+        FLAT_REGISTRY.put(TypeToken.of(int[].class), JacksonReadUtils::readIntArray);
+        FLAT_REGISTRY.put(TypeToken.of(Integer.class), JsonParser::getIntValue);
+        TYPE_TOKEN_REGISTRY.put(List.class, JacksonReadUtils::readList);
+        FLAT_REGISTRY.put(TypeToken.of(long[].class), JacksonReadUtils::readLongArray);
+        FLAT_REGISTRY.put(TypeToken.of(Long.class), JsonParser::getLongValue);
+        TYPE_TOKEN_REGISTRY.put(Object[].class, JacksonReadUtils::readArray);
+        TYPE_TOKEN_REGISTRY.put(Set.class, JacksonReadUtils::readSet);
+        FLAT_REGISTRY.put(TypeToken.of(short[].class), JacksonReadUtils::readShortArray);
+        FLAT_REGISTRY.put(TypeToken.of(Short.class), JsonParser::getShortValue);
+        FLAT_REGISTRY.put(TypeToken.of(String.class), JsonParser::getString);
+    }
 
     private JacksonReadUtils() {
     }
 
-    // Ugly but couldn't think of a different way
-    // TODO: Improve
     @SuppressWarnings("unchecked")
-    public static <T> @Nullable T read(@NonNull JsonParser parser, TypeToken<T> expectedType) {
+    public static <T> @Nullable T read(@NonNull JsonParser parser, TypeToken<T> expectedType) throws IOException {
         if (parser.currentToken() == JsonToken.VALUE_NULL) {
             return null;
-        } else if (TypeTokenUtils.matches(expectedType, stringTypeToken)) {
-            return (T) parser.getString();
-        } else if (objectArrayTypeToken.isSupertypeOf(expectedType)
-        ) {
-            return (T) readArray(parser, Objects.requireNonNull(expectedType.getComponentType()));
-        } else if (collectionTypeToken.isSupertypeOf(expectedType)) {
-            var typeArg = expectedType.resolveType(Collection.class.getTypeParameters()[0]);
-            if (listTypeToken.isSupertypeOf(expectedType)) {
-                return (T) readList(parser, typeArg);
-            } else if (setTypeToken.isSupertypeOf(expectedType)) {
-                return (T) readSet(parser, typeArg);
-            } else if (dequeTypeToken.isSupertypeOf(expectedType)) {
-                return (T) readDeque(parser, typeArg);
+        }
+
+        var reader = FLAT_REGISTRY.get(expectedType);
+        if (reader != null) {
+            return (T) reader.read(parser);
+        }
+
+        var ttReader = TYPE_TOKEN_REGISTRY.get(expectedType.getRawType());
+        if (ttReader != null) {
+            if (collectionTypeToken.isSupertypeOf(expectedType)) {
+                TypeToken<?> componentType = expectedType.resolveType(Collection.class.getTypeParameters()[0]);
+                return (T) ttReader.read(parser, componentType);
             }
-        } else if (TypeTokenUtils.matches(expectedType, booleanTypeToken)) {
-            return (T) (Object) parser.getBooleanValue();
-        } else if (TypeTokenUtils.matches(expectedType, booleanArrayTypeToken)) {
-            return (T) readBooleanArray(parser);
-        } else if (TypeTokenUtils.matches(expectedType, shortTypeToken)) {
-            return (T) (Object) parser.getShortValue();
-        } else if (TypeTokenUtils.matches(expectedType, shortArrayTypeToken)) {
-            return (T) readShortArray(parser);
-        } else if (TypeTokenUtils.matches(expectedType, integerTypeToken)) {
-            return (T) (Object) parser.getIntValue();
-        } else if (TypeTokenUtils.matches(expectedType, integerArrayTypeToken)) {
-            return (T) readIntArray(parser);
-        } else if (TypeTokenUtils.matches(expectedType, longTypeToken)) {
-            return (T) (Object) parser.getLongValue();
-        } else if (TypeTokenUtils.matches(expectedType, longArrayTypeToken)) {
-            return (T) readLongArray(parser);
-        } else if (TypeTokenUtils.matches(expectedType, bigIntegerTypeToken)) {
-            return (T) parser.getBigIntegerValue();
-        } else if (TypeTokenUtils.matches(expectedType, doubleTypeToken)) {
-            return (T) (Object) parser.getDoubleValue();
-        } else if (TypeTokenUtils.matches(expectedType, doubleArrayTypeToken)) {
-            return (T) readDoubleArray(parser);
-        } else if (TypeTokenUtils.matches(expectedType, floatTypeToken)) {
-            return (T) (Object) parser.getFloatValue();
-        } else if (TypeTokenUtils.matches(expectedType, floatArrayTypeToken)) {
-            return (T) readFloatArray(parser);
-        } else if (TypeTokenUtils.matches(expectedType, bigDecimalTypeToken)) {
-            return (T) parser.getDecimalValue();
-        } else if (TypeTokenUtils.matches(expectedType, byteArrayTypeToken)) {
-            return (T) parser.getBinaryValue();
+
+            return (T) ttReader.read(parser, expectedType.getComponentType());
         }
 
         throw new IllegalStateException("Value with unexpected type: " + expectedType);
@@ -116,21 +71,21 @@ public final class JacksonReadUtils {
     private static <T> @NonNull List<?> readList(
             @NonNull JsonParser parser,
             @NonNull TypeToken<? extends T> expectedType
-    ) {
+    ) throws IOException {
         return new ArrayList<>(Arrays.asList(readArray(parser, expectedType)));
     }
 
     private static <T> @NonNull Set<?> readSet(
             @NonNull JsonParser parser,
             @NonNull TypeToken<? extends T> expectedType
-    ) {
+    ) throws IOException {
         return new HashSet<>(Arrays.asList(readArray(parser, expectedType)));
     }
 
     private static <T> @NonNull Deque<?> readDeque(
             @NonNull JsonParser parser,
             @NonNull TypeToken<? extends T> expectedType
-    ) {
+    ) throws IOException {
         return new ArrayDeque<>(Arrays.asList(readArray(parser, expectedType)));
     }
 
@@ -138,7 +93,7 @@ public final class JacksonReadUtils {
     private static <T> @NonNull T @NonNull [] readArray(
             @NonNull JsonParser parser,
             @NonNull TypeToken<? extends T> expectedType
-    ) {
+    ) throws IOException {
         var list = new ArrayList<T>();
         while (parser.nextToken() != JsonToken.END_ARRAY) {
             list.add(read(parser, expectedType));
@@ -151,7 +106,7 @@ public final class JacksonReadUtils {
     private static boolean @NonNull [] readBooleanArray(@NonNull JsonParser parser) {
         var list = new ArrayList<Boolean>();
         while (parser.nextToken() != JsonToken.END_ARRAY) {
-            list.add(read(parser, booleanTypeToken));
+            list.add(parser.getBooleanValue());
         }
 
         var size = list.size();
@@ -167,7 +122,7 @@ public final class JacksonReadUtils {
     private static short @NonNull [] readShortArray(@NonNull JsonParser parser) {
         var list = new ArrayList<Short>();
         while (parser.nextToken() != JsonToken.END_ARRAY) {
-            list.add(read(parser, shortTypeToken));
+            list.add(parser.getShortValue());
         }
 
         var size = list.size();
@@ -183,7 +138,7 @@ public final class JacksonReadUtils {
     private static int @NonNull [] readIntArray(@NonNull JsonParser parser) {
         var list = new ArrayList<Integer>();
         while (parser.nextToken() != JsonToken.END_ARRAY) {
-            list.add(read(parser, integerTypeToken));
+            list.add(parser.getIntValue());
         }
 
         var size = list.size();
@@ -199,7 +154,7 @@ public final class JacksonReadUtils {
     private static long @NonNull [] readLongArray(@NonNull JsonParser parser) {
         var list = new ArrayList<Long>();
         while (parser.nextToken() != JsonToken.END_ARRAY) {
-            list.add(read(parser, longTypeToken));
+            list.add(parser.getLongValue());
         }
 
         var size = list.size();
@@ -215,7 +170,7 @@ public final class JacksonReadUtils {
     private static double @NonNull [] readDoubleArray(@NonNull JsonParser parser) {
         var list = new ArrayList<Double>();
         while (parser.nextToken() != JsonToken.END_ARRAY) {
-            list.add(read(parser, doubleTypeToken));
+            list.add(parser.getDoubleValue());
         }
 
         var size = list.size();
@@ -231,7 +186,7 @@ public final class JacksonReadUtils {
     private static float @NonNull [] readFloatArray(@NonNull JsonParser parser) {
         var list = new ArrayList<Float>();
         while (parser.nextToken() != JsonToken.END_ARRAY) {
-            list.add(read(parser, floatTypeToken));
+            list.add(parser.getFloatValue());
         }
 
         var size = list.size();
@@ -242,5 +197,15 @@ public final class JacksonReadUtils {
         }
 
         return arr;
+    }
+
+    @FunctionalInterface
+    private interface TypeReader {
+        Object read(JsonParser parser) throws IOException;
+    }
+
+    @FunctionalInterface
+    private interface TypeTokenTypeReader {
+        <T> Object read(JsonParser parser, TypeToken<T> expectedType) throws IOException;
     }
 }

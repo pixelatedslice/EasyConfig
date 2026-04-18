@@ -77,8 +77,8 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
     }
 
     @Override
-    public @NonNull Optional<? extends @NonNull ConfigSection> parent() {
-        return Optional.ofNullable(this.parent);
+    public @NonNull ConfigSection parent() {
+        return this.parent;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
         return (this == o)
                 || ((o instanceof ConfigNode<?> that)
                 && this.key.equals(that.key())
-                && this.parent.equals(that.parent().orElse(null))
+                && this.parent.equals(that.parent())
         );
 
     }

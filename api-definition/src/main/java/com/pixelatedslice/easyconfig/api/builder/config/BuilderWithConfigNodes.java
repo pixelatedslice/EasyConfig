@@ -3,6 +3,7 @@ package com.pixelatedslice.easyconfig.api.builder.config;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -17,7 +18,9 @@ public interface BuilderWithConfigNodes {
 
     <T> @NonNull BuilderWithConfigNodes node(@NonNull String key, @NonNull Class<T> simpleType);
 
-    <T> @NonNull BuilderWithConfigNodes node(@NonNull String key, @NonNull T value, @NonNull TypeToken<T> typeToken);
+    <T> @NonNull BuilderWithConfigNodes node(@NonNull String key, @Nullable T value, @NonNull TypeToken<T> typeToken);
+
+    <T> @NonNull BuilderWithConfigNodes node(@NonNull String key, @Nullable T value, @NonNull Class<T> simpleType);
 
     <T> @NonNull BuilderWithConfigNodes node(@NonNull String key, @NonNull T valueWithSimpleType);
 

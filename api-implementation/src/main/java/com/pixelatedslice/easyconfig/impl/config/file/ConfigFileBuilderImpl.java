@@ -2,6 +2,7 @@ package com.pixelatedslice.easyconfig.impl.config.file;
 
 import com.google.auto.service.AutoService;
 import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.builder.config.BuilderWithConfigNodes;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFileBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
@@ -15,6 +16,7 @@ import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.section.ConfigSectionBuilderImpl;
 import com.pixelatedslice.easyconfig.impl.config.section.ConfigSectionImpl;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -74,9 +76,22 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
     }
 
     @Override
-    public <T> @NonNull ConfigFileBuilder node(@NonNull String key, @NonNull T value, @NonNull TypeToken<T> typeToken) {
+    public <T> @NonNull ConfigFileBuilder node(@NonNull String key, @Nullable T value,
+            @NonNull TypeToken<T> typeToken) {
         this.nodes.add(new ConfigNodeImpl<>(key, typeToken, value, null, this.rootSection, new ArrayList<>()));
         return this;
+    }
+
+    @Override
+    public @NonNull <T> BuilderWithConfigNodes node(@NonNull String key, @Nullable T value,
+            @NonNull Class<T> simpleType) {
+        var typeToken = TypeToken.of(simpleType);
+
+        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
+            throw new ComplexInsteadOfSimpleTypeUsedException();
+        }
+
+        return this.node(key, value, typeToken);
     }
 
     @Override

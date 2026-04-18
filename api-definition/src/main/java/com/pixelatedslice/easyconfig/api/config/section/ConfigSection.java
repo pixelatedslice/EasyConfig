@@ -20,6 +20,11 @@ public interface ConfigSection
         return ServiceLoader.load(ConfigSectionBuilder.class).findFirst().orElseThrow();
     }
 
+    @NonNull
+    default ConfigSectionBuilder builderForNested(@NonNull String key) {
+        return builder().key(key).parent(this);
+    }
+
     @NonNull String key();
 
     @NonNull Optional<@NonNull ConfigSection> parent();

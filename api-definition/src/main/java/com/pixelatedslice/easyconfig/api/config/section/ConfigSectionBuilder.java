@@ -6,6 +6,7 @@ import com.pixelatedslice.easyconfig.api.builder.config.BuilderWithConfigSection
 import com.pixelatedslice.easyconfig.api.comments.BuilderWithComments;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -28,7 +29,10 @@ public interface ConfigSectionBuilder extends BuilderWithConfigNodes, BuilderWit
     @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @NonNull Class<T> simpleType);
 
     @Override
-    @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @NonNull T value, @NonNull TypeToken<T> typeToken);
+    @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @Nullable T value, @NonNull TypeToken<T> typeToken);
+
+    @Override
+    @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @Nullable T value, @NonNull Class<T> simpleType);
 
     @Override
     @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @NonNull T valueWithSimpleType);

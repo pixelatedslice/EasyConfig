@@ -22,7 +22,7 @@ public class BuiltInSerializerOverrideException extends RuntimeException {
         builder.append("Tried overriding the serializers for the classes:\n");
         builder.append("- Format: Class: Built-in Serializer -> Overriding Serializer\n");
         serializers.forEach((builtinSerializer, overridingSerializer) -> builder.append(String.format(FORMAT,
-                builtinSerializer.forClass().getName(),
+                builtinSerializer.forType().getType(),
                 builtinSerializer.getClass().getSimpleName(),
                 overridingSerializer.getClass().getSimpleName())));
         return builder.toString();

@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService(ConfigNodeBuilder.class)
 public class ConfigNodeBuilderImpl<T> implements ConfigNodeBuilder<T> {
     private final List<String> comments = new ArrayList<>();
@@ -53,7 +53,6 @@ public class ConfigNodeBuilderImpl<T> implements ConfigNodeBuilder<T> {
 
     @Override
     public @NonNull ConfigNodeBuilder<T> value(@Nullable T value) {
-        Objects.requireNonNull(value);
         this.value = value;
         return this;
     }

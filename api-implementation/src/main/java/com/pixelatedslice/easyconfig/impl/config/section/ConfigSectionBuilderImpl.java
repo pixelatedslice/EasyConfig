@@ -9,6 +9,7 @@ import com.pixelatedslice.easyconfig.api.exception.ComplexInsteadOfSimpleTypeUse
 import com.pixelatedslice.easyconfig.api.utils.type_token.TypeTokenUtils;
 import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeBuilderImpl;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -83,19 +84,32 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     }
 
     @Override
-    public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @NonNull T value,
+    public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @Nullable T value,
             @NonNull TypeToken<T> typeToken) {
         this.node(new ConfigNodeBuilderImpl<T>().key(key).value(value).typeToken(typeToken));
         return this;
     }
 
     @Override
-    public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @NonNull T valueWithSimpleType) {
-        var typeToken = TypeToken.of(valueWithSimpleType.getClass());
+    public @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @Nullable T value,
+            @NonNull Class<T> simpleType) {
+        var typeToken = TypeToken.of(simpleType);
+
         if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
             throw new ComplexInsteadOfSimpleTypeUsedException();
         }
-        return this.node(key, typeToken);
+
+        return this.node(key, value, typeToken);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> @NonNull ConfigSectionBuilder node(@NonNull String key, @NonNull T valueWithSimpleType) {
+        TypeToken<T> typeToken = TypeToken.of((Class<T>) valueWithSimpleType.getClass());
+        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
+            throw new ComplexInsteadOfSimpleTypeUsedException();
+        }
+        return this.node(key, valueWithSimpleType, typeToken);
     }
 
     @Override

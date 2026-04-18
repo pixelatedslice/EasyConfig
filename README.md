@@ -84,19 +84,13 @@ ConfigSection section = myConfig.section("my", "cool", "section");
 
 ```java
 try(MutableConfigSection mutable = section.mutable()){ // Implements AutoClosable, recommended usage
-        mutable.
-
-addNode(myNode);
+        mutable.addNode(myNode);
 }
 
 // Alternate way
 var mutable = section.mutable();
-mutable.
-
-addNode(myNode);
-mutable.
-
-close(); // recommended since otherwise the IDE will warn you, could also call .apply
+mutable.addNode(myNode);
+mutable.close();
 ```
 
 </details>

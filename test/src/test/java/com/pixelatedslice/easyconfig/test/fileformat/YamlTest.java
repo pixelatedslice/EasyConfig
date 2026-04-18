@@ -1,4 +1,4 @@
-package com.pixelatedslice.easyconfig.test;
+package com.pixelatedslice.easyconfig.test.fileformat;
 
 import com.pixelatedslice.easyconfig.impl.fileformat.yaml.YamlFileFormatProvider;
 import org.junit.jupiter.api.Test;
@@ -18,10 +18,10 @@ public final class YamlTest extends FileFormatTest {
         System.out.println(this.pathWithExtension);
 
         if (!Files.exists(this.pathWithExtension)) {
-            this.fileFormatProvider.write(this.file);
+            this.fileFormatProvider.write(this.easyConfig, this.file);
         }
 
-        this.fileFormatProvider.load(this.file);
+        this.fileFormatProvider.load(this.easyConfig, this.file);
         this.outputAllFields();
     }
 }

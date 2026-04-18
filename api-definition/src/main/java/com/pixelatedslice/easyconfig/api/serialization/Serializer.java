@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
 import com.pixelatedslice.easyconfig.api.serialization.builtin.BuiltInSerializer;
@@ -11,7 +12,7 @@ public interface Serializer<T> {
         return serializer instanceof BuiltInSerializer<T>;
     }
 
-    @NonNull Class<@NonNull T> forClass();
+    @NonNull TypeToken<@NonNull T> forType();
 
     void serialize(@Nullable T value, @NonNull ConfigSectionBuilder sectionBuilder);
 

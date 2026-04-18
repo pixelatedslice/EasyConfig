@@ -29,18 +29,16 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
 
     @Override
     public void serialize(@Nullable Location value, @NonNull ConfigSectionBuilder sectionBuilder) {
-        if (value == null) {
-            return;
-        }
-
-        if (value.getWorld() != null) {
-            sectionBuilder.node("world", value.getWorld().getName(), TypeToken.of(String.class));
-        }
-        sectionBuilder.node("x", value.getX());
-        sectionBuilder.node("y", value.getY());
-        sectionBuilder.node("z", value.getZ());
-        sectionBuilder.node("yaw", value.getYaw());
-        sectionBuilder.node("pitch", value.getPitch());
+        sectionBuilder.node(
+                "world",
+                ((value != null) && (value.getWorld() != null)) ? value.getWorld().getName() : null,
+                String.class
+        );
+        sectionBuilder.node("x", (value != null) ? value.getX() : null, Double.class);
+        sectionBuilder.node("y", (value != null) ? value.getY() : null, Double.class);
+        sectionBuilder.node("z", (value != null) ? value.getZ() : null, Double.class);
+        sectionBuilder.node("yaw", (value != null) ? value.getYaw() : null, Float.class);
+        sectionBuilder.node("pitch", (value != null) ? value.getPitch() : null, Float.class);
     }
 
     @Override
@@ -69,7 +67,8 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
 
     @Override
     @NonNull
-    public Class<Location> forClass() {
-        return Location.class;
+    public TypeToken<Location> forType() {
+        return new TypeToken<>() {
+        };
     }
 }

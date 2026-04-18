@@ -6,6 +6,7 @@ open module com.pixelatedslice.easyconfig.impl.fileformat.toml {
     requires jdk.compiler;
     requires tools.jackson.dataformat.toml;
     requires tools.jackson.core;
+    requires com.pixelatedslice.easyconfig.impl;
 
     exports com.pixelatedslice.easyconfig.impl.fileformat.toml;
 }

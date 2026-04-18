@@ -1,0 +1,60 @@
+package com.pixelatedslice.easyconfig.impl.fileformat.common;
+
+import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
+import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
+import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
+import com.pixelatedslice.easyconfig.api.serialization.Serializer;
+import org.jspecify.annotations.NonNull;
+import tools.jackson.core.JsonGenerator;
+
+import java.util.Map;
+
+public class JacksonTreeWriter {
+    private final @NonNull JsonGenerator generator;
+    private final @NonNull Map<@NonNull TypeToken<?>, @NonNull Serializer<?>> serializers;
+
+    public JacksonTreeWriter(@NonNull JsonGenerator generator,
+            @NonNull Map<@NonNull TypeToken<?>, @NonNull Serializer<?>> serializers) {
+        this.generator = generator;
+        this.serializers = serializers;
+    }
+
+    public void write(@NonNull ConfigSection root) {
+        this.generator.writeStartObject();
+        this.writeSectionContent(root);
+        this.generator.writeEndObject();
+    }
+
+    private void writeSectionContent(@NonNull ConfigSection section) {
+        for (ConfigSection nested : section.sections()) {
+            this.generator.writeName(nested.key());
+            this.generator.writeStartObject();
+            this.writeSectionContent(nested);
+            this.generator.writeEndObject();
+        }
+
+        for (ConfigNode<?> node : section.nodes()) {
+            this.generator.writeName(node.key());
+            Object value = node.valueOrDefault().orElse(null);
+
+            if (value == null) {
+                this.generator.writeNull();
+                continue;
+            }
+
+            @SuppressWarnings("unchecked")
+            Serializer<Object> serializer = (Serializer<Object>) this.serializers.get(node.typeToken());
+            if (serializer != null) {
+                ConfigSectionBuilder tempBuilder = node.parent().builderForNested(node.key());
+                serializer.serialize(value, tempBuilder);
+
+                this.generator.writeStartObject();
+                this.writeSectionContent(tempBuilder.build());
+                this.generator.writeEndObject();
+            } else {
+                JacksonWriteUtils.write(this.generator, value);
+            }
+        }
+    }
+}

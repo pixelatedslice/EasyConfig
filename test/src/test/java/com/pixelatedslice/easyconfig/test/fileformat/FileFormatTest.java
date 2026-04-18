@@ -1,23 +1,31 @@
-package com.pixelatedslice.easyconfig.test;
+package com.pixelatedslice.easyconfig.test.fileformat;
 
 import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.builder.config.BuilderWithConfigNodes;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
+import com.pixelatedslice.easyconfig.impl.EasyConfigImpl;
+import com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit.LocationSerializerImpl;
 
 import java.nio.file.Path;
 import java.util.List;
 
 public abstract class FileFormatTest {
     protected final FileFormatProvider<?> fileFormatProvider;
+    protected final CopiedEasyConfig easyConfig = EasyConfigImpl.instance().copy();
 
     protected final ConfigFile file = ConfigFile.builder().filePath(Path.of("test"))
-            .node("names", new TypeToken<>() {
-            }, (ConfigNodeBuilder<List<String>> b) -> {
-                b.defaultValue(List.of("Josh Robertson", "Stefan Mark", "Kevin James"));
-            })
+            .node("names",
+                    new TypeToken<>() {
+                    },
+                    (ConfigNodeBuilder<List<String>> b) -> b.defaultValue(List.of(
+                            "Josh Robertson",
+                            "Stefan Mark",
+                            "Kevin James"
+                    )))
             .section("database", (BuilderWithConfigNodes b) -> {
                 b.node("username", String.class, (ConfigNodeBuilder<String> nb) -> nb.defaultValue("admin"));
                 b.node("password", String.class, (ConfigNodeBuilder<String> nb) -> nb.defaultValue("admin"));
@@ -32,6 +40,7 @@ public abstract class FileFormatTest {
         this.fileFormatProvider = fileFormatProvider;
         this.pathWithExtension = this.fileFormatProvider
                 .fileFormatInstance().pathWithExtension(this.file.filePathWithoutExtension());
+        this.easyConfig.registerSerializers(LocationSerializerImpl.instance());
     }
 
     protected void outputAllFields() {
