@@ -11,7 +11,15 @@ public interface FileFormatProvider<F extends FileFormat> {
 
     F fileFormatInstance();
 
-    <C extends ConfigFile> void write(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) throws IOException;
+    <C extends ConfigFile> void save(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) throws IOException;
 
     <C extends ConfigFile> void load(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) throws IOException;
+
+    <C extends ConfigFile> String writeToString(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile);
+
+    <C extends ConfigFile> void parseFromString(
+            @NonNull CopiedEasyConfig easyConfig,
+            @NonNull C configFile,
+            @NonNull String content
+    ) throws IOException;
 }

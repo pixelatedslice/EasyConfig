@@ -18,10 +18,23 @@ public final class JsonTest extends FileFormatTest {
         System.out.println(this.pathWithExtension);
 
         if (!Files.exists(this.pathWithExtension)) {
-            this.fileFormatProvider.write(this.easyConfig, this.file);
+            this.fileFormatProvider.save(this.easyConfig, this.file);
         }
 
         this.fileFormatProvider.load(this.easyConfig, this.file);
+        this.outputAllFields();
+    }
+
+    @Test
+    void stringTest() throws IOException {
+        this.outputAllFields();
+
+        var content = this.fileFormatProvider.writeToString(this.easyConfig, this.file);
+        System.out.println(content);
+        content = content.replace("admin", "nomen");
+
+        this.fileFormatProvider.parseFromString(this.easyConfig, this.file, content);
+
         this.outputAllFields();
     }
 }

@@ -13,6 +13,8 @@ import tools.jackson.core.ObjectWriteContext;
 import tools.jackson.dataformat.yaml.YAMLFactory;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.file.Files;
 
 public final class YamlFileFormatProvider implements FileFormatProvider<YamlFileFormat> {
@@ -45,8 +47,20 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
         return fileFormatInstance;
     }
 
+
     @Override
-    public <C extends ConfigFile> void write(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile
+    public <C extends ConfigFile> String writeToString(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) {
+        var stringWriter = new StringWriter();
+
+        try (var generator = this.factory.createGenerator(ObjectWriteContext.empty(), stringWriter)) {
+            new JacksonTreeWriter(generator, easyConfig.serializers()).write(configFile.rootSection());
+        }
+
+        return stringWriter.toString();
+    }
+
+    @Override
+    public <C extends ConfigFile> void save(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile
     ) throws IOException {
         var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
 
@@ -78,6 +92,14 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
             try (var parser = this.factory.createParser(ObjectReadContext.empty(), inStream)) {
                 new JacksonTreeReader(parser, easyConfig.serializers()).read(configFile.rootSection());
             }
+        }
+    }
+
+    @Override
+    public <C extends ConfigFile> void parseFromString(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile,
+            @NonNull String content) throws IOException {
+        try (var parser = this.factory.createParser(ObjectReadContext.empty(), new StringReader(content))) {
+            new JacksonTreeReader(parser, easyConfig.serializers()).read(configFile.rootSection());
         }
     }
 }

@@ -42,7 +42,7 @@ public class TestLocationSerializerImpl {
 
         System.out.println(this.file);
 
-        YamlFileFormatProvider.instance().write(this.ec, this.file);
+        YamlFileFormatProvider.instance().save(this.ec, this.file);
     }
 
     @Test
