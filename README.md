@@ -133,19 +133,71 @@ ConfigNode node = myConfig.section("my", "cool", "section").<String>node("node")
 
 ```java
 try(MutableConfigNode mutable = node.mutable()){ // Implements AutoClosable, recommended usage
-        mutable.
-
-setValue("Good day");
+        mutable.setValue("Good day");
 }
 
 // Alternate way
 var mutable = node.mutable();
-mutable.
+mutable.setValue("Good day");
+mutable.close();
+```
 
-setValue("Good day");
-mutable.
+</details>
 
-close(); // recommended since otherwise the IDE will warn you, could also call .apply
+<details>
+<summary>Write a file to disk</summary>
+
+[Also see FileFormatProvider](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/fileformat/FileFormatProvider.java)
+
+```java
+CopiedEasyConfig easyConfig = EasyConfig.instance().copy();
+ConfigFile myConfig = new ConfigFile.builder()
+        .node(" location", builder -> {
+          builder.type(Location.class);
+          builder.serializer(LocationSerializer.instance()); // Built-in serializers are singletons
+          builder.defaultValue(new Location(x, y, z));
+        })
+        .node("names", builder -> {
+          // Example: Map<String, Integer> becomes .type(Map.class, String.class, Integer.class)
+          builder.type(new TypeToken<List<String>>() {
+          });
+        })
+        .section("identity", builder -> {
+          builder.node("name", String.class);
+          builder.node("age", Integer.class);
+        })
+        .build();
+
+easyConfig.provider(YamlFileFormat.class).save(easyConfig, myConfig);
+```
+
+</details>
+
+<details>
+<summary>Read a file from disk</summary>
+
+[Also see FileFormatProvider](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/fileformat/FileFormatProvider.java)
+
+```java
+CopiedEasyConfig easyConfig = EasyConfig.instance().copy();
+ConfigFile myConfig = new ConfigFile.builder()
+        .node(" location", builder -> {
+          builder.type(Location.class);
+          builder.serializer(LocationSerializer.instance()); // Built-in serializers are singletons
+          builder.defaultValue(new Location(x, y, z));
+        })
+        .node("names", builder -> {
+          // Example: Map<String, Integer> becomes .type(Map.class, String.class, Integer.class)
+          builder.type(new TypeToken<List<String>>() {
+          });
+        })
+        .section("identity", builder -> {
+          builder.node("name", String.class);
+          builder.node("age", Integer.class);
+        })
+        .build();
+
+easyConfig.provider(YamlFileFormat.class).load(easyConfig, myConfig); // This populates the myConfig variable.
 ```
 
 </details>
