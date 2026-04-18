@@ -10,6 +10,8 @@ Easy Config is a Java library designed to bridge the gap between your code and c
 TypeToken, it ensures that every piece of data you load is exactly the type you expect, even for complex generic
 structures like List<Map<String, Integer>>.
 
+**Note**: Comments are implemented on Nodes and Sections, but Jackson doesn't allow writing comments to files.
+
 <details>
 <summary>Licenses used</summary>
 - Apache-2.0:
@@ -27,7 +29,7 @@ structures like List<Map<String, Integer>>.
 ## Why use it?
 
 - Leveraging Guava's TypeToken for True Type-Safety.
-- Out-of-the-box support for YAML, JSON, TOML, and HOCON.
+- Out-of-the-box support for YAML, JSON and TOML.
 - Fluent builder-based API that lets you define your configuration structure directly in code.
 - Extensible-first design to allow custom serializers, new file formats, or even a completely new backend.
 
