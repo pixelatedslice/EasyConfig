@@ -51,11 +51,11 @@ public final class SpawnRuleSerializerImpl implements BuiltInBukkitSerializer<Sp
                 .flatMap(ConfigNode::value)
                 .orElse(0);
         var minSkyLight = section
-                .node(int.class, "minBlockLight")
+                .node(int.class, "minSkyLight")
                 .flatMap(ConfigNode::value)
                 .orElse(0);
         var maxSkyLight = section
-                .node(int.class, "maxBlockLight")
+                .node(int.class, "maxSkyLight")
                 .flatMap(ConfigNode::value)
                 .orElse(0);
 
