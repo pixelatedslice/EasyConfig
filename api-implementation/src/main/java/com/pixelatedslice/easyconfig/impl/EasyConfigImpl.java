@@ -7,11 +7,11 @@ import com.pixelatedslice.easyconfig.api.EasyConfig;
 import com.pixelatedslice.easyconfig.api.exception.BuiltInSerializerOverrideException;
 import com.pixelatedslice.easyconfig.api.exception.BuiltInSerializerUnregisterException;
 import com.pixelatedslice.easyconfig.api.exception.ModificationOfNonCopiedEasyConfigInstanceException;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFileFormat;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFileFormat;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFileFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.Format;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFormat;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
 
@@ -21,7 +21,7 @@ import java.util.*;
 public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfigImpl {
     private static volatile EasyConfigImpl INSTANCE;
     private final CommonFormatProviders commonFormatProviders;
-    private final Map<Class<? extends FileFormat>, FileFormatProvider<?>> providers;
+    private final Map<Class<? extends Format>, FileFormatProvider<?>> providers;
     private final Map<TypeToken<?>, Serializer<?>> serializers;
 
     protected EasyConfigImpl() {
@@ -31,7 +31,7 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
     }
 
     protected EasyConfigImpl(
-            @NonNull Map<@NonNull Class<? extends FileFormat>, @NonNull FileFormatProvider<?>> providers,
+            @NonNull Map<@NonNull Class<? extends Format>, @NonNull FileFormatProvider<?>> providers,
             @NonNull Map<@NonNull TypeToken<?>, @NonNull Serializer<?>> serializers
     ) {
         Objects.requireNonNull(providers);
@@ -151,24 +151,24 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
 
     @Override
     @NonNull
-    public Map<@NonNull Class<? extends FileFormat>, @NonNull FileFormatProvider<?>> providers() {
+    public Map<@NonNull Class<? extends Format>, @NonNull FileFormatProvider<?>> providers() {
         return Collections.unmodifiableMap(this.providers);
     }
 
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends FileFormat> @NonNull Optional<@NonNull FileFormatProvider<T>> provider(
-            @NonNull Class<T> fileFormatClass
+    public <T extends Format> @NonNull Optional<@NonNull FileFormatProvider<T>> provider(
+            @NonNull Class<T> formatClass
     ) {
-        Objects.requireNonNull(fileFormatClass);
+        Objects.requireNonNull(formatClass);
 
-        var found = this.providers.get(Objects.requireNonNull(fileFormatClass));
+        var found = this.providers.get(Objects.requireNonNull(formatClass));
         if (found == null) {
             return Optional.empty();
         }
 
-        return found.fileFormatClass().equals(fileFormatClass)
+        return found.formatClass().equals(formatClass)
                 ? Optional.of((FileFormatProvider<T>) found)
                 : Optional.empty();
 
@@ -181,9 +181,9 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
 
         Objects.requireNonNull(providers);
 
-        var map = new HashMap<Class<? extends FileFormat>, FileFormatProvider<?>>();
+        var map = new HashMap<Class<? extends Format>, FileFormatProvider<?>>();
         for (FileFormatProvider<?> provider : providers) {
-            map.put(provider.fileFormatClass(), provider);
+            map.put(provider.formatClass(), provider);
         }
         this.providers.putAll(map);
     }
@@ -197,7 +197,7 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         Objects.requireNonNull(providers);
 
         for (FileFormatProvider<?> provider : providers) {
-            this.providers.remove(provider.fileFormatClass());
+            this.providers.remove(provider.formatClass());
         }
     }
 
@@ -214,18 +214,18 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         }
 
         @Override
-        public @NonNull Optional<@NonNull FileFormatProvider<JsonFileFormat>> json() {
-            return this.easyConfig.provider(JsonFileFormat.class);
+        public @NonNull Optional<@NonNull FileFormatProvider<JsonFormat>> json() {
+            return this.easyConfig.provider(JsonFormat.class);
         }
 
         @Override
-        public @NonNull Optional<@NonNull FileFormatProvider<TomlFileFormat>> toml() {
-            return this.easyConfig.provider(TomlFileFormat.class);
+        public @NonNull Optional<@NonNull FileFormatProvider<TomlFormat>> toml() {
+            return this.easyConfig.provider(TomlFormat.class);
         }
 
         @Override
-        public @NonNull Optional<@NonNull FileFormatProvider<YamlFileFormat>> yaml() {
-            return this.easyConfig.provider(YamlFileFormat.class);
+        public @NonNull Optional<@NonNull FileFormatProvider<YamlFormat>> yaml() {
+            return this.easyConfig.provider(YamlFormat.class);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
@@ -13,6 +14,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class PotionEffectSerializerImpl implements BuiltInBukkitSerializer<PotionEffect> {
+    private static final TypeToken<PotionEffect> typeToken = new TypeToken<PotionEffect>() {
+    };
     private static volatile PotionEffectSerializerImpl INSTANCE;
 
     private PotionEffectSerializerImpl() {
@@ -28,6 +31,11 @@ public final class PotionEffectSerializerImpl implements BuiltInBukkitSerializer
         }
 
         return INSTANCE;
+    }
+
+    @Override
+    public @NonNull TypeToken<PotionEffect> forType() {
+        return typeToken;
     }
 
     @Override

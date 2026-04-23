@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
@@ -14,6 +15,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class PatternSerializerImpl implements BuiltInBukkitSerializer<Pattern> {
+    private static final TypeToken<Pattern> typeToken = new TypeToken<Pattern>() {
+    };
     private static volatile PatternSerializerImpl INSTANCE;
 
     private PatternSerializerImpl() {
@@ -29,6 +32,11 @@ public final class PatternSerializerImpl implements BuiltInBukkitSerializer<Patt
         }
 
         return INSTANCE;
+    }
+
+    @Override
+    public @NonNull TypeToken<Pattern> forType() {
+        return typeToken;
     }
 
     @Override

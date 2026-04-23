@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
@@ -11,6 +12,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class VectorSerializerImpl implements BuiltInBukkitSerializer<Vector> {
+    private static final TypeToken<Vector> typeToken = new TypeToken<Vector>() {
+    };
     private static volatile VectorSerializerImpl INSTANCE;
 
     private VectorSerializerImpl() {
@@ -26,6 +29,11 @@ public final class VectorSerializerImpl implements BuiltInBukkitSerializer<Vecto
         }
 
         return INSTANCE;
+    }
+
+    @Override
+    public @NonNull TypeToken<Vector> forType() {
+        return typeToken;
     }
 
     @Override

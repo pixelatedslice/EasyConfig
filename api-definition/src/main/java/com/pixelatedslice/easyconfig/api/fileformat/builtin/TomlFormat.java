@@ -1,16 +1,16 @@
 package com.pixelatedslice.easyconfig.api.fileformat.builtin;
 
-public final class TomlFileFormat implements BuiltInFileFormat {
-    private static volatile TomlFileFormat INSTANCE;
+public final class TomlFormat implements BuiltInFormat {
+    private static volatile TomlFormat INSTANCE;
 
-    private TomlFileFormat() {
+    private TomlFormat() {
     }
 
-    public static TomlFileFormat instance() {
+    public static TomlFormat instance() {
         if (INSTANCE == null) {
-            synchronized (TomlFileFormat.class) {
+            synchronized (TomlFormat.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new TomlFileFormat();
+                    INSTANCE = new TomlFormat();
                 }
             }
         }

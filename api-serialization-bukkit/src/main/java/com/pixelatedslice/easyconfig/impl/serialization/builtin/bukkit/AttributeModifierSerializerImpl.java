@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
@@ -16,6 +17,8 @@ import java.util.Objects;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class AttributeModifierSerializerImpl implements BuiltInBukkitSerializer<AttributeModifier> {
+    private static final TypeToken<AttributeModifier> typeToken = new TypeToken<AttributeModifier>() {
+    };
     private static volatile AttributeModifierSerializerImpl INSTANCE;
 
     private AttributeModifierSerializerImpl() {
@@ -31,6 +34,11 @@ public final class AttributeModifierSerializerImpl implements BuiltInBukkitSeria
         }
 
         return INSTANCE;
+    }
+
+    @Override
+    public @NonNull TypeToken<AttributeModifier> forType() {
+        return typeToken;
     }
 
     @Override

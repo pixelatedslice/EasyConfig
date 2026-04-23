@@ -3,7 +3,7 @@ package com.pixelatedslice.easyconfig.impl.fileformat.yaml;
 import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFileFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFormat;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeReader;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeWriter;
 import org.jspecify.annotations.NonNull;
@@ -18,8 +18,8 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.Objects;
 
-public final class YamlFileFormatProvider implements FileFormatProvider<YamlFileFormat> {
-    private static final YamlFileFormat fileFormatInstance = YamlFileFormat.instance();
+public final class YamlFileFormatProvider implements FileFormatProvider<YamlFormat> {
+    private static final YamlFormat formatInstance = YamlFormat.instance();
     private static volatile YamlFileFormatProvider INSTANCE;
     private final YAMLFactory factory = new YAMLFactory();
 
@@ -39,13 +39,13 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
     }
 
     @Override
-    public Class<YamlFileFormat> fileFormatClass() {
-        return YamlFileFormat.class;
+    public Class<YamlFormat> formatClass() {
+        return YamlFormat.class;
     }
 
     @Override
-    public YamlFileFormat fileFormatInstance() {
-        return fileFormatInstance;
+    public YamlFormat formatInstance() {
+        return formatInstance;
     }
 
 
@@ -69,7 +69,7 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
         Objects.requireNonNull(easyConfig);
         Objects.requireNonNull(configFile);
 
-        var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
+        var path = formatInstance.pathWithExtension(configFile.filePathWithoutExtension());
 
         Files.createDirectories(path.getParent());
         if (!Files.exists(path)) {
@@ -93,7 +93,7 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlFile
         Objects.requireNonNull(easyConfig);
         Objects.requireNonNull(configFile);
 
-        var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
+        var path = formatInstance.pathWithExtension(configFile.filePathWithoutExtension());
         if (!Files.exists(path)) {
             throw new IOException("The File does not exist!");
         }

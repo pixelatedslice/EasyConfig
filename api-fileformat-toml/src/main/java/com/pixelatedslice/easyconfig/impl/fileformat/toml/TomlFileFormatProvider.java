@@ -3,7 +3,7 @@ package com.pixelatedslice.easyconfig.impl.fileformat.toml;
 import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFileFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFormat;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeReader;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeWriter;
 import org.jspecify.annotations.NonNull;
@@ -18,8 +18,8 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.Objects;
 
-public final class TomlFileFormatProvider implements FileFormatProvider<TomlFileFormat> {
-    private static final TomlFileFormat fileFormatInstance = TomlFileFormat.instance();
+public final class TomlFileFormatProvider implements FileFormatProvider<TomlFormat> {
+    private static final TomlFormat formatInstance = TomlFormat.instance();
     private static volatile TomlFileFormatProvider INSTANCE;
     private final TomlFactory factory = new TomlFactory();
 
@@ -39,13 +39,13 @@ public final class TomlFileFormatProvider implements FileFormatProvider<TomlFile
     }
 
     @Override
-    public Class<TomlFileFormat> fileFormatClass() {
-        return TomlFileFormat.class;
+    public Class<TomlFormat> formatClass() {
+        return TomlFormat.class;
     }
 
     @Override
-    public TomlFileFormat fileFormatInstance() {
-        return fileFormatInstance;
+    public TomlFormat formatInstance() {
+        return formatInstance;
     }
 
     @Override
@@ -68,7 +68,7 @@ public final class TomlFileFormatProvider implements FileFormatProvider<TomlFile
         Objects.requireNonNull(easyConfig);
         Objects.requireNonNull(configFile);
 
-        var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
+        var path = formatInstance.pathWithExtension(configFile.filePathWithoutExtension());
 
         Files.createDirectories(path.getParent());
         if (!Files.exists(path)) {
@@ -92,7 +92,7 @@ public final class TomlFileFormatProvider implements FileFormatProvider<TomlFile
         Objects.requireNonNull(easyConfig);
         Objects.requireNonNull(configFile);
 
-        var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
+        var path = formatInstance.pathWithExtension(configFile.filePathWithoutExtension());
         if (!Files.exists(path)) {
             throw new IOException("The File does not exist!");
         }
@@ -109,6 +109,7 @@ public final class TomlFileFormatProvider implements FileFormatProvider<TomlFile
             @NonNull String content) throws IOException {
         Objects.requireNonNull(easyConfig);
         Objects.requireNonNull(configFile);
+        Objects.requireNonNull(content);
 
         try (var parser = this.factory.createParser(ObjectReadContext.empty(), new StringReader(content))) {
             new JacksonTreeReader(parser, easyConfig.serializers()).read(configFile.rootSection());

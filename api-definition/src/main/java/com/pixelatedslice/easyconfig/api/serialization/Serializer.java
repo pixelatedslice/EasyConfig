@@ -13,10 +13,7 @@ public interface Serializer<T> {
     }
 
     @NonNull
-    default TypeToken<@NonNull T> forType() {
-        return new TypeToken<>() {
-        };
-    }
+    TypeToken<@NonNull T> forType();
 
     void serialize(@Nullable T value, @NonNull ConfigSectionBuilder sectionBuilder);
 

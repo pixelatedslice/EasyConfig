@@ -2,6 +2,7 @@ package com.pixelatedslice.easyconfig.impl.fileformat.common;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
+import com.pixelatedslice.easyconfig.api.config.node.WithConfigNodeChildren;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
@@ -37,44 +38,54 @@ public class JacksonTreeReader {
         }
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void readSectionContent(@NonNull ConfigSection section) throws IOException {
         while (this.parser.nextToken() != JsonToken.END_OBJECT) {
-            var key = this.parser.currentName();
-            var token = this.parser.nextToken();
-
-            if (token == JsonToken.START_OBJECT) {
-                var nestedSection = section.section(key);
-                if (nestedSection.isPresent()) {
-                    this.readSectionContent(nestedSection.get());
-                    continue;
-                }
-
-                var typeTokenOpt = section.nodeTypeToken(key);
-                if (typeTokenOpt.isPresent()) {
-                    var typeToken = typeTokenOpt.get();
-                    var serializer = this.serializers.get(typeToken);
-
-                    if (serializer != null) {
-                        var sectionBuilder = section.builderForNested(key);
-                        serializer.serialize(null, sectionBuilder);
-                        var tempSection = sectionBuilder.build();
-                        this.readSectionContent(tempSection);
-
-                        var deserializedValue = serializer.deserialize(tempSection);
-                        setNodeValue(section.node(typeToken, key).get(), deserializedValue);
-                        continue;
-                    }
-                }
-                this.parser.skipChildren();
+            if (this.parser.nextToken() == JsonToken.START_OBJECT) {
+                this.readSection(section);
             } else {
-                var typeTokenOpt = section.nodeTypeToken(key);
-                if (typeTokenOpt.isPresent()) {
-                    var typeToken = typeTokenOpt.get();
-                    var parsedPrimitive = JacksonReadUtils.read(this.parser, typeToken);
-                    setNodeValue(section.node(typeToken, key).get(), parsedPrimitive);
-                }
+                this.readNode(section);
             }
         }
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public void readNode(@NonNull WithConfigNodeChildren section) throws IOException {
+        var key = this.parser.currentName();
+
+        var typeTokenOpt = section.nodeTypeToken(key);
+        if (typeTokenOpt.isPresent()) {
+            var typeToken = typeTokenOpt.get();
+            var parsedPrimitive = JacksonReadUtils.read(this.parser, typeToken);
+            setNodeValue(section.node(typeToken, key).get(), parsedPrimitive);
+        }
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public void readSection(@NonNull ConfigSection section) throws IOException {
+        var key = this.parser.currentName();
+
+        var nestedSection = section.section(key);
+        if (nestedSection.isPresent()) {
+            this.readSectionContent(nestedSection.get());
+            return;
+        }
+
+        var typeTokenOpt = section.nodeTypeToken(key);
+        if (typeTokenOpt.isPresent()) {
+            var typeToken = typeTokenOpt.get();
+            var serializer = this.serializers.get(typeToken);
+
+            if (serializer != null) {
+                var sectionBuilder = section.builderForNested(key);
+                serializer.serialize(null, sectionBuilder);
+                var tempSection = sectionBuilder.build();
+                this.readSectionContent(tempSection);
+
+                var deserializedValue = serializer.deserialize(tempSection);
+                setNodeValue(section.node(typeToken, key).get(), deserializedValue);
+                return;
+            }
+        }
+        this.parser.skipChildren();
     }
 }

@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
@@ -12,6 +13,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Location> {
+    private static final TypeToken<Location> typeToken = new TypeToken<Location>() {
+    };
     private static volatile LocationSerializerImpl INSTANCE;
 
     private LocationSerializerImpl() {
@@ -26,6 +29,11 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
             }
         }
         return INSTANCE;
+    }
+
+    @Override
+    public @NonNull TypeToken<Location> forType() {
+        return typeToken;
     }
 
     @Override

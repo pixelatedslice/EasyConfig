@@ -1,16 +1,16 @@
 package com.pixelatedslice.easyconfig.api.fileformat.builtin;
 
-public final class JsonFileFormat implements BuiltInFileFormat {
-    private static volatile JsonFileFormat INSTANCE;
+public final class JsonFormat implements BuiltInFormat {
+    private static volatile JsonFormat INSTANCE;
 
-    private JsonFileFormat() {
+    private JsonFormat() {
     }
 
-    public static JsonFileFormat instance() {
+    public static JsonFormat instance() {
         if (INSTANCE == null) {
-            synchronized (JsonFileFormat.class) {
+            synchronized (JsonFormat.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new JsonFileFormat();
+                    INSTANCE = new JsonFormat();
                 }
             }
         }

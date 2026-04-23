@@ -1,6 +1,6 @@
 package com.pixelatedslice.easyconfig.api.fileformat;
 
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.BuiltInFileFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.BuiltInFormat;
 import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Path;
@@ -8,10 +8,10 @@ import java.util.Objects;
 
 @SuppressWarnings("unused")
 @FunctionalInterface
-public interface FileFormat {
-    static boolean isBuiltIn(@NonNull FileFormat fileFormat) {
-        Objects.requireNonNull(fileFormat);
-        return fileFormat instanceof BuiltInFileFormat;
+public interface Format {
+    static boolean isBuiltIn(@NonNull Format format) {
+        Objects.requireNonNull(format);
+        return format instanceof BuiltInFormat;
     }
 
     String fileExtension();

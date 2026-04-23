@@ -4,7 +4,7 @@ package com.pixelatedslice.easyconfig.impl.fileformat.json;
 import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFileFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFormat;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeReader;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeWriter;
 import org.jspecify.annotations.NonNull;
@@ -20,8 +20,8 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.Objects;
 
-public final class JsonFileFormatProvider implements FileFormatProvider<JsonFileFormat> {
-    private static final JsonFileFormat fileFormatInstance = JsonFileFormat.instance();
+public final class JsonFileFormatProvider implements FileFormatProvider<JsonFormat> {
+    private static final JsonFormat formatInstance = JsonFormat.instance();
     private static volatile JsonFileFormatProvider INSTANCE;
     private final JsonFactory factory = new JsonFactory();
     private final ObjectWriteContext objectWriteContext = new ObjectWriteContext.Base() {
@@ -47,13 +47,13 @@ public final class JsonFileFormatProvider implements FileFormatProvider<JsonFile
     }
 
     @Override
-    public Class<JsonFileFormat> fileFormatClass() {
-        return JsonFileFormat.class;
+    public Class<JsonFormat> formatClass() {
+        return JsonFormat.class;
     }
 
     @Override
-    public JsonFileFormat fileFormatInstance() {
-        return fileFormatInstance;
+    public JsonFormat formatInstance() {
+        return formatInstance;
     }
 
     @Override
@@ -76,7 +76,7 @@ public final class JsonFileFormatProvider implements FileFormatProvider<JsonFile
         Objects.requireNonNull(easyConfig);
         Objects.requireNonNull(configFile);
 
-        var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
+        var path = formatInstance.pathWithExtension(configFile.filePathWithoutExtension());
 
         Files.createDirectories(path.getParent());
         if (!Files.exists(path)) {
@@ -100,7 +100,7 @@ public final class JsonFileFormatProvider implements FileFormatProvider<JsonFile
         Objects.requireNonNull(easyConfig);
         Objects.requireNonNull(configFile);
 
-        var path = fileFormatInstance.pathWithExtension(configFile.filePathWithoutExtension());
+        var path = formatInstance.pathWithExtension(configFile.filePathWithoutExtension());
         if (!Files.exists(path)) {
             throw new IOException("The File does not exist!");
         }

@@ -6,11 +6,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 
-public interface FileFormatProvider<F extends FileFormat> {
-    Class<F> fileFormatClass();
-
-    F fileFormatInstance();
-
+public interface FileFormatProvider<F extends Format> extends FormatProvider<F> {
     <C extends ConfigFile> void save(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) throws IOException;
 
     <C extends ConfigFile> void load(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) throws IOException;

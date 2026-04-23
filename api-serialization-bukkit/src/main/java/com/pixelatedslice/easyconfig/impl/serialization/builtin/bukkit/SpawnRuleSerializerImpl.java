@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
@@ -11,6 +12,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class SpawnRuleSerializerImpl implements BuiltInBukkitSerializer<SpawnRule> {
+    private static final TypeToken<SpawnRule> typeToken = new TypeToken<SpawnRule>() {
+    };
     private static volatile SpawnRuleSerializerImpl INSTANCE;
 
     private SpawnRuleSerializerImpl() {
@@ -26,6 +29,11 @@ public final class SpawnRuleSerializerImpl implements BuiltInBukkitSerializer<Sp
         }
 
         return INSTANCE;
+    }
+
+    @Override
+    public @NonNull TypeToken<SpawnRule> forType() {
+        return typeToken;
     }
 
     @Override

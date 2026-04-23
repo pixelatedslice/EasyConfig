@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
@@ -11,6 +12,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class BoundingBoxSerializerImpl implements BuiltInBukkitSerializer<BoundingBox> {
+    private static final TypeToken<BoundingBox> typeToken = new TypeToken<BoundingBox>() {
+    };
     private static volatile BoundingBoxSerializerImpl INSTANCE;
 
     private BoundingBoxSerializerImpl() {
@@ -26,6 +29,11 @@ public final class BoundingBoxSerializerImpl implements BuiltInBukkitSerializer<
         }
 
         return INSTANCE;
+    }
+
+    @Override
+    public @NonNull TypeToken<BoundingBox> forType() {
+        return typeToken;
     }
 
     @Override

@@ -39,7 +39,7 @@ public abstract class FileFormatTest {
     protected FileFormatTest(FileFormatProvider<?> fileFormatProvider) {
         this.fileFormatProvider = fileFormatProvider;
         this.pathWithExtension = this.fileFormatProvider
-                .fileFormatInstance().pathWithExtension(this.file.filePathWithoutExtension());
+                .formatInstance().pathWithExtension(this.file.filePathWithoutExtension());
         this.easyConfig.registerSerializers(LocationSerializerImpl.instance());
     }
 

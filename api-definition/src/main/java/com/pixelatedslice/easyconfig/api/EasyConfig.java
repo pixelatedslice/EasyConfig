@@ -2,11 +2,11 @@ package com.pixelatedslice.easyconfig.api;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.exception.ModificationOfNonCopiedEasyConfigInstanceException;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormat;
 import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFileFormat;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFileFormat;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFileFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.Format;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFormat;
+import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFormat;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
 
@@ -37,10 +37,10 @@ public interface EasyConfig {
     void unregisterSerializers(@NonNull TypeToken<?> @NonNull ... classes)
             throws ModificationOfNonCopiedEasyConfigInstanceException;
 
-    @NonNull Map<@NonNull Class<? extends FileFormat>, @NonNull FileFormatProvider<?>> providers();
+    @NonNull Map<@NonNull Class<? extends Format>, @NonNull FileFormatProvider<?>> providers();
 
-    <T extends FileFormat> @NonNull Optional<@NonNull FileFormatProvider<T>> provider(
-            @NonNull Class<T> fileFormatClass
+    <T extends Format> @NonNull Optional<@NonNull FileFormatProvider<T>> provider(
+            @NonNull Class<T> formatClass
     );
 
     void registerProviders(@NonNull FileFormatProvider<?> @NonNull ... providers)
@@ -52,10 +52,10 @@ public interface EasyConfig {
     @NonNull CommonFormatProviders commonFormatProviders();
 
     interface CommonFormatProviders {
-        @NonNull Optional<@NonNull FileFormatProvider<JsonFileFormat>> json();
+        @NonNull Optional<@NonNull FileFormatProvider<JsonFormat>> json();
 
-        @NonNull Optional<@NonNull FileFormatProvider<TomlFileFormat>> toml();
+        @NonNull Optional<@NonNull FileFormatProvider<TomlFormat>> toml();
 
-        @NonNull Optional<@NonNull FileFormatProvider<YamlFileFormat>> yaml();
+        @NonNull Optional<@NonNull FileFormatProvider<YamlFormat>> yaml();
     }
 }

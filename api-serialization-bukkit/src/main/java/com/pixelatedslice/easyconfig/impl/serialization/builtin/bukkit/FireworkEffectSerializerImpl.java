@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Objects;
 
 public final class FireworkEffectSerializerImpl implements BuiltInBukkitSerializer<FireworkEffect> {
+    private static final TypeToken<FireworkEffect> typeToken = new TypeToken<FireworkEffect>() {
+    };
     private static volatile FireworkEffectSerializerImpl INSTANCE;
 
     private FireworkEffectSerializerImpl() {
@@ -29,6 +31,11 @@ public final class FireworkEffectSerializerImpl implements BuiltInBukkitSerializ
         }
 
         return INSTANCE;
+    }
+
+    @Override
+    public @NonNull TypeToken<FireworkEffect> forType() {
+        return typeToken;
     }
 
     @Override

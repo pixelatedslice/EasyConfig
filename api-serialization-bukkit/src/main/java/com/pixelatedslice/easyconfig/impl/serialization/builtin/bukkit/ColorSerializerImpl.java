@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;
 
+import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
@@ -11,6 +12,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class ColorSerializerImpl implements BuiltInBukkitSerializer<Color> {
+    private static final TypeToken<Color> typeToken = new TypeToken<Color>() {
+    };
     private static volatile ColorSerializerImpl INSTANCE;
 
     private ColorSerializerImpl() {
@@ -26,6 +29,11 @@ public final class ColorSerializerImpl implements BuiltInBukkitSerializer<Color>
         }
 
         return INSTANCE;
+    }
+
+    @Override
+    public @NonNull TypeToken<Color> forType() {
+        return typeToken;
     }
 
     @Override
