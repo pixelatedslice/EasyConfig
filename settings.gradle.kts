@@ -14,6 +14,6 @@ include(
     "api-definition",
     "api-implementation",
     "api-fileformat-jackson-common",
-    "test",
+    "junit-tests",
 )
 include("api-bom")
