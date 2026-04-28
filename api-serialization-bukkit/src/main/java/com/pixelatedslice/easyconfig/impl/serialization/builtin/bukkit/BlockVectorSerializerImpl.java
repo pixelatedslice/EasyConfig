@@ -11,23 +11,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class BlockVectorSerializerImpl implements BuiltInBukkitSerializer<BlockVector> {
-    private static final TypeToken<BlockVector> typeToken = new TypeToken<BlockVector>() {
+    private static final TypeToken<BlockVector> typeToken = new TypeToken<>() {
     };
-    private static volatile BlockVectorSerializerImpl INSTANCE;
 
     private BlockVectorSerializerImpl() {
     }
 
     public static BlockVectorSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (BlockVectorSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new BlockVectorSerializerImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return BlockVectorSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -45,5 +36,12 @@ public final class BlockVectorSerializerImpl implements BuiltInBukkitSerializer<
     @Override
     public @NonNull BlockVector deserialize(@NonNull ConfigSection section) {
         return (BlockVector) VectorSerializerImpl.instance().deserialize(section);
+    }
+
+    public static final class BlockVectorSerializerImplHolder {
+        private static final BlockVectorSerializerImpl INSTANCE = new BlockVectorSerializerImpl();
+
+        private BlockVectorSerializerImplHolder() {
+        }
     }
 }

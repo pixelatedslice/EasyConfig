@@ -14,23 +14,14 @@ import java.util.List;
 import java.util.Objects;
 
 public final class FireworkEffectSerializerImpl implements BuiltInBukkitSerializer<FireworkEffect> {
-    private static final TypeToken<FireworkEffect> typeToken = new TypeToken<FireworkEffect>() {
+    private static final TypeToken<FireworkEffect> typeToken = new TypeToken<>() {
     };
-    private static volatile FireworkEffectSerializerImpl INSTANCE;
 
     private FireworkEffectSerializerImpl() {
     }
 
     public static FireworkEffectSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (FireworkEffectSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new FireworkEffectSerializerImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return FireworkEffectSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -82,5 +73,12 @@ public final class FireworkEffectSerializerImpl implements BuiltInBukkitSerializ
                 .withFade(fadeColors)
                 .with(type)
                 .build();
+    }
+
+    public static final class FireworkEffectSerializerImplHolder {
+        private static final FireworkEffectSerializerImpl INSTANCE = new FireworkEffectSerializerImpl();
+
+        private FireworkEffectSerializerImplHolder() {
+        }
     }
 }

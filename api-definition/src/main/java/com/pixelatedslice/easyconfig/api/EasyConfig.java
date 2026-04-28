@@ -2,11 +2,11 @@ package com.pixelatedslice.easyconfig.api;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.exception.ModificationOfNonCopiedEasyConfigInstanceException;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.Format;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFormat;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFormat;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFormat;
+import com.pixelatedslice.easyconfig.api.format.FileFormatProvider;
+import com.pixelatedslice.easyconfig.api.format.Format;
+import com.pixelatedslice.easyconfig.api.format.builtin.JsonFormat;
+import com.pixelatedslice.easyconfig.api.format.builtin.TomlFormat;
+import com.pixelatedslice.easyconfig.api.format.builtin.YamlFormat;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
 

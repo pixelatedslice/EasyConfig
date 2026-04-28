@@ -7,11 +7,11 @@ import com.pixelatedslice.easyconfig.api.EasyConfig;
 import com.pixelatedslice.easyconfig.api.exception.BuiltInSerializerOverrideException;
 import com.pixelatedslice.easyconfig.api.exception.BuiltInSerializerUnregisterException;
 import com.pixelatedslice.easyconfig.api.exception.ModificationOfNonCopiedEasyConfigInstanceException;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.Format;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFormat;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFormat;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFormat;
+import com.pixelatedslice.easyconfig.api.format.FileFormatProvider;
+import com.pixelatedslice.easyconfig.api.format.Format;
+import com.pixelatedslice.easyconfig.api.format.builtin.JsonFormat;
+import com.pixelatedslice.easyconfig.api.format.builtin.TomlFormat;
+import com.pixelatedslice.easyconfig.api.format.builtin.YamlFormat;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
 
@@ -19,7 +19,6 @@ import java.util.*;
 
 @AutoService(EasyConfig.class)
 public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfigImpl {
-    private static volatile EasyConfigImpl INSTANCE;
     private final CommonFormatProviders commonFormatProviders;
     private final Map<Class<? extends Format>, FileFormatProvider<?>> providers;
     private final Map<TypeToken<?>, Serializer<?>> serializers;
@@ -43,19 +42,11 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
 
     // For service loader
     public static EasyConfig provider() {
-        return instance();
+        return EasyConfigImplHolder.INSTANCE;
     }
 
     public static EasyConfigImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (EasyConfigImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new EasyConfigImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return EasyConfigImplHolder.INSTANCE;
     }
 
     private void copiedInstanceCheck() {
@@ -75,7 +66,6 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         return Collections.unmodifiableMap(this.serializers);
     }
 
-
     @SuppressWarnings("unchecked")
     @Override
     @NonNull
@@ -83,7 +73,6 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         Objects.requireNonNull(clazz);
         return Optional.ofNullable((Serializer<T>) this.serializers.get(Objects.requireNonNull(clazz)));
     }
-
 
     @Override
     public void registerSerializers(@NonNull Serializer<?> @NonNull ... serializers)
@@ -117,7 +106,6 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         }
     }
 
-
     @Override
     public void unregisterSerializers(@NonNull TypeToken<?> @NonNull ... typeTokens) {
         this.copiedInstanceCheck();
@@ -148,13 +136,11 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         }
     }
 
-
     @Override
     @NonNull
     public Map<@NonNull Class<? extends Format>, @NonNull FileFormatProvider<?>> providers() {
         return Collections.unmodifiableMap(this.providers);
     }
-
 
     @SuppressWarnings("unchecked")
     @Override
@@ -188,7 +174,6 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
         this.providers.putAll(map);
     }
 
-
     @Override
     public void unregisterProviders(@NonNull FileFormatProvider<?> @NonNull ... providers)
             throws ModificationOfNonCopiedEasyConfigInstanceException {
@@ -204,6 +189,10 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
     @Override
     public @NonNull CommonFormatProviders commonFormatProviders() {
         return this.commonFormatProviders;
+    }
+
+    private static final class EasyConfigImplHolder {
+        private static final EasyConfigImpl INSTANCE = new EasyConfigImpl();
     }
 
     static class CommonFormatProvidersImpl implements CommonFormatProviders {

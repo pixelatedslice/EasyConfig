@@ -155,9 +155,10 @@ mutable.close();
 
 </details>
 
-## File Formats & File Format Providers
-[Also see FileFormatProvider](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/fileformat/FileFormatProvider.java)
-[Also see FileFormat](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/fileformat/FileFormat.java)
+## Formats & Format Providers
+[Also see Format](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/format/Format.java)
+[Also see FormatProvider](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/format/FormatProvider.java)
+[Also see FileFormatProvider](./api-definition/src/main/java/com/pixelatedslice/easyconfig/api/format/FileFormatProvider.java)
 
 <details>
 <summary>Write a file to disk</summary>
@@ -224,67 +225,70 @@ in the `com.pixelatedslice.easyconfig.impl.serialization.builtin` package and ar
 
 ```java
 public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Location> {
-    private static volatile LocationSerializerImpl INSTANCE;
+  private static final TypeToken<Location> typeToken = new TypeToken<Location>() {
+  };
 
-    private LocationSerializerImpl() {
+  private LocationSerializerImpl() {
+  }
+
+  public static LocationSerializerImpl instance() {
+    return LocationSerializerImplHolder.INSTANCE;
+  }
+
+  @Override
+  @NonNull
+  public TypeToken<Location> forType() {
+    return typeToken;
+  }
+
+  @Override
+  public void serialize(@Nullable Location value, @NonNull ConfigSectionBuilder sectionBuilder) {
+    Objects.requireNonNull(sectionBuilder);
+
+    sectionBuilder.node(
+            "world",
+            ((value != null) && (value.getWorld() != null)) ? value.getWorld().getName() : null,
+            String.class
+    );
+    sectionBuilder.node("x", (value != null) ? value.getX() : null, Double.class);
+    sectionBuilder.node("y", (value != null) ? value.getY() : null, Double.class);
+    sectionBuilder.node("z", (value != null) ? value.getZ() : null, Double.class);
+    sectionBuilder.node("yaw", (value != null) ? value.getYaw() : null, Float.class);
+    sectionBuilder.node("pitch", (value != null) ? value.getPitch() : null, Float.class);
+  }
+
+  @Override
+  @NonNull
+  public Location deserialize(@NonNull ConfigSection section) {
+    Objects.requireNonNull(section);
+
+    var world = section
+            .node(String.class, "world")
+            .flatMap(ConfigNode::value)
+            .map(Bukkit::getWorld)
+            .orElse(null);
+    var x = section.node(Double.class, "x").flatMap(ConfigNode::value).orElseThrow();
+    var y = section.node(Double.class, "y").flatMap(ConfigNode::value).orElseThrow();
+    var z = section.node(Double.class, "z").flatMap(ConfigNode::value).orElseThrow();
+    var yaw = section.node(Float.class, "yaw")
+            .flatMap(ConfigNode::value)
+            .orElseThrow();
+    var pitch = section.node(Float.class, "pitch")
+            .flatMap(ConfigNode::value)
+            .orElseThrow();
+
+    return new Location(
+            world,
+            x, y, z,
+            yaw, pitch
+    );
+  }
+
+  private static final class LocationSerializerImplHolder {
+    private static final LocationSerializerImpl INSTANCE = new LocationSerializerImpl();
+
+    private LocationSerializerImplHolder() {
     }
-
-    public static LocationSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (LocationSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new LocationSerializerImpl();
-                }
-            }
-        }
-        return INSTANCE;
-    }
-
-    @Override
-    public void serialize(@Nullable Location value, @NonNull ConfigSectionBuilder sectionBuilder) {
-        if (value == null) {
-            return;
-        }
-
-        if (value.getWorld() != null) {
-            sectionBuilder.node("world", value.getWorld().getName(), TypeToken.of(String.class));
-        }
-        sectionBuilder.node("x", value.getX());
-        sectionBuilder.node("y", value.getY());
-        sectionBuilder.node("z", value.getZ());
-        sectionBuilder.node("yaw", value.getYaw());
-        sectionBuilder.node("pitch", value.getPitch());
-    }
-
-    @Override
-    @NonNull
-    public Location deserialize(@NonNull ConfigSection section) {
-        var world = section
-                .node(TypeToken.of(String.class), "world")
-                .flatMap(ConfigNode::value)
-                .map(Bukkit::getWorld)
-                .orElse(null);
-        var x = section.node(TypeToken.of(Double.class), "x").flatMap(ConfigNode::value).orElseThrow();
-        var y = section.node(TypeToken.of(Double.class), "y").flatMap(ConfigNode::value).orElseThrow();
-        var z = section.node(TypeToken.of(Double.class), "z").flatMap(ConfigNode::value).orElseThrow();
-        var yaw = section.node(TypeToken.of(Float.class), "yaw")
-                .flatMap(ConfigNode::value)
-                .orElseThrow();
-        var pitch = section.node(TypeToken.of(Float.class), "pitch")
-                .flatMap(ConfigNode::value)
-                .orElseThrow();
-
-        return new Location(
-                world,
-                x, y, z,
-                yaw, pitch
-        );
-    }
-
-    @Override
-    @NonNull
-    public Class<Location> forClass() {
-        return Location.class;
-    }
+  }
 }
 ```

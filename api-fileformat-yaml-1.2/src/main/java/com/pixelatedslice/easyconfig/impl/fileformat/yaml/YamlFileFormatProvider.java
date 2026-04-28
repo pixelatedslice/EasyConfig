@@ -2,8 +2,8 @@ package com.pixelatedslice.easyconfig.impl.fileformat.yaml;
 
 import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.YamlFormat;
+import com.pixelatedslice.easyconfig.api.format.FileFormatProvider;
+import com.pixelatedslice.easyconfig.api.format.builtin.YamlFormat;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeReader;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeWriter;
 import org.jspecify.annotations.NonNull;
@@ -20,22 +20,13 @@ import java.util.Objects;
 
 public final class YamlFileFormatProvider implements FileFormatProvider<YamlFormat> {
     private static final YamlFormat formatInstance = YamlFormat.instance();
-    private static volatile YamlFileFormatProvider INSTANCE;
     private final YAMLFactory factory = new YAMLFactory();
 
     private YamlFileFormatProvider() {
     }
 
     public static YamlFileFormatProvider instance() {
-        if (INSTANCE == null) {
-            synchronized (YamlFileFormatProvider.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new YamlFileFormatProvider();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return YamlFileFormatProviderHolder.INSTANCE;
     }
 
     @Override
@@ -47,7 +38,6 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlForm
     public YamlFormat formatInstance() {
         return formatInstance;
     }
-
 
     @Override
     public <C extends ConfigFile> String writeToString(@NonNull CopiedEasyConfig easyConfig, @NonNull C configFile) {
@@ -114,5 +104,10 @@ public final class YamlFileFormatProvider implements FileFormatProvider<YamlForm
         try (var parser = this.factory.createParser(ObjectReadContext.empty(), new StringReader(content))) {
             new JacksonTreeReader(parser, easyConfig.serializers()).read(configFile.rootSection());
         }
+    }
+
+    private static final class YamlFileFormatProviderHolder {
+        private static final YamlFileFormatProvider INSTANCE = new YamlFileFormatProvider();
+
     }
 }

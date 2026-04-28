@@ -1,4 +1,4 @@
-package com.pixelatedslice.easyconfig.api.fileformat;
+package com.pixelatedslice.easyconfig.api.format;
 
 import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;

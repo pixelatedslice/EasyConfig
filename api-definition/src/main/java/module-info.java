@@ -21,8 +21,8 @@ open module com.pixelatedslice.easyconfig.api {
     exports com.pixelatedslice.easyconfig.api.config.node;
     exports com.pixelatedslice.easyconfig.api.config.section;
     exports com.pixelatedslice.easyconfig.api.exception;
-    exports com.pixelatedslice.easyconfig.api.fileformat;
-    exports com.pixelatedslice.easyconfig.api.fileformat.builtin;
+    exports com.pixelatedslice.easyconfig.api.format;
+    exports com.pixelatedslice.easyconfig.api.format.builtin;
     exports com.pixelatedslice.easyconfig.api.serialization;
     exports com.pixelatedslice.easyconfig.api.serialization.builtin
             to com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit;

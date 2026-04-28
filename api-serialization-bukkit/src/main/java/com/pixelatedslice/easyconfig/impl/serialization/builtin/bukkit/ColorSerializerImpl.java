@@ -12,23 +12,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class ColorSerializerImpl implements BuiltInBukkitSerializer<Color> {
-    private static final TypeToken<Color> typeToken = new TypeToken<Color>() {
+    private static final TypeToken<Color> typeToken = new TypeToken<>() {
     };
-    private static volatile ColorSerializerImpl INSTANCE;
 
     private ColorSerializerImpl() {
     }
 
     public static ColorSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (ColorSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new ColorSerializerImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return ColorSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -66,5 +57,9 @@ public final class ColorSerializerImpl implements BuiltInBukkitSerializer<Color>
                 .orElseThrow();
 
         return Color.fromARGB(alpha, red, green, blue);
+    }
+
+    private static final class ColorSerializerImplHolder {
+        private static final ColorSerializerImpl INSTANCE = new ColorSerializerImpl();
     }
 }

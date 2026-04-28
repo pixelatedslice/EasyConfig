@@ -6,7 +6,7 @@ import com.pixelatedslice.easyconfig.api.builder.config.BuilderWithConfigNodes;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
+import com.pixelatedslice.easyconfig.api.format.FileFormatProvider;
 import com.pixelatedslice.easyconfig.impl.EasyConfigImpl;
 import com.pixelatedslice.easyconfig.impl.serialization.builtin.bukkit.LocationSerializerImpl;
 

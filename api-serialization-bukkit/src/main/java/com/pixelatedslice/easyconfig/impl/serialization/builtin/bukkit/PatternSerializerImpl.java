@@ -15,23 +15,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class PatternSerializerImpl implements BuiltInBukkitSerializer<Pattern> {
-    private static final TypeToken<Pattern> typeToken = new TypeToken<Pattern>() {
+    private static final TypeToken<Pattern> typeToken = new TypeToken<>() {
     };
-    private static volatile PatternSerializerImpl INSTANCE;
 
     private PatternSerializerImpl() {
     }
 
     public static PatternSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (PatternSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new PatternSerializerImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return PatternSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -67,5 +58,12 @@ public final class PatternSerializerImpl implements BuiltInBukkitSerializer<Patt
                 .orElseThrow();
 
         return new Pattern(color, pattern);
+    }
+
+    public static final class PatternSerializerImplHolder {
+        private static final PatternSerializerImpl INSTANCE = new PatternSerializerImpl();
+
+        private PatternSerializerImplHolder() {
+        }
     }
 }

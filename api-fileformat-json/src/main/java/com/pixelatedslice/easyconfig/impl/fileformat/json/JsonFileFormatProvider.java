@@ -3,8 +3,8 @@ package com.pixelatedslice.easyconfig.impl.fileformat.json;
 
 import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.JsonFormat;
+import com.pixelatedslice.easyconfig.api.format.FileFormatProvider;
+import com.pixelatedslice.easyconfig.api.format.builtin.JsonFormat;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeReader;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeWriter;
 import org.jspecify.annotations.NonNull;
@@ -22,7 +22,6 @@ import java.util.Objects;
 
 public final class JsonFileFormatProvider implements FileFormatProvider<JsonFormat> {
     private static final JsonFormat formatInstance = JsonFormat.instance();
-    private static volatile JsonFileFormatProvider INSTANCE;
     private final JsonFactory factory = new JsonFactory();
     private final ObjectWriteContext objectWriteContext = new ObjectWriteContext.Base() {
         @Override
@@ -35,15 +34,7 @@ public final class JsonFileFormatProvider implements FileFormatProvider<JsonForm
     }
 
     public static JsonFileFormatProvider instance() {
-        if (INSTANCE == null) {
-            synchronized (JsonFileFormatProvider.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new JsonFileFormatProvider();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return JsonFileFormatProviderHolder.INSTANCE;
     }
 
     @Override
@@ -121,5 +112,9 @@ public final class JsonFileFormatProvider implements FileFormatProvider<JsonForm
         try (var parser = this.factory.createParser(ObjectReadContext.empty(), new StringReader(content))) {
             new JacksonTreeReader(parser, easyConfig.serializers()).read(configFile.rootSection());
         }
+    }
+
+    private static final class JsonFileFormatProviderHolder {
+        private static final JsonFileFormatProvider INSTANCE = new JsonFileFormatProvider();
     }
 }

@@ -17,23 +17,14 @@ import java.util.Objects;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class AttributeModifierSerializerImpl implements BuiltInBukkitSerializer<AttributeModifier> {
-    private static final TypeToken<AttributeModifier> typeToken = new TypeToken<AttributeModifier>() {
+    private static final TypeToken<AttributeModifier> typeToken = new TypeToken<>() {
     };
-    private static volatile AttributeModifierSerializerImpl INSTANCE;
 
     private AttributeModifierSerializerImpl() {
     }
 
     public static AttributeModifierSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (AttributeModifierSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new AttributeModifierSerializerImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return AttributeModifierSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -79,5 +70,9 @@ public final class AttributeModifierSerializerImpl implements BuiltInBukkitSeria
                 .orElseThrow();
 
         return new AttributeModifier(key, amount, operation, slot);
+    }
+
+    private static final class AttributeModifierSerializerImplHolder {
+        private static final AttributeModifierSerializerImpl INSTANCE = new AttributeModifierSerializerImpl();
     }
 }

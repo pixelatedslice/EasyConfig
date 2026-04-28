@@ -1,7 +1,7 @@
 package com.pixelatedslice.easyconfig.api;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
+import com.pixelatedslice.easyconfig.api.format.FileFormatProvider;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
 

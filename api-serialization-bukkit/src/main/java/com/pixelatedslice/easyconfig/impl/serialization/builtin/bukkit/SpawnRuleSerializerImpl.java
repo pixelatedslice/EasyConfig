@@ -12,23 +12,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class SpawnRuleSerializerImpl implements BuiltInBukkitSerializer<SpawnRule> {
-    private static final TypeToken<SpawnRule> typeToken = new TypeToken<SpawnRule>() {
+    private static final TypeToken<SpawnRule> typeToken = new TypeToken<>() {
     };
-    private static volatile SpawnRuleSerializerImpl INSTANCE;
 
     private SpawnRuleSerializerImpl() {
     }
 
     public static SpawnRuleSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (SpawnRuleSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new SpawnRuleSerializerImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return SpawnRuleSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -68,5 +59,12 @@ public final class SpawnRuleSerializerImpl implements BuiltInBukkitSerializer<Sp
                 .orElse(0);
 
         return new SpawnRule(minBlockLight, maxBlockLight, minSkyLight, maxSkyLight);
+    }
+
+    public static final class SpawnRuleSerializerImplHolder {
+        private static final SpawnRuleSerializerImpl INSTANCE = new SpawnRuleSerializerImpl();
+
+        private SpawnRuleSerializerImplHolder() {
+        }
     }
 }

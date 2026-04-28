@@ -1,4 +1,4 @@
-package com.pixelatedslice.easyconfig.api.fileformat;
+package com.pixelatedslice.easyconfig.api.format;
 
 public interface FormatProvider<F extends Format> {
     Class<F> formatClass();

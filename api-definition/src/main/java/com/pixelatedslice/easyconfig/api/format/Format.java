@@ -1,6 +1,6 @@
-package com.pixelatedslice.easyconfig.api.fileformat;
+package com.pixelatedslice.easyconfig.api.format;
 
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.BuiltInFormat;
+import com.pixelatedslice.easyconfig.api.format.builtin.BuiltInFormat;
 import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Path;

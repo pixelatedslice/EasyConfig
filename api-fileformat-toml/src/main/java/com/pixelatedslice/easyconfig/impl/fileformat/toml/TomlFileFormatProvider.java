@@ -2,8 +2,8 @@ package com.pixelatedslice.easyconfig.impl.fileformat.toml;
 
 import com.pixelatedslice.easyconfig.api.CopiedEasyConfig;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
-import com.pixelatedslice.easyconfig.api.fileformat.FileFormatProvider;
-import com.pixelatedslice.easyconfig.api.fileformat.builtin.TomlFormat;
+import com.pixelatedslice.easyconfig.api.format.FileFormatProvider;
+import com.pixelatedslice.easyconfig.api.format.builtin.TomlFormat;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeReader;
 import com.pixelatedslice.easyconfig.impl.fileformat.common.JacksonTreeWriter;
 import org.jspecify.annotations.NonNull;
@@ -20,22 +20,13 @@ import java.util.Objects;
 
 public final class TomlFileFormatProvider implements FileFormatProvider<TomlFormat> {
     private static final TomlFormat formatInstance = TomlFormat.instance();
-    private static volatile TomlFileFormatProvider INSTANCE;
     private final TomlFactory factory = new TomlFactory();
 
     private TomlFileFormatProvider() {
     }
 
     public static TomlFileFormatProvider instance() {
-        if (INSTANCE == null) {
-            synchronized (TomlFileFormatProvider.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new TomlFileFormatProvider();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return TomlFileFormatProviderHolder.INSTANCE;
     }
 
     @Override
@@ -114,5 +105,9 @@ public final class TomlFileFormatProvider implements FileFormatProvider<TomlForm
         try (var parser = this.factory.createParser(ObjectReadContext.empty(), new StringReader(content))) {
             new JacksonTreeReader(parser, easyConfig.serializers()).read(configFile.rootSection());
         }
+    }
+
+    private static final class TomlFileFormatProviderHolder {
+        private static final TomlFileFormatProvider INSTANCE = new TomlFileFormatProvider();
     }
 }

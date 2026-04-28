@@ -12,23 +12,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class BoundingBoxSerializerImpl implements BuiltInBukkitSerializer<BoundingBox> {
-    private static final TypeToken<BoundingBox> typeToken = new TypeToken<BoundingBox>() {
+    private static final TypeToken<BoundingBox> typeToken = new TypeToken<>() {
     };
-    private static volatile BoundingBoxSerializerImpl INSTANCE;
 
     private BoundingBoxSerializerImpl() {
     }
 
     public static BoundingBoxSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (BoundingBoxSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new BoundingBoxSerializerImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return BoundingBoxSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -72,5 +63,12 @@ public final class BoundingBoxSerializerImpl implements BuiltInBukkitSerializer<
                 .orElseThrow();
 
         return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    public static final class BoundingBoxSerializerImplHolder {
+        private static final BoundingBoxSerializerImpl INSTANCE = new BoundingBoxSerializerImpl();
+
+        private BoundingBoxSerializerImplHolder() {
+        }
     }
 }

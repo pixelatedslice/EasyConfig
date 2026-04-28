@@ -14,23 +14,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class PotionEffectSerializerImpl implements BuiltInBukkitSerializer<PotionEffect> {
-    private static final TypeToken<PotionEffect> typeToken = new TypeToken<PotionEffect>() {
+    private static final TypeToken<PotionEffect> typeToken = new TypeToken<>() {
     };
-    private static volatile PotionEffectSerializerImpl INSTANCE;
 
     private PotionEffectSerializerImpl() {
     }
 
     public static PotionEffectSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (PotionEffectSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new PotionEffectSerializerImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return PotionEffectSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -87,5 +78,12 @@ public final class PotionEffectSerializerImpl implements BuiltInBukkitSerializer
                 icon
         );
 
+    }
+
+    public static final class PotionEffectSerializerImplHolder {
+        private static final PotionEffectSerializerImpl INSTANCE = new PotionEffectSerializerImpl();
+
+        private PotionEffectSerializerImplHolder() {
+        }
     }
 }

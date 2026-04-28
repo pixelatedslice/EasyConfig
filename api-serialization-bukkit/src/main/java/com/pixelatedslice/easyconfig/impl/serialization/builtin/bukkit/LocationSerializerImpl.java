@@ -13,22 +13,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Location> {
-    private static final TypeToken<Location> typeToken = new TypeToken<Location>() {
+    private static final TypeToken<Location> typeToken = new TypeToken<>() {
     };
-    private static volatile LocationSerializerImpl INSTANCE;
 
     private LocationSerializerImpl() {
     }
 
     public static LocationSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (LocationSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new LocationSerializerImpl();
-                }
-            }
-        }
-        return INSTANCE;
+        return LocationSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -76,5 +68,9 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
                 x, y, z,
                 yaw, pitch
         );
+    }
+
+    private static final class LocationSerializerImplHolder {
+        private static final LocationSerializerImpl INSTANCE = new LocationSerializerImpl();
     }
 }

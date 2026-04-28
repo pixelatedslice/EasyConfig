@@ -12,23 +12,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public final class VectorSerializerImpl implements BuiltInBukkitSerializer<Vector> {
-    private static final TypeToken<Vector> typeToken = new TypeToken<Vector>() {
+    private static final TypeToken<Vector> typeToken = new TypeToken<>() {
     };
-    private static volatile VectorSerializerImpl INSTANCE;
 
     private VectorSerializerImpl() {
     }
 
     public static VectorSerializerImpl instance() {
-        if (INSTANCE == null) {
-            synchronized (VectorSerializerImpl.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new VectorSerializerImpl();
-                }
-            }
-        }
-
-        return INSTANCE;
+        return VectorSerializerImplHolder.INSTANCE;
     }
 
     @Override
@@ -60,5 +51,12 @@ public final class VectorSerializerImpl implements BuiltInBukkitSerializer<Vecto
                 .orElseThrow();
 
         return new Vector(x, y, z);
+    }
+
+    public static final class VectorSerializerImplHolder {
+        private static final VectorSerializerImpl INSTANCE = new VectorSerializerImpl();
+
+        private VectorSerializerImplHolder() {
+        }
     }
 }

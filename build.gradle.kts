@@ -15,7 +15,7 @@ subprojects {
     pluginManager.apply("signing")
 
     group = "com.pixelatedslice.easyconfig"
-    version = "1.2.0"
+    version = "1.2.1"
 
     repositories {
         mavenCentral()
