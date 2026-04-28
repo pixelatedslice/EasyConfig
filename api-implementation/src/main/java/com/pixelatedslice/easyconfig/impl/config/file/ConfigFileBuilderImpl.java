@@ -2,7 +2,6 @@ package com.pixelatedslice.easyconfig.impl.config.file;
 
 import com.google.auto.service.AutoService;
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.builder.config.BuilderWithConfigNodes;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFile;
 import com.pixelatedslice.easyconfig.api.config.file.ConfigFileBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
@@ -13,6 +12,7 @@ import com.pixelatedslice.easyconfig.api.exception.ComplexInsteadOfSimpleTypeUse
 import com.pixelatedslice.easyconfig.api.utils.type_token.TypeTokenUtils;
 import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeBuilderImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.EnvConfigNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.section.ConfigSectionBuilderImpl;
 import com.pixelatedslice.easyconfig.impl.config.section.ConfigSectionImpl;
 import org.jspecify.annotations.NonNull;
@@ -100,7 +100,7 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
     }
 
     @Override
-    public @NonNull <T> BuilderWithConfigNodes node(@NonNull String key, @Nullable T value,
+    public @NonNull <T> ConfigFileBuilder node(@NonNull String key, @Nullable T value,
             @NonNull Class<T> simpleType) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(simpleType);
@@ -171,6 +171,67 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
 
         this.nodes.add(builder.build());
         return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigFileBuilder env(@NonNull String key, @NonNull String envKey,
+            @NonNull TypeToken<T> typeToken) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(envKey);
+        Objects.requireNonNull(typeToken);
+
+        this.nodes.add(new EnvConfigNodeImpl<>(key,
+                envKey,
+                typeToken,
+                this.rootSection,
+                new ArrayList<>()
+        ));
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigFileBuilder env(@NonNull String key, @NonNull TypeToken<T> typeToken) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(typeToken);
+
+        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
+            throw new ComplexInsteadOfSimpleTypeUsedException();
+        }
+
+        this.nodes.add(new EnvConfigNodeImpl<>(key,
+                key,
+                typeToken,
+                this.rootSection,
+                new ArrayList<>()
+        ));
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigFileBuilder env(@NonNull String key, @NonNull String envKey,
+            @NonNull Class<T> simpleType) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(envKey);
+        Objects.requireNonNull(simpleType);
+
+        var typeToken = TypeToken.of(simpleType);
+
+        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
+            throw new ComplexInsteadOfSimpleTypeUsedException();
+        }
+
+        this.nodes.add(new EnvConfigNodeImpl<>(key,
+                envKey,
+                typeToken,
+                this.rootSection,
+                new ArrayList<>()
+        ));
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigFileBuilder env(@NonNull String key, @NonNull Class<T> simpleType) {
+        return this.env(key, key, simpleType);
     }
 
     @Override

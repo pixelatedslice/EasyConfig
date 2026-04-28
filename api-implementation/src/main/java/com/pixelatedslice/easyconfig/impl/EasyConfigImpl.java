@@ -24,7 +24,7 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
     private final Map<Class<? extends Format>, FileFormatProvider<?>> providers;
     private final Map<TypeToken<?>, Serializer<?>> serializers;
 
-    protected EasyConfigImpl() {
+    public EasyConfigImpl() {
         this.providers = new HashMap<>();
         this.serializers = new HashMap<>();
         this.commonFormatProviders = new CommonFormatProvidersImpl(this);
@@ -43,7 +43,7 @@ public sealed class EasyConfigImpl implements EasyConfig permits CopiedEasyConfi
 
     // For service loader
     public static EasyConfig provider() {
-        return INSTANCE;
+        return instance();
     }
 
     public static EasyConfigImpl instance() {

@@ -11,18 +11,12 @@ import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 @SuppressWarnings("unused")
 public interface EasyConfig {
     static EasyConfig instance() {
-        return ServiceLoader.load(EasyConfig.class)
-                .findFirst()
-                .orElseThrow(() ->
-                        new NoSuchElementException("No implementation for EasyConfig found on the classpath.")
-                );
+        return EasyConfigProvider.INSTANCE;
     }
 
     @NonNull CopiedEasyConfig copy();

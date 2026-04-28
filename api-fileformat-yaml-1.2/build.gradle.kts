@@ -1,5 +1,3 @@
-version = "1.1.0"
-
 dependencies {
     compileOnly(project(":api-definition"))
     implementation(project(":api-fileformat-jackson-common"))
@@ -13,10 +11,4 @@ mavenPublishing {
         name.set("EasyConfig - Core")
         description.set("EasyConfig's official YAML 1.2 File Format Provider using Jackson")
     }
-}
-
-mavenPublishing {
-    publishToMavenCentral()
-
-    signAllPublications()
 }

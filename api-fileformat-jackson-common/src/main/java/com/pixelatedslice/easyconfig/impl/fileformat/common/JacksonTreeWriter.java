@@ -2,6 +2,7 @@ package com.pixelatedslice.easyconfig.impl.fileformat.common;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
+import com.pixelatedslice.easyconfig.api.config.node.EnvConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
@@ -45,6 +46,12 @@ public class JacksonTreeWriter {
 
     public void writeNode(@NonNull ConfigNode<?> node) {
         this.generator.writeName(node.key());
+
+        if (node instanceof EnvConfigNode<?> envNode) {
+            JacksonWriteUtils.write(this.generator, "env(" + envNode.envKey() + ")");
+            return;
+        }
+
         Object value = node.valueOrDefault().orElse(null);
 
         if (value == null) {

@@ -2,6 +2,7 @@ package com.pixelatedslice.easyconfig.impl.fileformat.common;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
+import com.pixelatedslice.easyconfig.api.config.node.EnvConfigNode;
 import com.pixelatedslice.easyconfig.api.config.node.WithConfigNodeChildren;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
@@ -29,7 +30,7 @@ public class JacksonTreeReader {
         }
     }
 
-    public void read(@NonNull ConfigSection root) throws IOException {
+    public void read(@NonNull ConfigSection root) throws IOException, IllegalStateException {
         if (this.parser.currentToken() == null) {
             this.parser.nextToken();
         }
@@ -38,7 +39,7 @@ public class JacksonTreeReader {
         }
     }
 
-    private void readSectionContent(@NonNull ConfigSection section) throws IOException {
+    private void readSectionContent(@NonNull ConfigSection section) throws IOException, IllegalStateException {
         while (this.parser.nextToken() != JsonToken.END_OBJECT) {
             if (this.parser.nextToken() == JsonToken.START_OBJECT) {
                 this.readSection(section);
@@ -49,19 +50,22 @@ public class JacksonTreeReader {
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public void readNode(@NonNull WithConfigNodeChildren section) throws IOException {
+    public void readNode(@NonNull WithConfigNodeChildren section) throws IOException, IllegalStateException {
         var key = this.parser.currentName();
 
         var typeTokenOpt = section.nodeTypeToken(key);
         if (typeTokenOpt.isPresent()) {
             var typeToken = typeTokenOpt.get();
-            var parsedPrimitive = JacksonReadUtils.read(this.parser, typeToken);
-            setNodeValue(section.node(typeToken, key).get(), parsedPrimitive);
+            var node = section.node(typeToken, key).get();
+
+            setNodeValue(node, (node instanceof EnvConfigNode<?>)
+                    ? JacksonReadUtils.readEnv(this.parser, typeToken)
+                    : JacksonReadUtils.read(this.parser, typeToken));
         }
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public void readSection(@NonNull ConfigSection section) throws IOException {
+    public void readSection(@NonNull ConfigSection section) throws IOException, IllegalStateException {
         var key = this.parser.currentName();
 
         var nestedSection = section.section(key);

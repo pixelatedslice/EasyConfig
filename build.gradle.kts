@@ -4,38 +4,27 @@ plugins {
 }
 
 subprojects {
-    apply(plugin = "java-library")
-    apply(plugin = "signing")
-    apply(plugin = "com.vanniktech.maven.publish")
+    if (name == "api-bom") {
+        pluginManager.apply("java-platform")
+    } else {
+        pluginManager.apply("java-library")
+        applyDeps()
+    }
+
+    pluginManager.apply("com.vanniktech.maven.publish")
+    pluginManager.apply("signing")
 
     group = "com.pixelatedslice.easyconfig"
+    version = "1.2.0"
 
     repositories {
         mavenCentral()
     }
 
-    dependencies {
-        compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
-        annotationProcessor("com.google.auto.service:auto-service:1.1.1")
-        testImplementation(platform("org.junit:junit-bom:5.10.0"))
-        testImplementation("org.junit.jupiter:junit-jupiter")
-        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    }
-
-    tasks.test {
-        useJUnitPlatform()
-    }
-
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(25))
-        }
-    }
-
     configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
         pom {
             inceptionYear.set("2026")
-            url.set("https://github.com/pixelatedslice/easyconfig/tree/master/api-definition")
+            url.set("https://github.com/pixelatedslice/easyconfig/")
             licenses {
                 license {
                     name.set("The Apache License, Version 2.0")
@@ -56,9 +45,32 @@ subprojects {
                 developerConnection.set("scm:git:ssh://git@github.com/pixelatedslice/easyconfig.git")
             }
         }
+
+        publishToMavenCentral(true)
+        signAllPublications()
     }
 
     configure<SigningExtension> {
         useGpgCmd()
+    }
+}
+
+fun Project.applyDeps() {
+    dependencies {
+        compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
+        annotationProcessor("com.google.auto.service:auto-service:1.1.1")
+        testImplementation(platform("org.junit:junit-bom:5.10.0"))
+        testImplementation("org.junit.jupiter:junit-jupiter")
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    }
+
+    tasks.test {
+        useJUnitPlatform()
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
     }
 }

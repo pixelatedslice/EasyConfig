@@ -15,5 +15,5 @@ include(
     "api-implementation",
     "api-fileformat-jackson-common",
     "test",
-    "all-in-one"
 )
+include("api-bom")

@@ -12,6 +12,19 @@ import java.util.function.Consumer;
 
 public interface ConfigSectionBuilder extends BuilderWithConfigNodes, BuilderWithConfigSections, BuilderWithComments {
     @Override
+    @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull String envKey,
+            @NonNull TypeToken<T> typeToken);
+
+    @Override
+    @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull TypeToken<T> typeToken);
+
+    @Override
+    @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull String envKey, @NonNull Class<T> simpleType);
+
+    @Override
+    @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull Class<T> simpleType);
+
+    @Override
     @NonNull ConfigSectionBuilder addComment(@NonNull String comment);
 
     @Override

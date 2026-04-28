@@ -1,5 +1,8 @@
 # Easy Config
 
+> [!IMPORTANT]
+> There currently is no Javadoc for any methods or classes.
+
 <details>
 <summary>AI Usage</summary>
 
@@ -37,6 +40,10 @@ structures like List<Map<String, Integer>>.
 
 ## Quick Start
 
+> [!IMPORTANT]
+> The [AIO Package](https://central.sonatype.com/artifact/com.pixelatedslice.easyconfig/aio) is now deprecated!
+> Use the BOM instead!
+ 
 Add EasyConfig to your
 project, [see Maven Central](https://central.sonatype.com/namespace/com.pixelatedslice.easyconfig).
 
@@ -71,6 +78,8 @@ ConfigFile myConfig = new ConfigFile.builder()
             builder.type(new TypeToken<List<String>>() {
             });
         })
+        .env("node_and_env_key", int.class)
+        .env("node_key", "separate_env_key", String.class)
         .section("identity", builder -> {
             builder.node("name", String.class);
             builder.node("age", Integer.class);

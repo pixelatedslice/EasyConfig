@@ -16,29 +16,31 @@ import java.util.Objects;
 @SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService(ConfigNodeBuilder.class)
 public class ConfigNodeBuilderImpl<T> implements ConfigNodeBuilder<T> {
-    private final List<String> comments = new ArrayList<>();
-    private String key;
-    private TypeToken<T> typeToken;
-    private T value;
-    private T defaultValue;
-    private ConfigSection parent;
+    protected final List<String> comments = new ArrayList<>();
+    protected String key;
+    protected TypeToken<T> typeToken;
+    protected T value;
+    protected T defaultValue;
+    protected ConfigSection parent;
 
     public ConfigNodeBuilderImpl(
             @NonNull String key,
             @NonNull TypeToken<T> typeToken,
             @Nullable T value,
             @Nullable T defaultValue,
-            @NonNull ConfigSection parent
+            @Nullable ConfigSection parent
     ) {
         Objects.requireNonNull(key);
-        Objects.requireNonNull(parent);
         Objects.requireNonNull(typeToken);
 
         this.key = key;
         this.typeToken = typeToken;
         this.value = value;
         this.defaultValue = defaultValue;
-        this.parent = parent;
+
+        if (parent != null) {
+            this.parent = parent;
+        }
     }
 
     public ConfigNodeBuilderImpl() {

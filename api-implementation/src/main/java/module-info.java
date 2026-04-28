@@ -1,5 +1,3 @@
-import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
-
 open module com.pixelatedslice.easyconfig.impl {
     requires com.google.common;
     requires org.jspecify;
@@ -17,6 +15,6 @@ open module com.pixelatedslice.easyconfig.impl {
             with com.pixelatedslice.easyconfig.impl.config.file.ConfigFileBuilderImpl;
     provides com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder
             with com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeBuilderImpl;
-    provides ConfigSectionBuilder
+    provides com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder
             with com.pixelatedslice.easyconfig.impl.config.section.ConfigSectionBuilderImpl;
 }

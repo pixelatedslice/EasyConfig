@@ -8,6 +8,7 @@ import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
 import com.pixelatedslice.easyconfig.api.exception.ComplexInsteadOfSimpleTypeUsedException;
 import com.pixelatedslice.easyconfig.api.utils.type_token.TypeTokenUtils;
 import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeBuilderImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.EnvConfigNodeBuilderImpl;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -184,6 +185,64 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     private void node(@NonNull ConfigNodeBuilder<?> nodeBuilder) {
         Objects.requireNonNull(nodeBuilder);
         this.childNodes.add(nodeBuilder);
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull String envKey,
+            @NonNull TypeToken<T> typeToken) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(envKey);
+        Objects.requireNonNull(typeToken);
+
+        this.childNodes.add(new EnvConfigNodeBuilderImpl<>(
+                key,
+                envKey,
+                typeToken
+        ));
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull TypeToken<T> typeToken) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(typeToken);
+
+        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
+            throw new ComplexInsteadOfSimpleTypeUsedException();
+        }
+
+        this.childNodes.add(new EnvConfigNodeBuilderImpl<>(
+                key,
+                key,
+                typeToken
+        ));
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull String envKey,
+            @NonNull Class<T> simpleType) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(envKey);
+        Objects.requireNonNull(simpleType);
+
+        var typeToken = TypeToken.of(simpleType);
+
+        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
+            throw new ComplexInsteadOfSimpleTypeUsedException();
+        }
+
+        this.childNodes.add(new EnvConfigNodeBuilderImpl<>(
+                key,
+                envKey,
+                typeToken
+        ));
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull Class<T> simpleType) {
+        return this.env(key, key, simpleType);
     }
 
     @Override

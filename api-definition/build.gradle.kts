@@ -1,5 +1,3 @@
-version = "1.1.0"
-
 dependencies {
     api(libs.guava)
 }
@@ -11,10 +9,4 @@ mavenPublishing {
         name.set("EasyConfig - Core")
         description.set("EasyConfig's API Interfaces only")
     }
-}
-
-mavenPublishing {
-    publishToMavenCentral()
-
-    signAllPublications()
 }

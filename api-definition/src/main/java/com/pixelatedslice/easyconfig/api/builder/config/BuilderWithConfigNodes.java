@@ -22,6 +22,24 @@ public interface BuilderWithConfigNodes {
 
     <T> @NonNull BuilderWithConfigNodes node(@NonNull String key, @Nullable T value, @NonNull Class<T> simpleType);
 
+    <T> @NonNull BuilderWithConfigNodes env(@NonNull String key, @NonNull String envKey,
+            @NonNull TypeToken<T> typeToken);
+
+    /**
+     * @param key       The key in the file and of the ENV variable
+     * @param typeToken The type
+     */
+    <T> @NonNull BuilderWithConfigNodes env(@NonNull String key, @NonNull TypeToken<T> typeToken);
+
+    <T> @NonNull BuilderWithConfigNodes env(@NonNull String key, @NonNull String envKey,
+            @NonNull Class<T> simpleType);
+
+    /**
+     * @param key        The key in the file and of the ENV variable
+     * @param simpleType The type
+     */
+    <T> @NonNull BuilderWithConfigNodes env(@NonNull String key, @NonNull Class<T> simpleType);
+
     <T> @NonNull BuilderWithConfigNodes node(@NonNull String key, @NonNull T valueWithSimpleType);
 
     <T> @NonNull BuilderWithConfigNodes node(@NonNull String key,

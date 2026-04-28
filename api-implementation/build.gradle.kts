@@ -1,5 +1,3 @@
-version = "1.1.0"
-
 dependencies {
     api(project(":api-definition"))
 }
@@ -11,10 +9,4 @@ mavenPublishing {
         name.set("EasyConfig - Core")
         description.set("EasyConfig's API and concrete implementation.")
     }
-}
-
-mavenPublishing {
-    publishToMavenCentral()
-
-    signAllPublications()
 }
