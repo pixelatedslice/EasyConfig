@@ -5,6 +5,8 @@ import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
+import com.pixelatedslice.easyconfig.api.validator.ValidatorContext;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 @SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService(ConfigNodeBuilder.class)
@@ -21,6 +24,7 @@ public class ConfigNodeBuilderImpl<T> implements ConfigNodeBuilder<T> {
     protected TypeToken<T> typeToken;
     protected T value;
     protected T defaultValue;
+    protected Validator<T> validator = Validator.empty();
     protected ConfigSection parent;
 
     public ConfigNodeBuilderImpl(
@@ -28,6 +32,7 @@ public class ConfigNodeBuilderImpl<T> implements ConfigNodeBuilder<T> {
             @NonNull TypeToken<T> typeToken,
             @Nullable T value,
             @Nullable T defaultValue,
+            @NonNull Validator<T> validator,
             @Nullable ConfigSection parent
     ) {
         Objects.requireNonNull(key);
@@ -37,6 +42,7 @@ public class ConfigNodeBuilderImpl<T> implements ConfigNodeBuilder<T> {
         this.typeToken = typeToken;
         this.value = value;
         this.defaultValue = defaultValue;
+        this.validator = validator;
 
         if (parent != null) {
             this.parent = parent;
@@ -62,6 +68,14 @@ public class ConfigNodeBuilderImpl<T> implements ConfigNodeBuilder<T> {
     @Override
     public @NonNull ConfigNodeBuilder<T> defaultValue(@Nullable T defaultValue) {
         this.defaultValue = defaultValue;
+        return this;
+    }
+
+    @Override
+    public @NonNull ConfigNodeBuilder<T> validator(
+            @NonNull BiConsumer<? super @Nullable T, ? super @NonNull ValidatorContext> validatorConsumer
+    ) {
+        this.validator = validatorConsumer::accept;
         return this;
     }
 
@@ -103,6 +117,7 @@ public class ConfigNodeBuilderImpl<T> implements ConfigNodeBuilder<T> {
                 Objects.requireNonNull(this.typeToken),
                 this.value,
                 this.defaultValue,
+                Objects.requireNonNull(this.validator),
                 this.parent,
                 Objects.requireNonNull(this.comments)
         );

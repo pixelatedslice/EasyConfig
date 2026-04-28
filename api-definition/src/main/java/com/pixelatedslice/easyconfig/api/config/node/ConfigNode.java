@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.comments.Commentable;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.mutability.mutable.WithMutableVariant;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
@@ -15,6 +16,8 @@ public interface ConfigNode<T> extends Commentable, WithMutableVariant<MutableCo
         final var builderLoader = ServiceLoader.load(ConfigNodeBuilder.class);
         return (ConfigNodeBuilder<T>) builderLoader.findFirst().orElseThrow();
     }
+
+    @NonNull Validator<T> validator();
 
     @NonNull String key();
 

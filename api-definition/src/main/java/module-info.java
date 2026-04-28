@@ -32,4 +32,5 @@ open module com.pixelatedslice.easyconfig.api {
     exports com.pixelatedslice.easyconfig.api.builder.config;
     exports com.pixelatedslice.easyconfig.api.mutability.immutable;
     exports com.pixelatedslice.easyconfig.api.mutability.mutable;
+    exports com.pixelatedslice.easyconfig.api.validator;
 }

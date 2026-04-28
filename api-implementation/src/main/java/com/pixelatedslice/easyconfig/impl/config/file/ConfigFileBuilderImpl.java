@@ -10,6 +10,7 @@ import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
 import com.pixelatedslice.easyconfig.api.exception.ComplexInsteadOfSimpleTypeUsedException;
 import com.pixelatedslice.easyconfig.api.utils.type_token.TypeTokenUtils;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeBuilderImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.EnvConfigNodeImpl;
@@ -72,7 +73,13 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
     public <T> @NonNull ConfigFileBuilder node(@NonNull String key, @NonNull TypeToken<T> typeToken) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(typeToken);
-        this.nodes.add(new ConfigNodeImpl<>(key, typeToken, null, null, this.rootSection, new ArrayList<>()));
+        this.nodes.add(new ConfigNodeImpl<>(key,
+                typeToken,
+                null,
+                null,
+                Validator.empty(),
+                this.rootSection,
+                new ArrayList<>()));
         return this;
     }
 
@@ -95,7 +102,13 @@ public class ConfigFileBuilderImpl implements ConfigFileBuilder {
             @NonNull TypeToken<T> typeToken) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(typeToken);
-        this.nodes.add(new ConfigNodeImpl<>(key, typeToken, value, null, this.rootSection, new ArrayList<>()));
+        this.nodes.add(new ConfigNodeImpl<>(key,
+                typeToken,
+                value,
+                null,
+                Validator.empty(),
+                this.rootSection,
+                new ArrayList<>()));
         return this;
     }
 

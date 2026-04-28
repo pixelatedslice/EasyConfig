@@ -7,6 +7,8 @@ import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
 import com.pixelatedslice.easyconfig.api.exception.ComplexInsteadOfSimpleTypeUsedException;
 import com.pixelatedslice.easyconfig.api.utils.type_token.TypeTokenUtils;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
+import com.pixelatedslice.easyconfig.api.validator.ValidatorContext;
 import com.pixelatedslice.easyconfig.impl.config.node.ConfigNodeBuilderImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.EnvConfigNodeBuilderImpl;
 import org.jspecify.annotations.NonNull;
@@ -185,6 +187,62 @@ public class ConfigSectionBuilderImpl implements ConfigSectionBuilder {
     private void node(@NonNull ConfigNodeBuilder<?> nodeBuilder) {
         Objects.requireNonNull(nodeBuilder);
         this.childNodes.add(nodeBuilder);
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @NonNull TypeToken<T> typeToken,
+            Validator<T> validator) {
+        this.node(new ConfigNodeBuilderImpl<T>(key, typeToken, null, null, validator, this.parent));
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @NonNull Class<T> simpleType,
+            Validator<T> validator) {
+        this.node()
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @Nullable T value,
+            @NonNull TypeToken<T> typeToken, Validator<T> validator) {
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @Nullable T value, @NonNull Class<T> simpleType,
+            Validator<T> validator) {
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull String envKey,
+            @NonNull TypeToken<T> typeToken, Validator<T> validator) {
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull TypeToken<T> typeToken,
+            Validator<T> validator) {
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull String envKey,
+            @NonNull Class<T> simpleType, Validator<T> validator) {
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder env(@NonNull String key, @NonNull Class<T> simpleType,
+            Validator<T> validator) {
+        return this;
+    }
+
+    @Override
+    public @NonNull <T> ConfigSectionBuilder node(@NonNull String key, @NonNull T valueWithSimpleType,
+            Validator<T> validator) {
+        return this;
     }
 
     @Override

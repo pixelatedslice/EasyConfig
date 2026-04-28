@@ -5,6 +5,7 @@ import com.pixelatedslice.easyconfig.api.config.node.ConfigNode;
 import com.pixelatedslice.easyconfig.api.config.node.MutableConfigNode;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
 import com.pixelatedslice.easyconfig.api.utils.primitive.TypeUtils;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.comments.AbstractCommentable;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -23,6 +24,7 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
     private final @NonNull ConfigSection parent;
     private final @Nullable T defaultValue;
     private final @NonNull AtomicReference<@Nullable T> value;
+    private final @NonNull Validator<T> validator;
     private final int hashCode;
 
     public ConfigNodeImpl(
@@ -30,6 +32,7 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
             @NonNull TypeToken<T> typeToken,
             @Nullable T value,
             @Nullable T defaultValue,
+            @NonNull Validator<T> validator,
             @NonNull ConfigSection parent,
             @NonNull List<@NonNull String> comments
     ) {
@@ -39,6 +42,7 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
         this.typeToken = typeToken;
         this.value = new AtomicReference<>(value);
         this.defaultValue = defaultValue;
+        this.validator = validator;
         this.parent = parent;
 
         this.hashCode = Objects.hash(this.key, this.parent, this.typeToken);
@@ -54,6 +58,11 @@ public class ConfigNodeImpl<T> extends AbstractCommentable implements ConfigNode
                 executor.submit(() -> this.updateComments(commentUpdates));
             }
         }
+    }
+
+    @Override
+    public @NonNull Validator<T> validator() {
+        return this.validator;
     }
 
     @Override

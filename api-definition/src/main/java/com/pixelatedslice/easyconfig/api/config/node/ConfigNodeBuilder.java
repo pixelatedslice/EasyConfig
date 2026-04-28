@@ -3,8 +3,11 @@ package com.pixelatedslice.easyconfig.api.config.node;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.comments.BuilderWithComments;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSection;
+import com.pixelatedslice.easyconfig.api.validator.ValidatorContext;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+
+import java.util.function.BiConsumer;
 
 public interface ConfigNodeBuilder<T> extends BuilderWithComments {
     @Override
@@ -18,6 +21,8 @@ public interface ConfigNodeBuilder<T> extends BuilderWithComments {
     @NonNull ConfigNodeBuilder<T> value(@Nullable T value);
 
     @NonNull ConfigNodeBuilder<T> defaultValue(@Nullable T defaultValue);
+
+    @NonNull ConfigNodeBuilder<T> validator(@NonNull BiConsumer<? super T, ? super ValidatorContext> validator);
 
     @NonNull ConfigNodeBuilder<T> typeToken(@NonNull TypeToken<T> typeToken);
 

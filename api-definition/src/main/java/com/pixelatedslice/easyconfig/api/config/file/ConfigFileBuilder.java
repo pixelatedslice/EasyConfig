@@ -5,6 +5,7 @@ import com.pixelatedslice.easyconfig.api.builder.config.BuilderWithConfigNodes;
 import com.pixelatedslice.easyconfig.api.builder.config.BuilderWithConfigSections;
 import com.pixelatedslice.easyconfig.api.config.node.ConfigNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.section.ConfigSectionBuilder;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -12,6 +13,40 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public interface ConfigFileBuilder extends BuilderWithConfigNodes, BuilderWithConfigSections {
+    @Override
+    @NonNull <T> ConfigFileBuilder env(@NonNull String key, @NonNull String envKey,
+            @NonNull TypeToken<T> typeToken, Validator<T> validator);
+
+    @Override
+    @NonNull <T> ConfigFileBuilder env(@NonNull String key, @NonNull TypeToken<T> typeToken,
+            Validator<T> validator);
+
+    @Override
+    @NonNull <T> ConfigFileBuilder env(@NonNull String key, @NonNull String envKey, @NonNull Class<T> simpleType,
+            Validator<T> validator);
+
+    @Override
+    @NonNull <T> ConfigFileBuilder env(@NonNull String key, @NonNull Class<T> simpleType, Validator<T> validator);
+
+    @Override
+    @NonNull <T> ConfigFileBuilder node(@NonNull String key, @NonNull T valueWithSimpleType,
+            Validator<T> validator);
+
+    @Override
+    @NonNull <T> ConfigFileBuilder node(@NonNull String key, @NonNull TypeToken<T> typeToken,
+            Validator<T> validator);
+
+    @Override
+    @NonNull <T> ConfigFileBuilder node(@NonNull String key, @NonNull Class<T> simpleType, Validator<T> validator);
+
+    @Override
+    @NonNull <T> ConfigFileBuilder node(@NonNull String key, @Nullable T value, @NonNull TypeToken<T> typeToken,
+            Validator<T> validator);
+
+    @Override
+    @NonNull <T> ConfigFileBuilder node(@NonNull String key, @Nullable T value, @NonNull Class<T> simpleType,
+            Validator<T> validator);
+
     @Override
     @NonNull <T> ConfigFileBuilder env(@NonNull String key, @NonNull String envKey,
             @NonNull TypeToken<T> typeToken);

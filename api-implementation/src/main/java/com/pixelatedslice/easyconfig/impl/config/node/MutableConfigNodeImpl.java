@@ -2,6 +2,7 @@ package com.pixelatedslice.easyconfig.impl.config.node;
 
 import com.pixelatedslice.easyconfig.api.config.node.MutableConfigNode;
 import com.pixelatedslice.easyconfig.impl.comments.AbstractMutableAndCommentable;
+import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
 import org.jspecify.annotations.Nullable;
 
 public class MutableConfigNodeImpl<T> extends AbstractMutableAndCommentable implements MutableConfigNode<T> {
@@ -14,6 +15,10 @@ public class MutableConfigNodeImpl<T> extends AbstractMutableAndCommentable impl
 
     @Override
     public void setValue(@Nullable T value) {
+        var ctx = new ValidatorContextImpl();
+        this.originalNode.validator().validate(value, ctx);
+        ctx.throwIfErrors();
+
         this.value = value;
     }
 
