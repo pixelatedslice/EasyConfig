@@ -2,24 +2,19 @@ package com.pixelatedslice.easyconfig.api.config.node.value;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
+import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
-import com.pixelatedslice.easyconfig.api.config.node.value.builder.ValueNodeBuilder;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
-    @SuppressWarnings("unchecked")
-    static <T> @NonNull ValueNodeBuilder<T> builder() {
-        return (ValueNodeBuilder<T>) ServiceLoader.load(ValueNodeBuilder.class).findFirst().orElseThrow();
-    }
 
     @Override
-    @NonNull ValueNodeBuilder<T> toBuilder();
+    NodeBuilder.ValueFinalStep.@NonNull Original<T> toBuilder();
 
     default @NonNull NodeType nodeType() {
         return NodeType.VALUE_NODE;
@@ -38,4 +33,5 @@ public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
     @NonNull Validator<T> validator();
 
     @NonNull TypeToken<T> typeToken();
+
 }

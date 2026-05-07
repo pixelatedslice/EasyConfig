@@ -2,37 +2,31 @@ package com.pixelatedslice.easyconfig.api.config.node.container;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.builder.BuilderStep;
+import com.pixelatedslice.easyconfig.api.config.node.GenericNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
+import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
-import com.pixelatedslice.easyconfig.api.config.node.container.builder.ContainerNodeBuilder;
-import com.pixelatedslice.easyconfig.api.config.node.container.builder.ContainerNodeBuilderChildrenStep;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
 import com.pixelatedslice.easyconfig.api.exception.TypeException;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 public interface ContainerNode extends Node, Editable<EditableContainerNode> {
-    static @NonNull ContainerNodeBuilder builder() {
-        return ServiceLoader.load(ContainerNodeBuilder.class).findFirst().orElseThrow();
-    }
-
-    @Override
-    @NonNull ContainerNodeBuilder toBuilder();
-
-    default @NonNull ContainerNodeBuilderChildrenStep childContainerBuilder(@NonNull String key) {
-        return builder().key(key).parent(this);
-    }
 
     default @NonNull NodeType nodeType() {
         return NodeType.CONTAINER_NODE;
     }
+
+    @Override
+    NodeBuilder.ContainerFinalStep.@NonNull Original toBuilder();
 
     ImmutableList<Node> children();
 
@@ -108,11 +102,6 @@ public interface ContainerNode extends Node, Editable<EditableContainerNode> {
         @NonNull
         default String[] fullPath() {
             return new String[]{"root"};
-        }
-
-        @Override
-        default @NonNull Optional<@NonNull ContainerNode> parent() {
-            return Optional.empty();
         }
 
         @Override
