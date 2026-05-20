@@ -2,7 +2,6 @@ package com.pixelatedslice.easyconfig.impl.config.node.collection;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
@@ -44,7 +43,7 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
     }
 
     @Override
-    public @NonNull InternalNodeBuilder<?> toBuilder() {
+    public @NonNull CollectionNodeOriginalBuilder toBuilder() {
         var builder = new CollectionNodeOriginalBuilder(this.key()).parent(this.parent).config(this.attached);
         this.children.stream().map(AbstractNode::toBuilder).forEach(builder::appendChild);
         return builder;

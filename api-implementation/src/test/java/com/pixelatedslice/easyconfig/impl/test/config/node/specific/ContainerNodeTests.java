@@ -1,14 +1,14 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
-import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeOriginalBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.container.ContainerNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
-import com.pixelatedslice.easyconfig.impl.test.testUtils.MockitoHelper;
+import com.pixelatedslice.easyconfig.impl.test.testUtils.CollectionAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ContainerNodeTests {
 
@@ -50,5 +50,71 @@ public class ContainerNodeTests {
         Assertions.assertInstanceOf(ContainerNodeOriginalBuilder.class, result);
         var castResult = (ContainerNodeOriginalBuilder) result;
         Assertions.assertEquals(key, castResult.key());
+    }
+
+    @Test
+    public void ContainerNode_editable_addNode() {
+        //ARRANGE
+        var key = "original";
+        var originalNode = new ContainerNodeOriginalBuilder().key(key).build();
+
+        var toAdd = new ContainerNodeOriginalBuilder().key("adding").build();
+
+        //ACT
+        try (var editable = originalNode.editable()) {
+            editable.addNodes(toAdd);
+        }
+
+        //ASSERT
+        CollectionAssert.isEqualTo(List.of(toAdd), originalNode.children(), true);
+    }
+
+    @Test
+    public void ContainerNode_editable_clearNodes() {
+        //ARRANGE
+        var key = "original";
+        var originalNode = new ContainerNodeOriginalBuilder().key(key).append("added").complete().build();
+
+        //ACT
+        try (var editable = originalNode.editable()) {
+            editable.clearNodes();
+        }
+
+        //ASSERT
+        CollectionAssert.isEqualTo(Collections.emptyList(), originalNode.children(), true);
+    }
+
+    @Test
+    public void ContainerNode_editable_removeNode() {
+        //ARRANGE
+        var key = "original";
+        var originalNode = new ContainerNodeOriginalBuilder().key(key).append("added").complete().append("second").complete().build();
+        var toRemain = originalNode.children().getLast();
+        var toRemove = originalNode.children().getFirst();
+
+        //ACT
+        try (var editable = originalNode.editable()) {
+            editable.removeNodes(toRemove);
+        }
+
+        //ASSERT
+        CollectionAssert.isEqualTo(List.of(toRemain), originalNode.children(), true);
+    }
+
+    @Test
+    public void ContainerNode_editable_setNode() {
+        //ARRANGE
+        var key = "original";
+        var originalNode = new ContainerNodeOriginalBuilder().key(key).append("added").complete().append("second").complete().build();
+
+        var toSet = new ContainerNodeOriginalBuilder().key("set").build();
+
+        //ACT
+        try (var editable = originalNode.editable()) {
+            editable.setNodes(List.of(toSet));
+        }
+
+        //ASSERT
+        CollectionAssert.isEqualTo(List.of(toSet), originalNode.children(), true);
     }
 }

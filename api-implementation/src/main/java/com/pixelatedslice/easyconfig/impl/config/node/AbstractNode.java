@@ -1,10 +1,12 @@
 package com.pixelatedslice.easyconfig.impl.config.node;
 
-import com.pixelatedslice.easyconfig.api.config.config.Config;
+import com.pixelatedslice.easyconfig.api.config.Config;
+import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
+import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -52,8 +54,6 @@ public abstract class AbstractNode implements Node {
     @Override
     public abstract @NonNull InternalNodeBuilder<?> toBuilder();
 
-
-
     @Override
     public @NonNull String key() {
         return this.key;
@@ -62,6 +62,11 @@ public abstract class AbstractNode implements Node {
     @Override
     public @NonNull ReturnedNode parent() {
         return new ReturnKnownNodeImpl(this.parent);
+    }
+
+    @Override
+    public @NonNull ConfigStructure toStructure() {
+        return new ConfigStructureImpl(this.toBuilder().build());
     }
 
     public @Nullable Config config() {

@@ -1,6 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.config.node.container.builder;
 
-import com.pixelatedslice.easyconfig.api.config.config.Config;
+import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;

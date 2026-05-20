@@ -1,7 +1,7 @@
 package com.pixelatedslice.easyconfig.impl.config.node.value.builder;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.config.Config;
+import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
@@ -75,7 +75,7 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     }
 
     @Override
-    public Self serializer(@NonNull Serializer<T> serializer) {
+    public Self serializer(@Nullable Serializer<T> serializer) {
         this.serializer = serializer;
         return (Self) this;
     }

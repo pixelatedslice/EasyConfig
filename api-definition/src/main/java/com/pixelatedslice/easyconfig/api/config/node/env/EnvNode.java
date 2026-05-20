@@ -4,6 +4,9 @@ import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
+import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
+import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
@@ -17,10 +20,16 @@ public interface EnvNode<T> extends Node {
 
     @NonNull String envKey();
 
-    Optional<T> value();
+    default Optional<T> value() {
+        return value(ValidationOptions.throwExceptions());
+    }
+
+    Optional<T> value(@NonNull ValidateOption<T> validateOption);
 
     @NonNull
     Function<String, T> adapter();
+
+    Validator<T> validator();
 
     @NonNull TypeToken<T> typeToken();
 

@@ -1,8 +1,9 @@
 package com.pixelatedslice.easyconfig.impl.config.node.env.builder;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.config.Config;
+import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.env.EnvNodeImpl;
@@ -23,6 +24,7 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
     private @Nullable AbstractNode parent;
     private @Nullable Config config;
     private @Nullable Function<@NonNull String, @Nullable T> adapter;
+    private @Nullable Validator<T> validator;
 
     public AbstractEnvNodeBuilderImpl(@NonNull AbstractValueNodeBuilder<?, T> builder, @NonNull String envKey) {
         this.key = Objects.requireNonNull(builder.key());
@@ -36,6 +38,10 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
         this.key = Objects.requireNonNull(key);
         this.envKey = Objects.requireNonNull(envKey);
         this.typeToken = Objects.requireNonNull(typeToken);
+    }
+
+    public Validator<T> validator(){
+        return this.validator;
     }
 
     public @Nullable Function<String, T> adapter() {
@@ -99,5 +105,12 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
         this.adapter = adapter;
         //noinspection unchecked
         return (Self) this;
+    }
+
+    @Override
+    public Self validator(@NonNull Validator<T> validator) {
+        this.validator = validator;
+        //noinspection unchecked
+        return (Self)this;
     }
 }

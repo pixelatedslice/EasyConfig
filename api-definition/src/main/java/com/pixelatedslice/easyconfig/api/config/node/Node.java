@@ -1,6 +1,7 @@
 package com.pixelatedslice.easyconfig.api.config.node;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
 import org.jspecify.annotations.NonNull;
 
 import java.util.stream.Stream;
@@ -17,6 +18,10 @@ public interface Node {
     @NonNull
     @CheckReturnValue
     NodeBuilder toBuilder();
+
+    @NonNull
+    @CheckReturnValue
+    ConfigStructure toStructure();
 
     default @NonNull String[] fullPath() {
         Stream<String> stream = Stream.empty();

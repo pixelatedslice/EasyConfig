@@ -1,11 +1,12 @@
 package com.pixelatedslice.easyconfig.impl.config.node.collection.builder;
 
-import com.pixelatedslice.easyconfig.api.config.config.Config;
+import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.CollectionNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeChildBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -28,7 +29,7 @@ public abstract class AbstractCollectionNodeBuilder<Self extends AbstractCollect
         from.children().forEach(this::appendChild);
     }
 
-    public AbstractCollectionNodeBuilder(@NonNull String key){
+    public AbstractCollectionNodeBuilder(@NonNull String key) {
         this.key = key;
     }
 
@@ -72,9 +73,17 @@ public abstract class AbstractCollectionNodeBuilder<Self extends AbstractCollect
             this.children.add(childBuilder);
             return;
         }
-        if(builder instanceof CollectionNodeChildBuilder<?> collectionBuilder){
+        if(builder instanceof ContainerNodeOriginalBuilder originalBuilder){
+            this.children.add(originalBuilder);
+            return;
+        }
+        if (builder instanceof CollectionNodeChildBuilder<?> collectionBuilder) {
             this.children.add(collectionBuilder);
-return;
+            return;
+        }
+        if(builder instanceof CollectionNodeOriginalBuilder collectionBuilder){
+            this.children.add(collectionBuilder);
+            return;
         }
         throw new IllegalArgumentException("Cannot append child of " + builder.getClass().getName());
     }

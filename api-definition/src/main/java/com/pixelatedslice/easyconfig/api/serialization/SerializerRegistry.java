@@ -1,76 +1,55 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.exception.TypeException;
-import com.pixelatedslice.easyconfig.api.serialization.format.FormatSerializer;
-import com.pixelatedslice.easyconfig.api.serialization.node.NodeSerializer;
-import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
 import org.jspecify.annotations.NonNull;
 
-import java.util.Objects;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
-import java.util.ServiceLoader;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public interface SerializerRegistry {
-    static SerializerRegistry create() {
-        return ServiceLoader.load(SerializerRegistry.class).findFirst().orElseThrow();
+    static SerializerRegistry global() {
+        return SerializerRegistryHidden.GLOBAL;
     }
 
-    @SuppressWarnings("rawtypes")
-    void addAutoLoadIdentifiers(@NonNull Class<? extends @NonNull Serializer> @NonNull ... autoLoadIdentifiers);
+    @NonNull SerializerRegistry createChild();
 
-    @SuppressWarnings("rawtypes")
-    void removeAutoLoadIdentifiers(@NonNull Class<? extends @NonNull Serializer> @NonNull ... autoLoadIdentifiers);
+    @NonNull Optional<SerializerRegistry> parent();
 
-    default void reloadSerializers() {
-        this.reloadSerializers(false);
+    @NonNull Stream<@NonNull Serializer<?>> stream();
+
+    @NonNull <T> Optional<Serializer<T>> serializerFor(@NonNull TypeToken<T> token);
+
+    default @NonNull <T> Optional<Serializer<T>> serializerFor(@NonNull Class<T> token) {
+        return serializerFor(TypeToken.of(token));
     }
 
-    void reloadSerializers(boolean override);
+    SerializerRegistry register(@NonNull Consumer<SerializerRegistryOptions> options, @NonNull Iterator<Serializer<?>> serializers);
 
-    void register(@NonNull Serializer<?> @NonNull ... serializer);
-
-    void unregister(@NonNull Serializer<?> @NonNull ... serializer);
-
-    default <T> @NonNull Optional<@NonNull Serializer<T>> find(@NonNull Class<T> simpleType) {
-        Objects.requireNonNull(simpleType);
-
-        var typeToken = TypeToken.of(simpleType);
-
-        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
-            throw TypeException.CLASS_USED_IN_PLACE_OF_TYPETOKEN(simpleType);
-        }
-
-        return this.find(typeToken);
+    default SerializerRegistry register(@NonNull Iterator<@NonNull Serializer<?>> serializers) {
+        return register(_ -> {
+        }, serializers);
     }
 
-    default <T> @NonNull Optional<@NonNull FormatSerializer<T>> findFormatSerializer(@NonNull Class<T> simpleType) {
-        Objects.requireNonNull(simpleType);
-
-        var typeToken = TypeToken.of(simpleType);
-
-        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
-            throw TypeException.CLASS_USED_IN_PLACE_OF_TYPETOKEN(simpleType);
-        }
-
-        return this.findFormatSerializer(typeToken);
+    default SerializerRegistry register(@NonNull Consumer<SerializerRegistryOptions> options, @NonNull Iterable<@NonNull Serializer<?>> serializers){
+        return register(options, serializers.iterator());
     }
 
-    default <T> @NonNull Optional<@NonNull NodeSerializer<T>> findNodeSerializer(@NonNull Class<T> simpleType) {
-        Objects.requireNonNull(simpleType);
-
-        var typeToken = TypeToken.of(simpleType);
-
-        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
-            throw TypeException.CLASS_USED_IN_PLACE_OF_TYPETOKEN(simpleType);
-        }
-
-        return this.findNodeSerializer(typeToken);
+    default SerializerRegistry register(@NonNull Iterable<@NonNull Serializer<?>> serializers){
+        return register(_ -> {}, serializers.iterator());
     }
 
-    <T> @NonNull Optional<@NonNull Serializer<T>> find(@NonNull TypeToken<T> typeToken);
+    default SerializerRegistry register(@NonNull Consumer<SerializerRegistryOptions> options, @NonNull Serializer<?> @NonNull ... serializers) {
+        return register(options, List.of(serializers));
+    }
 
-    <T> @NonNull Optional<@NonNull FormatSerializer<T>> findFormatSerializer(@NonNull TypeToken<T> typeToken);
+    default SerializerRegistry register(@NonNull Serializer<?> @NonNull ... serializers) {
+        return register(_ -> {
+        }, serializers);
+    }
 
-    <T> @NonNull Optional<@NonNull NodeSerializer<T>> findNodeSerializer(@NonNull TypeToken<T> typeToken);
+
 }

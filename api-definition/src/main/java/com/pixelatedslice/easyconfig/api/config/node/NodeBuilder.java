@@ -33,7 +33,7 @@ public interface NodeBuilder {
 
         ValueFinalStep<T> value(@Nullable T value);
 
-        ValueFinalStep<T> validator(@NonNull Validator<T> validator);
+        ValueAbstractStep<T> validator(@NonNull Validator<T> validator);
 
         ValueFinalStep<T> serializer(@NonNull Serializer<T> serializer);
 
@@ -43,7 +43,7 @@ public interface NodeBuilder {
 
             ValueFinalStep.Original<T> value(@Nullable T value);
 
-            ValueFinalStep.Original<T> validator(@NonNull Validator<T> validator);
+            ValueAbstractStep.Original<T> validator(@NonNull Validator<T> validator);
 
             ValueFinalStep.Original<T> serializer(@NonNull Serializer<T> serializer);
         }
@@ -54,16 +54,28 @@ public interface NodeBuilder {
 
             ValueFinalStep.Child<T, ParentNode> value(@Nullable T value);
 
-            ValueFinalStep.Child<T, ParentNode> validator(@NonNull Validator<T> validator);
+            ValueAbstractStep.Child<T, ParentNode> validator(@NonNull Validator<T> validator);
 
             ValueFinalStep.Child<T, ParentNode> serializer(@NonNull Serializer<T> serializer);
         }
 
     }
 
+    interface PredefinedEnv<T> {
+
+        Function<@NonNull String, @Nullable T> adapter();
+
+        @NonNull
+        String key();
+    }
+
     interface ValueSafeStep<T> extends ValueAbstractStep<T> {
 
         @NonNull EnvAdapterStep<T> env(@NonNull String env);
+
+        default EnvFinalStep<T> env(@NonNull PredefinedEnv<T> env) {
+            return this.env(env.key()).adapter(env.adapter());
+        }
 
         interface Original<T> extends ValueSafeStep<T>, ValueAbstractStep.Original<T> {
 
@@ -82,11 +94,15 @@ public interface NodeBuilder {
 
         EnvFinalStep<T> adapter(@NonNull Function<String, T> adapter);
 
+        EnvAdapterStep<T> validator(@NonNull Validator<T> validator);
+
         interface Original<T> extends EnvAdapterStep<T> {
 
             @Override
             EnvFinalStep.Original<T> adapter(@NonNull Function<String, T> adapter);
 
+            @Override
+            EnvAdapterStep.Original<T> validator(@NonNull Validator<T> validator);
         }
 
         interface Child<T, Previous extends NodeBuilder> extends EnvAdapterStep<T> {
@@ -94,15 +110,25 @@ public interface NodeBuilder {
             @Override
             EnvFinalStep.Child<T, Previous> adapter(@NonNull Function<@NonNull String, @Nullable T> adapter);
 
+            @Override
+            EnvAdapterStep.Child<T, Previous> validator(@NonNull Validator<T> validator);
         }
     }
 
     interface EnvFinalStep<T> extends NodeBuilder {
+
+        EnvFinalStep<T> validator(@NonNull Validator<T> validator);
+
         interface Original<T> extends EnvFinalStep<T>, BaseOriginal<EnvNode<T>> {
 
+            @Override
+            EnvFinalStep.Original<T> validator(@NonNull Validator<T> validator);
         }
 
         interface Child<T, ParentNode extends NodeBuilder> extends EnvFinalStep<T>, BaseChild<ParentNode> {
+
+            @Override
+            EnvFinalStep.Child<T, ParentNode> validator(@NonNull Validator<T> validator);
         }
     }
 
