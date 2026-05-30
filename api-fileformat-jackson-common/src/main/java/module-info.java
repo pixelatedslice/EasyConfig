@@ -4,6 +4,4 @@ open module com.pixelatedslice.easyconfig.impl.fileformat.common {
     requires com.pixelatedslice.easyconfig.api;
     requires com.google.common;
     requires tools.jackson.databind;
-
-    exports com.pixelatedslice.easyconfig.impl.fileformat.common;
 }
