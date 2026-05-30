@@ -1,37 +1,39 @@
 package com.pixelatedslice.easyconfig.api.config.node;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.GenericNodeBuilder;
-import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
+import com.google.errorprone.annotations.CheckReturnValue;
+import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
 import org.jspecify.annotations.NonNull;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface Node {
-    @NonNull GenericNodeBuilder<?> toBuilder();
-
     default @NonNull NodeType nodeType() {
         return NodeType.PLAIN_NODE;
     }
 
     @NonNull String key();
 
-    @NonNull Optional<@NonNull ContainerNode> parent();
+    @NonNull ReturnedNode parent();
+
+    @NonNull
+    @CheckReturnValue
+    NodeBuilder toBuilder();
+
+    @NonNull
+    @CheckReturnValue
+    ConfigStructure toStructure();
 
     default @NonNull String[] fullPath() {
-        var list = new ArrayList<String>();
+        Stream<String> stream = Stream.empty();
         Node current = this;
-
         while (true) {
-            list.add(current.key());
-
-            if (current.parent().isEmpty()) {
+            stream = Stream.concat(stream, Stream.of(current.key()));
+            if (current.parent().plainNode().isEmpty()) {
                 break;
             }
-
-            current = current.parent().get();
+            current = current.parent().plainNode().get();
         }
 
-        return list.reversed().toArray(String[]::new);
+        return stream.toArray(String[]::new);
     }
 }

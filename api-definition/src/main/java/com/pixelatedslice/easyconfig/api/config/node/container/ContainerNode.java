@@ -3,10 +3,9 @@ package com.pixelatedslice.easyconfig.api.config.node.container;
 import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
+import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
-import com.pixelatedslice.easyconfig.api.config.node.container.builder.ContainerNodeBuilder;
-import com.pixelatedslice.easyconfig.api.config.node.container.builder.ContainerNodeBuilderChildrenStep;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
@@ -16,29 +15,19 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 public interface ContainerNode extends Node, Editable<EditableContainerNode> {
-    static @NonNull ContainerNodeBuilder builder() {
-        return ServiceLoader.load(ContainerNodeBuilder.class).findFirst().orElseThrow();
-    }
-
-    @Override
-    @NonNull ContainerNodeBuilder toBuilder();
-
-    default @NonNull ContainerNodeBuilderChildrenStep childContainerBuilder(@NonNull String key) {
-        return builder().key(key).parent(this);
-    }
 
     default @NonNull NodeType nodeType() {
         return NodeType.CONTAINER_NODE;
     }
 
+    @Override
+    NodeBuilder.ContainerFinalStep.@NonNull Original toBuilder();
+
     ImmutableList<Node> children();
 
-    default boolean isRootNode() {
-        return false;
-    }
+    boolean isRootNode();
 
     @NonNull ReturnedNode node(@NonNull String @NonNull ... path);
 
@@ -96,28 +85,5 @@ public interface ContainerNode extends Node, Editable<EditableContainerNode> {
         Objects.requireNonNull(path);
 
         return this.node(path).env(typeToken);
-    }
-
-    interface Root extends ContainerNode {
-        @Override
-        default @NonNull String key() {
-            return "root";
-        }
-
-        @Override
-        @NonNull
-        default String[] fullPath() {
-            return new String[]{"root"};
-        }
-
-        @Override
-        default @NonNull Optional<@NonNull ContainerNode> parent() {
-            return Optional.empty();
-        }
-
-        @Override
-        default boolean isRootNode() {
-            return true;
-        }
     }
 }

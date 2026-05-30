@@ -1,9 +1,14 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 plugins {
     `java-library`
+    jacoco
     id("com.vanniktech.maven.publish") version "0.36.0" apply false
 }
 
 subprojects {
+    apply(plugin = "jacoco")
     if (name == "api-bom") {
         pluginManager.apply("java-platform")
     } else {
@@ -19,6 +24,19 @@ subprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    tasks.register("mose-jacoco-style") {
+        description = "Gives jacoco a darker theme"
+        doLast {
+            val to = project.file("build/reports/jacoco/test/html/jacoco-resources/report.css")
+            val from = project.rootProject.file("gradleBuild/report.css")
+
+            if (!to.exists()) {
+                return@doLast;
+            }
+            Files.copy(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        }
     }
 
     configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
@@ -59,6 +77,7 @@ fun Project.applyDeps() {
     dependencies {
         compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
         annotationProcessor("com.google.auto.service:auto-service:1.1.1")
+        testImplementation("org.mockito:mockito-core:5.23.0")
         testImplementation(platform("org.junit:junit-bom:5.10.0"))
         testImplementation("org.junit.jupiter:junit-jupiter")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -66,6 +85,7 @@ fun Project.applyDeps() {
 
     tasks.test {
         useJUnitPlatform()
+        finalizedBy(tasks.jacocoTestReport)
     }
 
     java {
