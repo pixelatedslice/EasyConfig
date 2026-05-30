@@ -86,7 +86,6 @@ fun Project.applyDeps() {
     tasks.test {
         useJUnitPlatform()
         finalizedBy(tasks.jacocoTestReport)
-
     }
 
     java {

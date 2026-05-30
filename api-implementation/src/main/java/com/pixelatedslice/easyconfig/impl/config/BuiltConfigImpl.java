@@ -1,22 +1,22 @@
 package com.pixelatedslice.easyconfig.impl.config;
 
-import com.pixelatedslice.easyconfig.api.config.TrueConfig;
+import com.pixelatedslice.easyconfig.api.config.BuiltConfig;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
-public class TrueConfigImpl implements TrueConfig {
+public class BuiltConfigImpl implements BuiltConfig {
 
     private final @NonNull SerializerRegistry serializers;
     private final @NonNull Node root;
 
-    public TrueConfigImpl(@NonNull Node node) {
+    public BuiltConfigImpl(@NonNull Node node) {
         this(node, SerializerRegistry.global());
     }
 
-    public TrueConfigImpl(@NonNull Node node, @NonNull SerializerRegistry serializers) {
+    public BuiltConfigImpl(@NonNull Node node, @NonNull SerializerRegistry serializers) {
         this.root = Objects.requireNonNull(node);
         this.serializers = Objects.requireNonNull(serializers).createChild();
     }

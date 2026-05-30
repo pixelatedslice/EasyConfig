@@ -2,7 +2,7 @@ package com.pixelatedslice.easyconfig.api.format;
 
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
-import com.pixelatedslice.easyconfig.api.config.TrueConfig;
+import com.pixelatedslice.easyconfig.api.config.BuiltConfig;
 import org.jspecify.annotations.NonNull;
 
 import java.io.*;
@@ -15,19 +15,19 @@ public interface Format {
         return fileExtensions()[0];
     }
 
-    void write(@NonNull TrueConfig config, @NonNull Writer writer);
+    void write(@NonNull BuiltConfig config, @NonNull Writer writer);
 
-    default @NonNull String writeString(@NonNull TrueConfig config) {
+    default @NonNull String writeString(@NonNull BuiltConfig config) {
         var writer = new StringWriter();
         write(config, writer);
         return writer.toString();
     }
 
-    default void writeToFile(@NonNull TrueConfig config, @NonNull File file) throws IOException {
+    default void writeToFile(@NonNull BuiltConfig config, @NonNull File file) throws IOException {
         write(config, new FileWriter(file));
     }
 
-    default void writeToFile(@NonNull TrueConfig config, @NonNull Path path) throws IOException {
+    default void writeToFile(@NonNull BuiltConfig config, @NonNull Path path) throws IOException {
         writeToFile(config, path.toFile());
     }
 
