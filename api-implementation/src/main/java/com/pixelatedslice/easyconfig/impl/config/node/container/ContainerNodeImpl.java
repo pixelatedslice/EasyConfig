@@ -11,15 +11,21 @@ import com.pixelatedslice.easyconfig.impl.config.node.container.builder.Containe
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @NullMarked
 public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
+
     private final Collection<Node> immediateChildren = new LinkedBlockingQueue<>();
-    private String toString = this.generateToString();
 
     public ContainerNodeImpl(InternalNodeBuilder<?> builder) {
         super(builder);
+    }
+
+    @Override
+    public Collection<AbstractNode> internalChildren() {
+        return this.immediateChildren.stream().map(n -> (AbstractNode)n).toList();
     }
 
     @Override
@@ -30,12 +36,10 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
     @Override
     protected synchronized void internalAppendChild(AbstractNode node) {
         this.immediateChildren.add(node);
-        this.toString = this.generateToString();
     }
 
     protected synchronized void internalAppendChildren(Collection<? extends AbstractNode> node) {
         this.immediateChildren.addAll(node);
-        this.toString = this.generateToString();
     }
 
     @Override
@@ -45,12 +49,12 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
     }
 
     @Override
-    public ReturnedNode node(String... path) {
+    public @NonNull ReturnedNode node(@NonNull String @NonNull ... path) {
         return travel(this, path);
     }
 
 
-    synchronized void removeNodes(Collection<Node> nodes) {
+    synchronized void removeNodes(@NonNull Collection<Node> nodes) {
         this.immediateChildren.removeAll(nodes);
     }
 
@@ -66,7 +70,8 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
                 .config(this.attached);
     }
 
-    private String generateToString() {
+    @Override
+    public String toString() {
         final var joiner = new java.util.StringJoiner(", ", "[", "]");
         for (final var child : this.immediateChildren) {
             joiner.add(child.key());
@@ -78,10 +83,5 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
                 ", children=" + joiner +
                 ", fullPath=" + String.join(",", this.fullPath()) +
                 '}';
-    }
-
-    @Override
-    public String toString() {
-        return this.toString;
     }
 }

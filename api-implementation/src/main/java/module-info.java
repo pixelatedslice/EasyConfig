@@ -2,6 +2,8 @@ import com.pixelatedslice.easyconfig.api.config.node.factory.spi.NodeFactoryServ
 import com.pixelatedslice.easyconfig.impl.config.node.factory.spi.NodeFactoryServiceImpl;
 
 open module com.pixelatedslice.easyconfig.impl {
+    exports com.pixelatedslice.easyconfig.impl.config.node;
+    exports com.pixelatedslice.easyconfig.impl.config.node.container.builder;
     requires com.google.common;
     requires org.jspecify;
     requires com.pixelatedslice.easyconfig.api;

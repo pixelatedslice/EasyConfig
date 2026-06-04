@@ -28,17 +28,10 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
         this.adapter = Objects.requireNonNull(builder.adapter());
         this.type = Objects.requireNonNull(builder.type());
         this.validator = Objects.requireNonNullElseGet(builder.validator(), Validator::empty);
-
-        this.toString = "EnvNodeImpl{" +
-                "key='" + this.key() + '\'' +
-                ", envKey='" + this.envKey + '\'' +
-                ", type=" + this.type +
-                ", fullPath=" + String.join(",", this.fullPath()) +
-                '}';
     }
 
     @Override
-    public String envKey() {
+    public @NonNull String envKey() {
         return this.envKey;
     }
 
@@ -55,7 +48,7 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public Function<String, @Nullable T> adapter() {
+    public @NonNull Function<String, T> adapter() {
         return this.adapter;
     }
 
@@ -65,17 +58,17 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public TypeToken<T> typeToken() {
+    public @NonNull TypeToken<T> typeToken() {
         return this.type;
     }
 
     @Override
-    protected void internalAppendChild(AbstractNode node) {
+    protected void internalAppendChild(@NonNull AbstractNode node) {
         throw new IllegalArgumentException("child nodes are not supported on EnvNode");
     }
 
     @Override
-    public EnvNodeBuilder<T> toBuilder() {
+    public @NonNull OriginalEnvNodeBuilder<T> toBuilder() {
         return (EnvNodeBuilder<T>) new EnvNodeBuilder<>(this.type)
                 .config(this.attached)
                 .parent(this.parent)
@@ -85,7 +78,12 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public String toString() {
-        return this.toString;
+    public String toString(){
+        return "EnvNodeImpl{" +
+                "key='" + this.key() + '\'' +
+                ", envKey='" + this.envKey + '\'' +
+                ", type=" + this.type +
+                ", fullPath=" + String.join(",", this.fullPath()) +
+                '}';
     }
 }

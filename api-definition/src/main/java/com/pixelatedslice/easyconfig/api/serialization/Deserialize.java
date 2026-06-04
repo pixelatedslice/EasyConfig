@@ -4,7 +4,6 @@ import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderGroupStep;
 import org.jspecify.annotations.NullMarked;
 
-@SuppressWarnings("unused")
 @FunctionalInterface
 @NullMarked
 public interface Deserialize<T> {

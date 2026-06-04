@@ -9,50 +9,44 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-@SuppressWarnings("unused")
 @NullMarked
 public interface SerializerRegistry {
     static SerializerRegistry global() {
-        return SerializerRegistryHidden.GLOBAL;
+        return SerializerRegistryHidden.global();
     }
 
-    SerializerRegistry createChild();
+    @NonNull SerializerRegistry createChild();
 
-    Optional<SerializerRegistry> parent();
+    @NonNull Optional<SerializerRegistry> parent();
 
-    Stream<Serializer<?>> stream();
+    @NonNull Stream<@NonNull Serializer<?>> stream();
 
-    <T> Optional<Serializer<T>> serializerFor(TypeToken<T> token);
+    @NonNull <T> Optional<Serializer<T>> serializerFor(@NonNull TypeToken<T> token);
 
-    default <T> Optional<Serializer<T>> serializerFor(Class<T> token) {
+    default @NonNull <T> Optional<Serializer<T>> serializerFor(@NonNull Class<T> token) {
         return this.serializerFor(TypeToken.of(token));
     }
 
-    SerializerRegistry register(Consumer<SerializerRegistryOptions> options,
-            Iterator<Serializer<?>> serializers);
+    SerializerRegistry register(@NonNull Consumer<SerializerRegistryOptions> options, @NonNull Iterator<Serializer<?>> serializers);
 
-    default SerializerRegistry register(Iterator<Serializer<?>> serializers) {
+    default SerializerRegistry register(@NonNull Iterator<@NonNull Serializer<?>> serializers) {
         return this.register(_ -> {
         }, serializers);
     }
 
-    default SerializerRegistry register(Consumer<SerializerRegistryOptions> options,
-            Iterable<Serializer<?>> serializers) {
+    default SerializerRegistry register(@NonNull Consumer<SerializerRegistryOptions> options, @NonNull Iterable<@NonNull Serializer<?>> serializers){
         return this.register(options, serializers.iterator());
     }
 
-    default SerializerRegistry register(Iterable<Serializer<?>> serializers) {
-        return this.register(_ -> {
-        }, serializers.iterator());
+    default SerializerRegistry register(@NonNull Iterable<@NonNull Serializer<?>> serializers){
+        return this.register(_ -> {}, serializers.iterator());
     }
 
-    default SerializerRegistry register(Consumer<SerializerRegistryOptions> options,
-            Serializer<?>... serializers) {
+    default SerializerRegistry register(@NonNull Consumer<SerializerRegistryOptions> options, @NonNull Serializer<?> @NonNull ... serializers) {
         return this.register(options, List.of(serializers));
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    default SerializerRegistry register(Serializer<?>... serializers) {
+    default SerializerRegistry register(@NonNull Serializer<?> @NonNull ... serializers) {
         return this.register(_ -> {
         }, serializers);
     }

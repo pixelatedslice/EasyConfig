@@ -3,19 +3,20 @@ package com.pixelatedslice.easyconfig.api.exception;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerType;
 import org.jspecify.annotations.NullMarked;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
-@SuppressWarnings("unused")
 @NullMarked
 public class SerializerException extends RuntimeException {
-    public SerializerException(String message) {
+    public SerializerException(@NonNull String message) {
         Objects.requireNonNull(message);
 
         super(message);
     }
 
-    public SerializerException(String message, Object... args) {
+    public SerializerException(@NonNull String message, @NonNull Object @NonNull ... args) {
         Objects.requireNonNull(message);
         Objects.requireNonNull(args);
 
@@ -23,12 +24,12 @@ public class SerializerException extends RuntimeException {
     }
 
     public static SerializerException DID_NOT_EXPECT_SERIALIZER_TYPE(
-            SerializerType expected,
-            SerializerType received
+            @NonNull SerializerType expected,
+            @NonNull SerializerType received
     ) {
         Objects.requireNonNull(expected);
         Objects.requireNonNull(received);
-
+        
         return new SerializerException(
                 "Type mismatch for serializer: Expected %s but encountered %s.",
                 expected.toString(), received
@@ -36,8 +37,8 @@ public class SerializerException extends RuntimeException {
     }
 
     public static SerializerException SERIALIZER_HAS_WRONG_SUPPORTED_TYPE(
-            TypeToken<?> nodeType,
-            TypeToken<?> expectedType
+            @NonNull TypeToken<?> nodeType,
+            @NonNull TypeToken<?> expectedType
     ) {
         Objects.requireNonNull(nodeType);
         Objects.requireNonNull(expectedType);

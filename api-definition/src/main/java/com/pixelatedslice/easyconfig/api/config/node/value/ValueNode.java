@@ -18,11 +18,11 @@ public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
     @Override
     NodeBuilderKeySteps.Value<T> toBuilder();
 
-    default NodeType nodeType() {
+    default @NonNull NodeType nodeType() {
         return NodeType.VALUE_NODE;
     }
 
-    default Optional<T> value() {
+    default @NonNull Optional<@NonNull T> value() {
         return this.value(ValidationOptions.throwExceptions());
     }
 
