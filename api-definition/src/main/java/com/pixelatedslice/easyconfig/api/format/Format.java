@@ -4,33 +4,34 @@ import com.pixelatedslice.easyconfig.api.config.BuiltConfig;
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
 import org.jspecify.annotations.NullMarked;
+import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
+import org.jspecify.annotations.NonNull;
 
 import java.io.*;
 import java.nio.file.Path;
 
-@SuppressWarnings("unused")
 @NullMarked
 public interface Format {
-    String[] fileExtensions();
+    @NonNull String @NonNull [] fileExtensions();
 
-    default String preferredFileExtension() {
+    default @NonNull String preferredFileExtension() {
         return this.fileExtensions()[0];
     }
 
-    void write(BuiltConfig config, Writer writer);
+    void write(@NonNull BuiltConfig config, @NonNull Writer writer);
 
-    default String writeString(BuiltConfig config) {
-        final var writer = new StringWriter();
-        this.write(config, writer);
+    default @NonNull String writeString(@NonNull BuiltConfig config) {
+        var writer = new StringWriter();
+        write(config, writer);
         return writer.toString();
     }
 
-    default void writeToFile(BuiltConfig config, File file) throws IOException {
-        this.write(config, new FileWriter(file));
+    default void writeToFile(@NonNull BuiltConfig config, @NonNull File file) throws IOException {
+        write(config, new FileWriter(file));
     }
 
-    default void writeToFile(BuiltConfig config, Path path) throws IOException {
-        this.writeToFile(config, path.toFile());
+    default void writeToFile(@NonNull BuiltConfig config, @NonNull Path path) throws IOException {
+        writeToFile(config, path.toFile());
     }
 
     Config read(ConfigStructure structure, Reader reader);
