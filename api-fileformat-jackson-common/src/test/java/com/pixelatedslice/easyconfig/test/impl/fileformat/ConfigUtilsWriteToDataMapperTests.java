@@ -3,6 +3,7 @@ package com.pixelatedslice.easyconfig.test.impl.fileformat;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.serializer.SerializerNode;
+import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.exception.SerializeException;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
@@ -19,7 +20,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.Optional;
 
-public class ConfigUtilsWriteToDataManagerTests {
+public class ConfigUtilsWriteToDataMapperTests {
 
     @Test
     public void creates_node_structure() {
@@ -76,8 +77,12 @@ public class ConfigUtilsWriteToDataManagerTests {
                 }
 
                 @Override
-                public @NonNull File serialize(@NonNull Node rootNode, @NonNull SerializeContext context) throws SerializeException {
-                    throw new RuntimeException("Not called");
+                public @NonNull File serialize(@NonNull Node rootNode, SerializerNode node, @NonNull SerializeContext context) throws SerializeException {
+                    if (!(rootNode instanceof ValueNode<?>)) {
+                        throw new SerializeException.InvalidNodeTypeException(rootNode);
+                    }
+                    var path = node.read(String.class);
+                    return new File(path);
                 }
             };
             Mockito.when(globalSerializer.createChild()).thenReturn(globalSerializer);

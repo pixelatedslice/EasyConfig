@@ -1,6 +1,10 @@
 package com.pixelatedslice.easyconfig.impl.fileformat.serializer;
 
+import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.serializer.SerializerNode;
+import com.pixelatedslice.easyconfig.api.exception.SerializeException;
+import com.pixelatedslice.easyconfig.api.exception.SerializerException;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import com.pixelatedslice.easyconfig.api.serialization.context.ContextProperty;
@@ -24,12 +28,13 @@ public class NodeSerializerImpl implements SerializerNode {
     private final @NonNull SerializerRegistry serializerRegistry;
     private final @Nullable Serializer<?> serializer;
     private final Map<ContextProperty<?>, Object> properties = new ConcurrentHashMap<>();
+    private final @NonNull Node target;
 
-    public NodeSerializerImpl(@NonNull SerializerRegistry serializerRegistry, @NonNull ObjectMapper mapper, @NonNull ObjectNode objectNode, @NonNull String @NonNull ... path) {
-        this(serializerRegistry, null, mapper, objectNode, path);
+    public NodeSerializerImpl(@NonNull SerializerRegistry serializerRegistry, @NonNull ObjectMapper mapper, @NonNull ObjectNode objectNode, @NonNull Node node, @NonNull String @NonNull ... path) {
+        this(serializerRegistry, null, mapper, objectNode, node, path);
     }
 
-    public NodeSerializerImpl(@NonNull SerializerRegistry serializerRegistry, @Nullable Serializer<?> serializer, @NonNull ObjectMapper mapper, @NonNull ObjectNode objectNode, @NonNull String @NonNull ... path) {
+    public NodeSerializerImpl(@NonNull SerializerRegistry serializerRegistry, @Nullable Serializer<?> serializer, @NonNull ObjectMapper mapper, @NonNull ObjectNode objectNode, @NonNull Node node, @NonNull String @NonNull ... path) {
         this.path = Objects.requireNonNull(path);
         if (path.length == 0) {
             throw new IllegalArgumentException("Path cannot be null");
@@ -41,6 +46,7 @@ public class NodeSerializerImpl implements SerializerNode {
         this.serializer = serializer;
         this.serializerRegistry = Objects.requireNonNull(serializerRegistry);
         this.objectNode = Objects.requireNonNull(objectNode);
+        this.target = Objects.requireNonNull(node);
     }
 
     @Override
@@ -48,7 +54,7 @@ public class NodeSerializerImpl implements SerializerNode {
         var newPath = new String[node.length + this.path.length];
         System.arraycopy(this.path, 0, newPath, 0, node.length);
         System.arraycopy(node, 0, newPath, this.path.length, node.length);
-        return new NodeSerializerImpl(serializerRegistry, this.mapper, this.objectNode, newPath);
+        return new NodeSerializerImpl(serializerRegistry, this.mapper, this.objectNode, this.target, newPath);
     }
 
     @Override
@@ -58,7 +64,7 @@ public class NodeSerializerImpl implements SerializerNode {
         }
         var newPath = new String[this.path.length - 1];
         System.arraycopy(this.path, 0, newPath, 0, this.path.length - 1);
-        return Optional.of(new NodeSerializerImpl(this.serializerRegistry, this.mapper, this.objectNode, newPath));
+        return Optional.of(new NodeSerializerImpl(this.serializerRegistry, this.mapper, this.objectNode, this.target, newPath));
     }
 
     @Override
@@ -79,6 +85,18 @@ public class NodeSerializerImpl implements SerializerNode {
         var serializer = opSerializer.get();
         var context = new SerializerContextImpl(this.mapper, this.objectNode, this.properties);
         serializer.deserialize(value, this, context);
+    }
+
+    @Override
+    public <T> T read(TypeToken<T> token) throws SerializeException {
+        var serializer = Optional
+                .ofNullable(this.serializer)
+                .filter(serial -> serial.type().isSubtypeOf(token))
+                .map(serial -> (Serializer<T>) serial)
+                .or(() -> this.serializerRegistry.serializerFor(token))
+                .orElseThrow(() -> new SerializerException.MissingSerializerException(this));
+        var context = new SerializerContextImpl(this.mapper, this.objectNode, this.properties);
+        return serializer.serialize(this.target, this, context);
     }
 
     @Override

@@ -2,12 +2,15 @@ package com.pixelatedslice.easyconfig.impl.fileformat;
 
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Objects;
+
 
 @NullMarked
 public class ConfigUtils {
 
     public static Map. @NonNull Entry<ObjectMapper, ObjectNode> writeToDataMapper(@NonNull Config config, @NonNull Map<ContextProperty<?>, Object> properties) {
         Objects.requireNonNull(config);
+        Objects.requireNonNull(properties);
         var mapper = new ObjectMapper();
         var objectNode = mapper.createObjectNode();
 

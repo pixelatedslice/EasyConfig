@@ -8,6 +8,7 @@ import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.serialization.context.SerializeContext;
 import org.jspecify.annotations.NonNull;
 import tools.jackson.core.JsonPointer;
+import tools.jackson.databind.JsonNode;
 
 public class StringSerializer implements Serializer<String> {
     @Override
@@ -31,8 +32,26 @@ public class StringSerializer implements Serializer<String> {
     }
 
     @Override
-    public @NonNull String serialize(@NonNull Node rootNode, @NonNull SerializeContext context) throws SerializeException {
-        //TODO
-        return "";
+    public @NonNull String serialize(@NonNull Node rootNode, @NonNull SerializerNode serializerNode, @NonNull SerializeContext context) throws SerializeException {
+        if (!(context instanceof SerializerContextImpl implContext)) {
+            throw new SerializeException.InvalidNodeTypeException(rootNode);
+        }
+        var path = serializerNode.path();
+        JsonNode jsonNode = implContext.objectNode();
+        for (int index = 1; index < path.length; index++) {
+            var nextJsonNode = jsonNode.findValue(path[index]);
+            if(nextJsonNode == null){ //could be wrong caps
+                final var finalIndex = index;
+                var opPropertyName = jsonNode.propertyNames().stream().filter(name -> name.equalsIgnoreCase(path[finalIndex])).findFirst();
+                if(opPropertyName.isPresent()){
+                    nextJsonNode = jsonNode.findValue(opPropertyName.get());
+                }
+            }
+            if (nextJsonNode == null) {
+                throw new SerializeException.NoNodeException(serializerNode, index);
+            }
+            jsonNode = nextJsonNode;
+        }
+        return jsonNode.asString();
     }
 }

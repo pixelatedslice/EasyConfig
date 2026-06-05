@@ -18,4 +18,8 @@ public record ConfigStructureImpl(@NonNull Node root,
         this.root = builder.config(this).build();
         this.serializers = serializers;
     }
+
+    public BuiltConfigImpl toBuilt(){
+        return new BuiltConfigImpl(root, serializers);
+    }
 }
