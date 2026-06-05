@@ -39,11 +39,11 @@ public class StringSerializer implements Serializer<String> {
         var path = serializerNode.path();
         JsonNode jsonNode = implContext.objectNode();
         for (int index = 1; index < path.length; index++) {
-            var nextJsonNode = jsonNode.findValue(path[index]);
-            if(nextJsonNode == null){ //could be wrong caps
-                final var finalIndex = index;
-                var opPropertyName = jsonNode.propertyNames().stream().filter(name -> name.equalsIgnoreCase(path[finalIndex])).findFirst();
-                if(opPropertyName.isPresent()){
+            var pathName = path[index];
+            var nextJsonNode = jsonNode.findValue(pathName);
+            if (nextJsonNode == null) { //could be wrong caps
+                var opPropertyName = jsonNode.propertyNames().stream().filter(name -> name.equalsIgnoreCase(pathName)).findFirst();
+                if (opPropertyName.isPresent()) {
                     nextJsonNode = jsonNode.findValue(opPropertyName.get());
                 }
             }

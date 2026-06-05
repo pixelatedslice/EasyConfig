@@ -9,6 +9,8 @@ import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.container.ContainerNodeImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
 import com.pixelatedslice.easyconfig.impl.utils.DeepRecursiveGatherer;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
@@ -84,7 +86,14 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public @NonNull ConfigStructure toStructure() {
-        return new ConfigStructureImpl(this, SerializerRegistry.global().createChild());
+        var target = this;
+        if(!target.key().isEmpty()){
+            var newBuilder = new ContainerNodeOriginalBuilder();
+            newBuilder.key("");
+            newBuilder.appendChild(this.toBuilder());
+            target = newBuilder.build();
+        }
+        return new ConfigStructureImpl(target, SerializerRegistry.global().createChild());
     }
 
     public @Nullable Config config() {

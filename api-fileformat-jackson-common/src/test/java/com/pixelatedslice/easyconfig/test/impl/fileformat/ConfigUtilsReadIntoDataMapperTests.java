@@ -48,8 +48,8 @@ public class ConfigUtilsReadIntoDataMapperTests {
 
             //Assert
             var containerNode = (ContainerNode)(result.root());
-            var valueNodeTwo = containerNode.node("two").value(String.class).orElseThrow();
-            var valueNodeThree = containerNode.node("three").value(String.class).orElseThrow();
+            var valueNodeTwo = containerNode.node("one", "two").value(String.class).orElseThrow();
+            var valueNodeThree = containerNode.node("one", "three").value(String.class).orElseThrow();
             Assertions.assertEquals("TwoValue", valueNodeTwo.value().orElseThrow());
             Assertions.assertEquals("ThreeValue", valueNodeThree.value().orElseThrow());
         }
