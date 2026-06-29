@@ -1,10 +1,16 @@
 package com.pixelatedslice.easyconfig.api.validator.option;
 
 import com.pixelatedslice.easyconfig.api.exception.ValidationException;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
-public class ValidationOptions {
+@SuppressWarnings("unused")
+@NullMarked
+public final class ValidationOptions {
+
+    private ValidationOptions() {
+    }
 
     public static <T> ValidateOption<T> returnEmpty() {
         return (_, _) -> Optional.empty();

@@ -1,9 +1,10 @@
 package com.pixelatedslice.easyconfig.api.config.node.builder;
 
 import com.pixelatedslice.easyconfig.api.builder.BuilderStep;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 @FunctionalInterface
+@NullMarked
 public interface GenericNodeBuilder<Next extends BuilderStep> {
-    @NonNull Next key(@NonNull String key);
+    Next key(String key);
 }

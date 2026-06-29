@@ -2,25 +2,19 @@ package com.pixelatedslice.easyconfig.api.config.node.env.builder;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.builder.BuilderStep;
-import com.pixelatedslice.easyconfig.api.exception.TypeException;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Objects;
 
 @FunctionalInterface
+@NullMarked
 public interface EnvNodeBuilderTypeStep<T> extends BuilderStep {
-    @NonNull EnvNodeBuilderEnvStep<@NonNull T> type(@NonNull TypeToken<@NonNull T> typeToken);
+    EnvNodeBuilderEnvStep<T> type(TypeToken<T> typeToken);
 
-    default @NonNull EnvNodeBuilderEnvStep<@NonNull T> type(@NonNull Class<@NonNull T> simpleType) {
+    default EnvNodeBuilderEnvStep<T> type(Class<T> simpleType) {
         Objects.requireNonNull(simpleType);
 
-        var typeToken = TypeToken.of(simpleType);
-
-        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
-            throw TypeException.CLASS_USED_IN_PLACE_OF_TYPETOKEN(simpleType);
-        }
-
-        return this.type(typeToken);
+        return this.type(TypeTokenUtils.getSimpleOrThrow(simpleType));
     }
 }

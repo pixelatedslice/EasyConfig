@@ -1,8 +1,17 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.ServiceLoader;
 
-class SerializerRegistryHidden {
+@NullMarked
+final class SerializerRegistryHidden {
 
-    static final SerializerRegistry GLOBAL = ServiceLoader.load(SerializerRegistry.class).findFirst().orElseThrow(() -> new RuntimeException("Cannot find SerializerRegistry as a service"));
+    static final SerializerRegistry GLOBAL = ServiceLoader
+            .load(SerializerRegistry.class)
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Cannot find SerializerRegistry as a service"));
+
+    private SerializerRegistryHidden() {
+    }
 }

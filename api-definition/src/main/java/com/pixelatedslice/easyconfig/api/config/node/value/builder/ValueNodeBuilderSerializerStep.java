@@ -4,38 +4,40 @@ import com.pixelatedslice.easyconfig.api.builder.BuilderStep;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.container.builder.ContainerNodeBuilderChildrenStep;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+@SuppressWarnings("unused")
+@NullMarked
 public interface ValueNodeBuilderSerializerStep<T> extends BuilderStep, ValueNodeBuilderValidatorStep<T> {
-    @NonNull ValueNodeBuilderValidatorStep<T> serializer(@NonNull Serializer<@NonNull T> serializer);
+    ValueNodeBuilderValidatorStep<T> serializer(Serializer<T> serializer);
 
-    @NonNull ValueNodeBuilderValidatorStep<T> serializer(
-            @NonNull BiConsumer<@NonNull T, @NonNull ContainerNodeBuilderChildrenStep> serialize,
-            @NonNull Function<@NonNull Node, @NonNull T> deserialize
+    ValueNodeBuilderValidatorStep<T> serializer(
+            BiConsumer<T, ContainerNodeBuilderChildrenStep> serialize,
+            Function<Node, T> deserialize
     );
 
-    @NonNull EndWithDeserializeStep<T> serialize(
-            @NonNull BiConsumer<@NonNull T, @NonNull ContainerNodeBuilderChildrenStep> serialize
+    EndWithDeserializeStep<T> serialize(
+            BiConsumer<T, ContainerNodeBuilderChildrenStep> serialize
     );
 
-    @NonNull EndWithSerializeStep<T> deserialize(
-            @NonNull Function<@NonNull Node, @NonNull T> deserialize
+    EndWithSerializeStep<T> deserialize(
+            Function<Node, T> deserialize
     );
 
     @FunctionalInterface
     interface EndWithSerializeStep<T> {
-        @NonNull ValueNodeBuilderValidatorStep<T> serialize(
-                @NonNull BiConsumer<@NonNull T, @NonNull ContainerNodeBuilderChildrenStep> serialize
+        ValueNodeBuilderValidatorStep<T> serialize(
+                BiConsumer<T, ContainerNodeBuilderChildrenStep> serialize
         );
     }
 
     @FunctionalInterface
     interface EndWithDeserializeStep<T> {
-        @NonNull ValueNodeBuilderValidatorStep<T> deserialize(
-                @NonNull Function<@NonNull Node, @NonNull T> deserialize
+        ValueNodeBuilderValidatorStep<T> deserialize(
+                Function<Node, T> deserialize
         );
     }
 }

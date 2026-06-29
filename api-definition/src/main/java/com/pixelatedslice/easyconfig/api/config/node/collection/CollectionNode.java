@@ -6,28 +6,29 @@ import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.stream.Stream;
 
+@NullMarked
 public interface CollectionNode extends Node {
     @Override
-    default @NonNull NodeType nodeType() {
+    default NodeType nodeType() {
         return NodeType.COLLECTION_NODE;
     }
 
-    @NonNull
+
     @CheckReturnValue
     ImmutableCollection<ReturnedNode> nodes();
 
-    @NonNull
+
     @CheckReturnValue
     Stream<ReturnedNode> stream();
 
-    @NonNull
+
     @CheckReturnValue
     ReturnedNode atIndex(int index);
 
     @Override
-    NodeBuilder.@NonNull CollectionStep toBuilder();
+    NodeBuilder.CollectionStep toBuilder();
 }

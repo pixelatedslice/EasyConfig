@@ -9,35 +9,36 @@ import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
+@NullMarked
 public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
 
     @Override
-    NodeBuilder.ValueFinalStep.@NonNull Original<T> toBuilder();
+    NodeBuilder.ValueFinalStep.Original<T> toBuilder();
 
-    default @NonNull NodeType nodeType() {
+    default NodeType nodeType() {
         return NodeType.VALUE_NODE;
     }
 
-    default @NonNull Optional<@NonNull T> value() {
-        return value(ValidationOptions.throwExceptions());
+    default Optional<T> value() {
+        return this.value(ValidationOptions.throwExceptions());
     }
 
-    @NonNull Optional<@NonNull T> value(@NonNull ValidateOption<T> option);
+    Optional<T> value(ValidateOption<T> option);
 
-    @NonNull Optional<@NonNull T> defaultValue();
+    Optional<T> defaultValue();
 
-    default @NonNull Optional<@NonNull T> valueOrDefault() {
+    default Optional<T> valueOrDefault() {
         return this.value().or(this::defaultValue);
     }
 
-    @NonNull Optional<@NonNull Serializer<@NonNull T>> serializer();
+    Optional<Serializer<T>> serializer();
 
-    @NonNull Validator<T> validator();
+    Validator<T> validator();
 
-    @NonNull TypeToken<T> typeToken();
+    TypeToken<T> typeToken();
 
 }

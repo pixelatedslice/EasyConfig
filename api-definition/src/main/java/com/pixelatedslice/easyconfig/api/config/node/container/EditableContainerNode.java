@@ -2,27 +2,29 @@ package com.pixelatedslice.easyconfig.api.config.node.container;
 
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.editable.EditableVariant;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.List;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
+@NullMarked
 public interface EditableContainerNode extends EditableVariant {
-    default @NonNull EditableContainerNode addNodes(@NonNull Node @NonNull ... nodes) {
+    default EditableContainerNode addNodes(Node... nodes) {
         return this.addNodes(List.of(nodes));
     }
 
-    @NonNull EditableContainerNode addNodes(@NonNull Collection<? extends @NonNull Node> nodes);
+    EditableContainerNode addNodes(Collection<? extends Node> nodes);
 
-    @NonNull EditableContainerNode setNodes(@NonNull Collection<? extends @NonNull Node> nodes);
+    EditableContainerNode setNodes(Collection<? extends Node> nodes);
 
-    default @NonNull EditableContainerNode removeNodes(@NonNull Node @NonNull ... nodes) {
+    default EditableContainerNode removeNodes(Node... nodes) {
         return this.removeNodes(List.of(nodes));
     }
 
-    @NonNull EditableContainerNode removeNodes(@NonNull Collection<? extends @NonNull Node> nodes);
+    EditableContainerNode removeNodes(Collection<? extends Node> nodes);
 
-    @NonNull EditableContainerNode removeNodes(@NonNull String @NonNull ... keys);
+    EditableContainerNode removeNodes(String... keys);
 
-    @NonNull EditableContainerNode clearNodes();
+    EditableContainerNode clearNodes();
 }

@@ -1,18 +1,20 @@
 package com.pixelatedslice.easyconfig.api.exception;
 
 import com.google.common.reflect.TypeToken;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
+@NullMarked
 public class TypeException extends RuntimeException {
-    public TypeException(@NonNull String message) {
+    public TypeException(String message) {
         Objects.requireNonNull(message);
 
         super(message);
     }
 
-    public TypeException(@NonNull String message, @NonNull Object @NonNull ... args) {
+    public TypeException(String message, Object... args) {
         Objects.requireNonNull(message);
         Objects.requireNonNull(args);
 
@@ -20,8 +22,8 @@ public class TypeException extends RuntimeException {
     }
 
     public static TypeException CLASS_USED_IN_PLACE_OF_TYPETOKEN(
-            @NonNull TypeToken<?> complex,
-            @NonNull Class<?> simple
+            TypeToken<?> complex,
+            Class<?> simple
     ) {
         Objects.requireNonNull(complex);
         Objects.requireNonNull(simple);
@@ -32,7 +34,7 @@ public class TypeException extends RuntimeException {
         );
     }
 
-    public static TypeException CLASS_USED_IN_PLACE_OF_TYPETOKEN(@NonNull Class<?> simple) {
+    public static TypeException CLASS_USED_IN_PLACE_OF_TYPETOKEN(Class<?> simple) {
         Objects.requireNonNull(simple);
 
         return new TypeException(
@@ -41,7 +43,7 @@ public class TypeException extends RuntimeException {
         );
     }
 
-    public static TypeException TYPES_DO_NOT_MATCH(@NonNull TypeToken<?> expected, @NonNull TypeToken<?> received) {
+    public static TypeException TYPES_DO_NOT_MATCH(TypeToken<?> expected, TypeToken<?> received) {
         Objects.requireNonNull(expected);
         Objects.requireNonNull(received);
 

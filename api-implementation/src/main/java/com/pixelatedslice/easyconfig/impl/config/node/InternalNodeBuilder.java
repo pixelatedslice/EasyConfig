@@ -3,22 +3,21 @@ package com.pixelatedslice.easyconfig.impl.config.node;
 import com.google.errorprone.annotations.CheckReturnValue;
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@NullMarked
 public interface InternalNodeBuilder<Self> extends NodeBuilder {
 
     @CheckReturnValue
-    @NonNull
     Self parent(@Nullable AbstractNode node);
 
     @Nullable AbstractNode parent();
 
     @CheckReturnValue
-    @NonNull
     Self config(@Nullable Config config);
 
     @Nullable
@@ -27,16 +26,14 @@ public interface InternalNodeBuilder<Self> extends NodeBuilder {
     @Nullable
     String key();
 
-    @NonNull
     Collection<InternalNodeBuilder<?>> children();
 
-    void appendChild(@NonNull InternalNodeBuilder<?> builder);
+    void appendChild(InternalNodeBuilder<?> builder);
 
-    @NonNull
     AbstractNode build();
 
     default void buildChildren(AbstractNode built) {
-        @SuppressWarnings("ResultOfMethodCallIgnored") var immediateChildren = this
+        @SuppressWarnings("ResultOfMethodCallIgnored") final var immediateChildren = this
                 .children()
                 .stream()
                 .peek(builder -> builder.parent(built))

@@ -9,15 +9,17 @@ import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.env.builder.EnvNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.builder.ValueNodeBuilder;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
+@NullMarked
 public interface CollectionNodeBuilderChildrenStep extends BuilderStep, CollectionNodeBuilderFinalStep {
-    <T> @NonNull CollectionNodeBuilder valueNode(@NonNull Consumer<? super ValueNodeBuilder<T>> valueNodeBuilder);
+    <T> CollectionNodeBuilder valueNode(Consumer<? super ValueNodeBuilder<T>> valueNodeBuilder);
 
-    <T> @NonNull CollectionNodeBuilder valueNode(@NonNull ValueNode<T> valueNode);
+    <T> CollectionNodeBuilder valueNode(ValueNode<T> valueNode);
 
     /**
      * Call {@link CollectionNodeBuilderChildrenStep#valueNode(ValueNode)} to add the node
@@ -25,25 +27,21 @@ public interface CollectionNodeBuilderChildrenStep extends BuilderStep, Collecti
      * @param <T> The type
      * @return A new {@link ValueNodeBuilder}
      */
-    <T> @NonNull ValueNodeBuilder<T> node();
+    <T> ValueNodeBuilder<T> node();
 
-    default <T> @NonNull CollectionNodeBuilder valueNode(@NonNull String key, @NonNull TypeToken<T> typeToken,
+    default <T> CollectionNodeBuilder valueNode(String key, TypeToken<T> typeToken,
             @Nullable T value) {
-        return this.valueNode((ValueNodeBuilder<T> b) -> {
-            b.key(key).type(typeToken).value(value);
-        });
+        return this.valueNode((ValueNodeBuilder<T> builder) -> builder.key(key).type(typeToken).value(value));
     }
 
-    default <T> @NonNull CollectionNodeBuilder valueNode(@NonNull String key, @NonNull Class<T> simpleType,
+    default <T> CollectionNodeBuilder valueNode(String key, Class<T> simpleType,
             @Nullable T value) {
-        return this.valueNode((ValueNodeBuilder<T> b) -> {
-            b.key(key).type(simpleType).value(value);
-        });
+        return this.valueNode((ValueNodeBuilder<T> builder) -> builder.key(key).type(simpleType).value(value));
     }
 
-    <T> @NonNull CollectionNodeBuilder envNode(@NonNull Consumer<? super EnvNodeBuilder<T>> envNodeBuilder);
+    <T> CollectionNodeBuilder envNode(Consumer<? super EnvNodeBuilder<T>> envNodeBuilder);
 
-    <T> @NonNull CollectionNodeBuilder envNode(@NonNull EnvNode<T> envNode);
+    <T> CollectionNodeBuilder envNode(EnvNode<T> envNode);
 
     /**
      * Call {@link CollectionNodeBuilderChildrenStep#envNode(EnvNode)} to add the node
@@ -51,42 +49,44 @@ public interface CollectionNodeBuilderChildrenStep extends BuilderStep, Collecti
      * @param <T> The type
      * @return A new {@link EnvNodeBuilder}
      */
-    <T> @NonNull EnvNodeBuilder<T> envNode();
+    <T> EnvNodeBuilder<T> envNode();
 
-    default <T> @NonNull CollectionNodeBuilder envNode(@NonNull String key, @NonNull TypeToken<T> typeToken,
-            @NonNull String environmentVariable) {
-        return this.envNode((EnvNodeBuilder<T> b) -> {
-            b.key(key).type(typeToken).environmentVariable(environmentVariable);
-        });
+    default <T> CollectionNodeBuilder envNode(String key, TypeToken<T> typeToken,
+            String environmentVariable) {
+        return this.envNode((EnvNodeBuilder<T> builder) -> builder
+                .key(key)
+                .type(typeToken)
+                .environmentVariable(environmentVariable));
     }
 
-    default <T> @NonNull CollectionNodeBuilder envNode(@NonNull String key, @NonNull Class<T> simpleType,
-            @NonNull String environmentVariable) {
-        return this.envNode((EnvNodeBuilder<T> b) -> {
-            b.key(key).type(simpleType).environmentVariable(environmentVariable);
-        });
+    default <T> CollectionNodeBuilder envNode(String key, Class<T> simpleType,
+            String environmentVariable) {
+        return this.envNode((EnvNodeBuilder<T> builder) -> builder
+                .key(key)
+                .type(simpleType)
+                .environmentVariable(environmentVariable));
     }
 
-    @NonNull CollectionNodeBuilder containerNode(@NonNull Consumer<? super ContainerNodeBuilder> containerNodeBuilder);
+    CollectionNodeBuilder containerNode(Consumer<? super ContainerNodeBuilder> containerNodeBuilder);
 
-    @NonNull CollectionNodeBuilder containerNode(@NonNull ContainerNode containerNodeBuilder);
+    CollectionNodeBuilder containerNode(ContainerNode containerNodeBuilder);
 
     /**
      * Call {@link CollectionNodeBuilderChildrenStep#containerNode(ContainerNode)} to add the ContainerNode
      *
      * @return A new {@link ContainerNodeBuilder}
      */
-    @NonNull ContainerNodeBuilder containerNode();
+    ContainerNodeBuilder containerNode();
 
-    @NonNull CollectionNodeBuilder collectionNode(
-            @NonNull Consumer<? super CollectionNodeBuilder> containerNodeBuilder);
+    CollectionNodeBuilder collectionNode(
+            Consumer<? super CollectionNodeBuilder> containerNodeBuilder);
 
-    @NonNull CollectionNodeBuilder collectionNode(@NonNull CollectionNode containerNodeBuilder);
+    CollectionNodeBuilder collectionNode(CollectionNode containerNodeBuilder);
 
     /**
      * Call {@link CollectionNodeBuilderChildrenStep#collectionNode(CollectionNode)} to add the ContainerNode
      *
      * @return A new {@link ContainerNodeBuilder}
      */
-    @NonNull CollectionNodeBuilder collectionNode();
+    CollectionNodeBuilder collectionNode();
 }

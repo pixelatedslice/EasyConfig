@@ -1,29 +1,27 @@
 package com.pixelatedslice.easyconfig.api.utils.typetoken;
 
 import com.google.common.reflect.TypeToken;
-import org.jspecify.annotations.NonNull;
 
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-@SuppressWarnings("SequencedCollectionMethodCanBeUsed")
+@SuppressWarnings("unused")
 final class TypeTokenTypeComparer {
     private TypeTokenTypeComparer() {
     }
 
-    static <T> boolean hasCorrectType(@NonNull T value, @NonNull TypeToken<?> typeToken) {
+    static <T> boolean hasCorrectType(T value, TypeToken<?> typeToken) {
         Objects.requireNonNull(value);
         Objects.requireNonNull(typeToken);
 
-        var baseType = typeToken.getRawType();
+        final var baseType = typeToken.getRawType();
 
         if (!baseType.isInstance(value)) {
             return false;
         }
 
-        var valueClass = value.getClass();
+        final var valueClass = value.getClass();
 
         if (TypeTokenUtils.matchingClass(Collection.class, baseType, valueClass)) {
             return iterable(value, typeToken);
@@ -36,11 +34,11 @@ final class TypeTokenTypeComparer {
         return typeToken.getRawType().isInstance(value);
     }
 
-    private static boolean iterable(@NonNull Object container, @NonNull TypeToken<?> typeToken) {
-        throw  new RuntimeException();
+    private static boolean iterable(Object container, TypeToken<?> typeToken) {
+        throw new RuntimeException();
     }
 
-    private static boolean map(@NonNull Map<?, ?> map, @NonNull TypeToken<?> typeToken) {
+    private static boolean map(Map<?, ?> map, TypeToken<?> typeToken) {
         Objects.requireNonNull(map);
         Objects.requireNonNull(typeToken);
 
@@ -48,15 +46,15 @@ final class TypeTokenTypeComparer {
             return true;
         }
 
-        var generics = TypeTokenUtils.generics(typeToken);
-        var keyGeneric = generics.get(0);
-        var keyGenericClass = keyGeneric.getRawType();
-        var valueGeneric = generics.get(1);
-        var valueGenericClass = valueGeneric.getRawType();
+        final var generics = TypeTokenUtils.generics(typeToken);
+        final var keyGeneric = generics.get(0);
+        final var keyGenericClass = keyGeneric.getRawType();
+        final var valueGeneric = generics.get(1);
+        final var valueGenericClass = valueGeneric.getRawType();
 
         for (var entry : map.entrySet()) {
-            var key = entry.getKey();
-            var value = entry.getValue();
+            final var key = entry.getKey();
+            final var value = entry.getValue();
 
             if (!keyGenericClass.isInstance(key)
                     || !valueGenericClass.isInstance(value)

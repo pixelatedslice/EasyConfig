@@ -9,16 +9,18 @@ import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.env.builder.EnvNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.builder.ValueNodeBuilder;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
+@NullMarked
 public interface ContainerNodeBuilderChildrenStep extends BuilderStep, ContainerNodeBuilderFinalStep {
-    <T> @NonNull ContainerNodeBuilderChildrenStep valueNode(
-            @NonNull Consumer<? super ValueNodeBuilder<T>> valueNodeBuilder);
+    <T> ContainerNodeBuilderChildrenStep valueNode(
+            Consumer<? super ValueNodeBuilder<T>> valueNodeBuilder);
 
-    <T> @NonNull ContainerNodeBuilderChildrenStep valueNode(@NonNull ValueNode<T> valueNode);
+    <T> ContainerNodeBuilderChildrenStep valueNode(ValueNode<T> valueNode);
 
     /**
      * Call {@link ContainerNodeBuilderChildrenStep#valueNode(ValueNode)} to add the node.
@@ -26,26 +28,22 @@ public interface ContainerNodeBuilderChildrenStep extends BuilderStep, Container
      * @param <T> The type
      * @return A new {@link ValueNodeBuilder}
      */
-    <T> @NonNull ValueNodeBuilder<T> node();
+    <T> ValueNodeBuilder<T> node();
 
-    default <T> @NonNull ContainerNodeBuilderChildrenStep valueNode(@NonNull String key,
-            @NonNull TypeToken<T> typeToken,
+    default <T> ContainerNodeBuilderChildrenStep valueNode(String key,
+            TypeToken<T> typeToken,
             @Nullable T value) {
-        return this.valueNode((ValueNodeBuilder<T> b) -> {
-            b.key(key).type(typeToken).value(value);
-        });
+        return this.valueNode((ValueNodeBuilder<T> builder) -> builder.key(key).type(typeToken).value(value));
     }
 
-    default <T> @NonNull ContainerNodeBuilderChildrenStep valueNode(@NonNull String key, @NonNull Class<T> simpleType,
+    default <T> ContainerNodeBuilderChildrenStep valueNode(String key, Class<T> simpleType,
             @Nullable T value) {
-        return this.valueNode((ValueNodeBuilder<T> b) -> {
-            b.key(key).type(simpleType).value(value);
-        });
+        return this.valueNode((ValueNodeBuilder<T> builder) -> builder.key(key).type(simpleType).value(value));
     }
 
-    <T> @NonNull ContainerNodeBuilderChildrenStep envNode(@NonNull Consumer<? super EnvNodeBuilder<T>> envNodeBuilder);
+    <T> ContainerNodeBuilderChildrenStep envNode(Consumer<? super EnvNodeBuilder<T>> envNodeBuilder);
 
-    <T> @NonNull ContainerNodeBuilderChildrenStep envNode(@NonNull EnvNode<T> envNode);
+    <T> ContainerNodeBuilderChildrenStep envNode(EnvNode<T> envNode);
 
     /**
      * Call {@link ContainerNodeBuilderChildrenStep#envNode(EnvNode)} to add the node.
@@ -53,43 +51,45 @@ public interface ContainerNodeBuilderChildrenStep extends BuilderStep, Container
      * @param <T> The type
      * @return A new {@link EnvNodeBuilder}
      */
-    <T> @NonNull EnvNodeBuilder<T> envNode();
+    <T> EnvNodeBuilder<T> envNode();
 
-    default <T> @NonNull ContainerNodeBuilderChildrenStep envNode(@NonNull String key, @NonNull TypeToken<T> typeToken,
-            @NonNull String environmentVariable) {
-        return this.envNode((EnvNodeBuilder<T> b) -> {
-            b.key(key).type(typeToken).environmentVariable(environmentVariable);
-        });
+    default <T> ContainerNodeBuilderChildrenStep envNode(String key, TypeToken<T> typeToken,
+            String environmentVariable) {
+        return this.envNode((EnvNodeBuilder<T> builder) -> builder
+                .key(key)
+                .type(typeToken)
+                .environmentVariable(environmentVariable));
     }
 
-    default <T> @NonNull ContainerNodeBuilderChildrenStep envNode(@NonNull String key, @NonNull Class<T> simpleType,
-            @NonNull String environmentVariable) {
-        return this.envNode((EnvNodeBuilder<T> b) -> {
-            b.key(key).type(simpleType).environmentVariable(environmentVariable);
-        });
+    default <T> ContainerNodeBuilderChildrenStep envNode(String key, Class<T> simpleType,
+            String environmentVariable) {
+        return this.envNode((EnvNodeBuilder<T> builder) -> builder
+                .key(key)
+                .type(simpleType)
+                .environmentVariable(environmentVariable));
     }
 
-    @NonNull ContainerNodeBuilderChildrenStep containerNode(
-            @NonNull Consumer<? super ContainerNodeBuilder> containerNodeBuilder);
+    ContainerNodeBuilderChildrenStep containerNode(
+            Consumer<? super ContainerNodeBuilder> containerNodeBuilder);
 
-    @NonNull ContainerNodeBuilderChildrenStep containerNode(@NonNull ContainerNode containerNodeBuilder);
+    ContainerNodeBuilderChildrenStep containerNode(ContainerNode containerNodeBuilder);
 
     /**
      * Call {@link ContainerNodeBuilderChildrenStep#containerNode(ContainerNode)} to add the ContainerNode.
      *
      * @return A new {@link ContainerNodeBuilder}
      */
-    @NonNull ContainerNodeBuilder containerNode();
+    ContainerNodeBuilder containerNode();
 
-    @NonNull ContainerNodeBuilderChildrenStep collectionNode(
-            @NonNull Consumer<? super CollectionNodeBuilder> containerNodeBuilder);
+    ContainerNodeBuilderChildrenStep collectionNode(
+            Consumer<? super CollectionNodeBuilder> containerNodeBuilder);
 
-    @NonNull ContainerNodeBuilderChildrenStep collectionNode(@NonNull CollectionNode containerNodeBuilder);
+    ContainerNodeBuilderChildrenStep collectionNode(CollectionNode containerNodeBuilder);
 
     /**
      * Call {@link ContainerNodeBuilderChildrenStep#collectionNode(CollectionNode)} to add the ContainerNode.
      *
      * @return A new {@link CollectionNodeBuilder}
      */
-    @NonNull CollectionNodeBuilder collectionNode();
+    CollectionNodeBuilder collectionNode();
 }

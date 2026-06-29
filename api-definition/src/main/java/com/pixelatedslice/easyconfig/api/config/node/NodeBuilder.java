@@ -8,11 +8,12 @@ import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 
+@NullMarked
 public interface NodeBuilder {
 
     interface BaseOriginal<T> {
@@ -25,7 +26,7 @@ public interface NodeBuilder {
 
     interface FirstStep extends NodeBuilder {
 
-        ContainerFinalStep.@NonNull Original key(@NonNull String key);
+        ContainerFinalStep.Original key(String key);
     }
 
     interface ValueAbstractStep<T> extends NodeBuilder {
@@ -33,9 +34,9 @@ public interface NodeBuilder {
 
         ValueFinalStep<T> value(@Nullable T value);
 
-        ValueAbstractStep<T> validator(@NonNull Validator<T> validator);
+        ValueAbstractStep<T> validator(Validator<T> validator);
 
-        ValueFinalStep<T> serializer(@NonNull Serializer<T> serializer);
+        ValueFinalStep<T> serializer(Serializer<T> serializer);
 
         interface Original<T> extends ValueAbstractStep<T>, BaseOriginal<ValueNode<T>> {
 
@@ -43,9 +44,9 @@ public interface NodeBuilder {
 
             ValueFinalStep.Original<T> value(@Nullable T value);
 
-            ValueAbstractStep.Original<T> validator(@NonNull Validator<T> validator);
+            ValueAbstractStep.Original<T> validator(Validator<T> validator);
 
-            ValueFinalStep.Original<T> serializer(@NonNull Serializer<T> serializer);
+            ValueFinalStep.Original<T> serializer(Serializer<T> serializer);
         }
 
         interface Child<T, ParentNode extends NodeBuilder> extends ValueAbstractStep<T>, BaseChild<ParentNode> {
@@ -54,81 +55,82 @@ public interface NodeBuilder {
 
             ValueFinalStep.Child<T, ParentNode> value(@Nullable T value);
 
-            ValueAbstractStep.Child<T, ParentNode> validator(@NonNull Validator<T> validator);
+            ValueAbstractStep.Child<T, ParentNode> validator(Validator<T> validator);
 
-            ValueFinalStep.Child<T, ParentNode> serializer(@NonNull Serializer<T> serializer);
+            ValueFinalStep.Child<T, ParentNode> serializer(Serializer<T> serializer);
         }
 
     }
 
-    interface PredefinedEnv<T> {
+    interface PredefinedEnv<T extends @Nullable Object> {
 
-        Function<@NonNull String, @Nullable T> adapter();
+        Function<String, @Nullable T> adapter();
 
-        @NonNull
+
         String key();
     }
 
     interface ValueSafeStep<T> extends ValueAbstractStep<T> {
 
-        @NonNull EnvAdapterStep<T> env(@NonNull String env);
+        EnvAdapterStep<T> env(String env);
 
-        default EnvFinalStep<T> env(@NonNull PredefinedEnv<T> env) {
+        default EnvFinalStep<T> env(PredefinedEnv<T> env) {
             return this.env(env.key()).adapter(env.adapter());
         }
 
         interface Original<T> extends ValueSafeStep<T>, ValueAbstractStep.Original<T> {
 
             @Override
-            EnvAdapterStep.@NonNull Original<T> env(@NonNull String env);
+            EnvAdapterStep.Original<T> env(String env);
         }
 
-        interface Child<T, ParentNode extends NodeBuilder> extends ValueSafeStep<T>, ValueAbstractStep.Child<T, ParentNode> {
+        interface Child<T, ParentNode extends NodeBuilder>
+                extends ValueSafeStep<T>, ValueAbstractStep.Child<T, ParentNode> {
 
             @Override
-            EnvAdapterStep.@NonNull Child<T, ParentNode> env(@NonNull String env);
+            EnvAdapterStep.Child<T, ParentNode> env(String env);
         }
     }
 
     interface EnvAdapterStep<T> extends NodeBuilder {
 
-        EnvFinalStep<T> adapter(@NonNull Function<String, T> adapter);
+        EnvFinalStep<T> adapter(Function<String, @Nullable T> adapter);
 
-        EnvAdapterStep<T> validator(@NonNull Validator<T> validator);
+        EnvAdapterStep<T> validator(Validator<T> validator);
 
         interface Original<T> extends EnvAdapterStep<T> {
 
             @Override
-            EnvFinalStep.Original<T> adapter(@NonNull Function<String, T> adapter);
+            EnvFinalStep.Original<T> adapter(Function<String, @Nullable T> adapter);
 
             @Override
-            EnvAdapterStep.Original<T> validator(@NonNull Validator<T> validator);
+            EnvAdapterStep.Original<T> validator(Validator<T> validator);
         }
 
         interface Child<T, Previous extends NodeBuilder> extends EnvAdapterStep<T> {
 
             @Override
-            EnvFinalStep.Child<T, Previous> adapter(@NonNull Function<@NonNull String, @Nullable T> adapter);
+            EnvFinalStep.Child<T, Previous> adapter(Function<String, @Nullable T> adapter);
 
             @Override
-            EnvAdapterStep.Child<T, Previous> validator(@NonNull Validator<T> validator);
+            EnvAdapterStep.Child<T, Previous> validator(Validator<T> validator);
         }
     }
 
     interface EnvFinalStep<T> extends NodeBuilder {
 
-        EnvFinalStep<T> validator(@NonNull Validator<T> validator);
+        EnvFinalStep<T> validator(Validator<T> validator);
 
         interface Original<T> extends EnvFinalStep<T>, BaseOriginal<EnvNode<T>> {
 
             @Override
-            EnvFinalStep.Original<T> validator(@NonNull Validator<T> validator);
+            EnvFinalStep.Original<T> validator(Validator<T> validator);
         }
 
         interface Child<T, ParentNode extends NodeBuilder> extends EnvFinalStep<T>, BaseChild<ParentNode> {
 
             @Override
-            EnvFinalStep.Child<T, ParentNode> validator(@NonNull Validator<T> validator);
+            EnvFinalStep.Child<T, ParentNode> validator(Validator<T> validator);
         }
     }
 
@@ -143,13 +145,14 @@ public interface NodeBuilder {
             ValueFinalStep.Original<T> value(@Nullable T value);
 
             @Override
-            ValueFinalStep.Original<T> validator(@NonNull Validator<T> validator);
+            ValueFinalStep.Original<T> validator(Validator<T> validator);
 
             @Override
-            ValueFinalStep.Original<T> serializer(@NonNull Serializer<T> serializer);
+            ValueFinalStep.Original<T> serializer(Serializer<T> serializer);
         }
 
-        interface Child<T, ParentBuilder extends NodeBuilder> extends ValueFinalStep<T>, ValueAbstractStep.Child<T, ParentBuilder> {
+        interface Child<T, ParentBuilder extends NodeBuilder>
+                extends ValueFinalStep<T>, ValueAbstractStep.Child<T, ParentBuilder> {
         }
     }
 
@@ -173,69 +176,68 @@ public interface NodeBuilder {
     }
 
     interface ContainerSafeStep extends NodeBuilder {
-        @NonNull
+
         @CheckReturnValue
         CollectionStep collection();
 
         @CheckReturnValue
-        ContainerSafeStep.@NonNull Child<? extends NodeBuilder> append(@NonNull String key);
+        ContainerSafeStep.Child<? extends NodeBuilder> append(String key);
 
         interface Original extends ContainerSafeStep, BaseOriginal<ContainerNode> {
 
             @Override
-            CollectionStep.@NonNull Original collection();
+            CollectionStep.Original collection();
 
             @Override
-            ContainerSafeStep.@NonNull Child<? extends ContainerSafeStep.Original> append(@NonNull String key);
+            ContainerSafeStep.Child<? extends ContainerSafeStep.Original> append(String key);
         }
 
         interface Child<Parent extends NodeBuilder> extends ContainerFinalStep, BaseChild<Parent> {
             @Override
-            ContainerSafeStep.@NonNull Child<? extends ContainerSafeStep.Child<Parent>> append(@NonNull String key);
+            ContainerSafeStep.Child<? extends ContainerSafeStep.Child<Parent>> append(String key);
 
             @Override
-            CollectionStep.@NonNull Child<Parent> collection();
+            CollectionStep.Child<Parent> collection();
         }
     }
 
     interface ContainerFinalStep extends ContainerSafeStep {
 
 
-        @NonNull
         @CheckReturnValue
-        <T> ValueSafeStep<T> of(@NonNull TypeToken<T> token);
+        <T> ValueSafeStep<T> of(TypeToken<T> token);
 
-        @NonNull
+
         @CheckReturnValue
-        default <T> ValueSafeStep<T> of(@NonNull Class<T> clazz) {
-            return of(TypeToken.of(clazz));
+        default <T> ValueSafeStep<T> of(Class<T> clazz) {
+            return this.of(TypeToken.of(clazz));
         }
 
 
         interface Original extends ContainerFinalStep, ContainerSafeStep.Original {
 
             @Override
-            ContainerFinalStep.@NonNull Child<ContainerFinalStep.Original> append(@NonNull String key);
+            ContainerFinalStep.Child<ContainerFinalStep.Original> append(String key);
 
             @Override
-            <T> ValueSafeStep.@NonNull Original<T> of(@NonNull TypeToken<T> token);
+            <T> ValueSafeStep.Original<T> of(TypeToken<T> token);
 
             @Override
-            default <T> ValueSafeStep.@NonNull Original<T> of(@NonNull Class<T> clazz) {
-                return of(TypeToken.of(clazz));
+            default <T> ValueSafeStep.Original<T> of(Class<T> clazz) {
+                return this.of(TypeToken.of(clazz));
             }
         }
 
         interface Child<Parent extends NodeBuilder> extends ContainerFinalStep, ContainerSafeStep.Child<Parent> {
             @Override
-            ContainerFinalStep.@NonNull Child<ContainerFinalStep.Child<Parent>> append(@NonNull String key);
+            ContainerFinalStep.Child<ContainerFinalStep.Child<Parent>> append(String key);
 
             @Override
-            <T> ValueSafeStep.@NonNull Child<T, Parent> of(@NonNull TypeToken<T> token);
+            <T> ValueSafeStep.Child<T, Parent> of(TypeToken<T> token);
 
             @Override
-            default <T> ValueSafeStep.@NonNull Child<T, Parent> of(@NonNull Class<T> clazz) {
-                return of(TypeToken.of(clazz));
+            default <T> ValueSafeStep.Child<T, Parent> of(Class<T> clazz) {
+                return this.of(TypeToken.of(clazz));
             }
         }
     }

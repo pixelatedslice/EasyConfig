@@ -1,7 +1,10 @@
 package com.pixelatedslice.easyconfig.api.config.node.env.builder;
 
 import com.pixelatedslice.easyconfig.api.config.node.builder.GenericNodeBuilderHandler;
+import org.jspecify.annotations.NullMarked;
 
+@SuppressWarnings("unused")
+@NullMarked
 public interface EnvNodeBuilderHandler<T> extends
         GenericNodeBuilderHandler<EnvNodeBuilderParentStep<T>, EnvNodeBuilderTypeStep<T>>,
         EnvNodeBuilderParentStep<T>, EnvNodeBuilderTypeStep<T>, EnvNodeBuilderEnvStep<T>,

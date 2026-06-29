@@ -1,16 +1,19 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
 import com.pixelatedslice.easyconfig.api.exception.DuplicateException;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.function.BinaryOperator;
 
+@SuppressWarnings("unused")
+@NullMarked
 public interface SerializerRegistryOptions {
 
-    @NonNull
-    SerializerRegistryOptions duplicateRegisterStyle(@NonNull DuplicateRegisterStyle style);
 
-    SerializerRegistryOptions.@NonNull DuplicateRegisterStyle duplicateRegisterStyle();
+    @SuppressWarnings("UnusedReturnValue")
+    SerializerRegistryOptions duplicateRegisterStyle(DuplicateRegisterStyle style);
+
+    SerializerRegistryOptions.DuplicateRegisterStyle duplicateRegisterStyle();
 
     enum DuplicateRegisterStyle {
         THROW((first, replacement) -> {
@@ -21,7 +24,7 @@ public interface SerializerRegistryOptions {
 
         private final BinaryOperator<Serializer<?>> action;
 
-        DuplicateRegisterStyle(@NonNull BinaryOperator<Serializer<?>> action) {
+        DuplicateRegisterStyle(BinaryOperator<Serializer<?>> action) {
             this.action = action;
         }
 
@@ -29,7 +32,7 @@ public interface SerializerRegistryOptions {
             return this.action;
         }
 
-        public <T> @NonNull Serializer<T> apply(@NonNull Serializer<T> original, Serializer<T> replacement) {
+        public <T> Serializer<T> apply(Serializer<T> original, Serializer<T> replacement) {
             //noinspection unchecked
             return (Serializer<T>) this.action.apply(original, replacement);
         }

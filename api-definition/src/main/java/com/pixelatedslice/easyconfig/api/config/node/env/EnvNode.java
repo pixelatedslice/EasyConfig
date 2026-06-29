@@ -7,32 +7,33 @@ import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.function.Function;
 
+@NullMarked
 public interface EnvNode<T> extends Node {
 
-    default @NonNull NodeType nodeType() {
+    default NodeType nodeType() {
         return NodeType.ENV_NODE;
     }
 
-    @NonNull String envKey();
+    String envKey();
 
     default Optional<T> value() {
-        return value(ValidationOptions.throwExceptions());
+        return this.value(ValidationOptions.throwExceptions());
     }
 
-    Optional<T> value(@NonNull ValidateOption<T> validateOption);
+    Optional<T> value(ValidateOption<T> validateOption);
 
-    @NonNull
+
     Function<String, T> adapter();
 
     Validator<T> validator();
 
-    @NonNull TypeToken<T> typeToken();
+    TypeToken<T> typeToken();
 
     @Override
-    NodeBuilder.@NonNull EnvFinalStep<T> toBuilder();
+    NodeBuilder.EnvFinalStep<T> toBuilder();
 }
