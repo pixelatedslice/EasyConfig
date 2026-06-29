@@ -28,6 +28,8 @@ public interface EnvNodeBuilderSerializerStep<T> extends BuilderStep, EnvNodeBui
     );
 
     @FunctionalInterface
+
+    @NullMarked
     interface EndWithSerializeStep<T> {
         EnvNodeBuilderValidatorStep<T> serialize(
                 BiConsumer<T, ContainerNodeBuilderChildrenStep> serialize
@@ -35,6 +37,8 @@ public interface EnvNodeBuilderSerializerStep<T> extends BuilderStep, EnvNodeBui
     }
 
     @FunctionalInterface
+
+    @NullMarked
     interface EndWithDeserializeStep<T> {
         EnvNodeBuilderValidatorStep<T> deserialize(
                 Function<Node, T> deserialize

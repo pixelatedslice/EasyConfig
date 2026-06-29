@@ -2,6 +2,7 @@ package com.pixelatedslice.easyconfig.api.validator;
 
 import org.jspecify.annotations.NullMarked;
 
+
 import java.util.Collection;
 
 @NullMarked

@@ -1,18 +1,20 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.envKey;
 
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvKeys;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@NullMarked
 public class DisplayEnvKeyTests {
 
     @Test
     public void display_has_correct_key() {
         //ARRANGE
-        var key = "DISPLAY";
+        final var key = "DISPLAY";
 
         //ACT
-        var result = EnvKeys.DISPLAY.key();
+        final var result = EnvKeys.DISPLAY.key();
 
         //ASSERT
         Assertions.assertEquals(key, result);
@@ -21,10 +23,10 @@ public class DisplayEnvKeyTests {
     @Test
     public void lang_parses_correctly() {
         //ARRANGE
-        String input = ":0";
+        final String input = ":0";
 
         //ACT
-        var result = EnvKeys.DISPLAY.adapter().apply(input);
+        final var result = EnvKeys.DISPLAY.adapter().apply(input);
 
         //ASSERT
         Assertions.assertNotNull(result);
@@ -34,10 +36,10 @@ public class DisplayEnvKeyTests {
     @Test
     public void lang_returns_null_when_invalid_without_dot_input() {
         //ARRANGE
-        String input = "invalid";
+        final String input = "invalid";
 
         //ACT
-        var result = EnvKeys.DISPLAY.adapter().apply(input);
+        final var result = EnvKeys.DISPLAY.adapter().apply(input);
 
         //ASSERT
         Assertions.assertNull(result);

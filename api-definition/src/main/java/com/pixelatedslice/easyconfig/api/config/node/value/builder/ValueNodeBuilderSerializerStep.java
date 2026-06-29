@@ -28,6 +28,8 @@ public interface ValueNodeBuilderSerializerStep<T> extends BuilderStep, ValueNod
     );
 
     @FunctionalInterface
+
+    @NullMarked
     interface EndWithSerializeStep<T> {
         ValueNodeBuilderValidatorStep<T> serialize(
                 BiConsumer<T, ContainerNodeBuilderChildrenStep> serialize
@@ -35,6 +37,8 @@ public interface ValueNodeBuilderSerializerStep<T> extends BuilderStep, ValueNod
     }
 
     @FunctionalInterface
+
+    @NullMarked
     interface EndWithDeserializeStep<T> {
         ValueNodeBuilderValidatorStep<T> deserialize(
                 Function<Node, T> deserialize

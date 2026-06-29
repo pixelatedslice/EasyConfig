@@ -5,31 +5,24 @@ import com.pixelatedslice.easyconfig.api.config.node.factory.FactoryNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@SuppressWarnings("unchecked")
 @NullMarked
-public abstract class AbstractFactoryNodeBuilder<NextKeyStep extends FactoryNodeBuilder,
+public abstract class AbstractFactoryNodeBuilder<NodeType extends Node, NextKeyStep extends FactoryNodeBuilder,
         NextParentStep extends FactoryNodeBuilder>
         implements FactoryNodeBuilder, FactoryNodeBuilder.KeyStep<NextKeyStep>,
-        FactoryNodeBuilder.ParentStep<NextParentStep>, FactoryNodeBuilder.BuildStep<Node> {
-    private final NextKeyStep nextKeyStep;
-    private final NextParentStep nextParentStep;
-
+        FactoryNodeBuilder.ParentStep<NextParentStep>, FactoryNodeBuilder.BuildStep<NodeType> {
     protected @Nullable String key;
     protected @Nullable Node parent;
-
-    protected AbstractFactoryNodeBuilder(NextKeyStep nextKeyStep, NextParentStep nextParentStep) {
-        this.nextKeyStep = nextKeyStep;
-        this.nextParentStep = nextParentStep;
-    }
 
     @Override
     public NextKeyStep key(String key) {
         this.key = key;
-        return this.nextKeyStep;
+        return (NextKeyStep) this;
     }
 
     @Override
-    public NextParentStep parent(Node parent) {
+    public NextParentStep parent(@Nullable Node parent) {
         this.parent = parent;
-        return this.nextParentStep;
+        return (NextParentStep) this;
     }
 }

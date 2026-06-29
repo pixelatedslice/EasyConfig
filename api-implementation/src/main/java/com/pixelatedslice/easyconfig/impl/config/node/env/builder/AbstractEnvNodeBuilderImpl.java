@@ -8,7 +8,7 @@ import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.env.EnvNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.value.builder.AbstractValueNodeBuilder;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -16,17 +16,19 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderImpl<T, Self>> implements InternalNodeBuilder<Self>, NodeBuilder.EnvAdapterStep<T>, NodeBuilder.EnvFinalStep<T> {
+@NullMarked
+public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderImpl<T, Self>>
+        implements InternalNodeBuilder<Self>, NodeBuilder.EnvAdapterStep<T>, NodeBuilder.EnvFinalStep<T> {
 
-    private final @NonNull String key;
-    private final @NonNull String envKey;
-    private final @NonNull TypeToken<T> typeToken;
+    private final String key;
+    private final String envKey;
+    private final TypeToken<T> typeToken;
     private @Nullable AbstractNode parent;
     private @Nullable Config config;
-    private @Nullable Function<@NonNull String, @Nullable T> adapter;
+    private @Nullable Function<String, @Nullable T> adapter;
     private @Nullable Validator<T> validator;
 
-    public AbstractEnvNodeBuilderImpl(@NonNull AbstractValueNodeBuilder<?, T> builder, @NonNull String envKey) {
+    public AbstractEnvNodeBuilderImpl(AbstractValueNodeBuilder<?, T> builder, String envKey) {
         this.key = Objects.requireNonNull(builder.key());
         this.config = builder.config();
         this.parent = builder.parent();
@@ -34,13 +36,13 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
         this.typeToken = Objects.requireNonNull(builder.type());
     }
 
-    public AbstractEnvNodeBuilderImpl(@NonNull String key, @NonNull TypeToken<T> typeToken, @NonNull String envKey) {
+    public AbstractEnvNodeBuilderImpl(String key, TypeToken<T> typeToken, String envKey) {
         this.key = Objects.requireNonNull(key);
         this.envKey = Objects.requireNonNull(envKey);
         this.typeToken = Objects.requireNonNull(typeToken);
     }
 
-    public Validator<T> validator(){
+    public Validator<T> validator() {
         return this.validator;
     }
 
@@ -48,16 +50,16 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
         return this.adapter;
     }
 
-    public @NonNull TypeToken<T> type() {
+    public TypeToken<T> type() {
         return this.typeToken;
     }
 
-    public @NonNull String envKey() {
+    public String envKey() {
         return this.envKey;
     }
 
     @Override
-    public @NonNull Self parent(@Nullable AbstractNode node) {
+    public Self parent(@Nullable AbstractNode node) {
         this.parent = node;
         //noinspection unchecked
         return (Self) this;
@@ -69,7 +71,7 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
     }
 
     @Override
-    public @NonNull Self config(@Nullable Config config) {
+    public Self config(@Nullable Config config) {
         this.config = config;
         //noinspection unchecked
         return (Self) this;
@@ -86,31 +88,31 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
     }
 
     @Override
-    public @NonNull Collection<InternalNodeBuilder<?>> children() {
+    public Collection<InternalNodeBuilder<?>> children() {
         return Collections.emptyList();
     }
 
     @Override
-    public void appendChild(@NonNull InternalNodeBuilder<?> builder) {
+    public void appendChild(InternalNodeBuilder<?> builder) {
         throw new IllegalArgumentException("Cannot append to Env");
     }
 
     @Override
-    public @NonNull EnvNodeImpl<T> build() {
+    public EnvNodeImpl<T> build() {
         return new EnvNodeImpl<>(this);
     }
 
     @Override
-    public Self adapter(@NonNull Function<String, T> adapter) {
+    public Self adapter(Function<String, T> adapter) {
         this.adapter = adapter;
         //noinspection unchecked
         return (Self) this;
     }
 
     @Override
-    public Self validator(@NonNull Validator<T> validator) {
+    public Self validator(Validator<T> validator) {
         this.validator = validator;
         //noinspection unchecked
-        return (Self)this;
+        return (Self) this;
     }
 }

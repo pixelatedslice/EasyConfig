@@ -1,12 +1,15 @@
 package com.pixelatedslice.easyconfig.api.utils.typetoken;
 
 import com.google.common.reflect.TypeToken;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
+
+@NullMarked
 final class TypeTokenTypeComparer {
     private TypeTokenTypeComparer() {
     }

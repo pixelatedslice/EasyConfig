@@ -5,12 +5,13 @@ import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+@NullMarked
 public class ValueNodeBuilderTests {
 
     private NodeBuilder.FirstStep builder() {
@@ -20,13 +21,13 @@ public class ValueNodeBuilderTests {
     @Test
     public void NodeBuilder_should_build_value_node_with_expected() {
         //ARRANGE
-        String key = "My Key";
-        TypeToken<String> type = TypeToken.of(String.class);
-        var defaultValue = "default value";
-        var value = "value";
+        final String key = "My Key";
+        final TypeToken<String> type = TypeToken.of(String.class);
+        final var defaultValue = "default value";
+        final var value = "value";
 
         //ACT
-        var node = builder()
+        final var node = this.builder()
                 .key(key)
                 .of(String.class)
                 .defaultValue(defaultValue)
@@ -47,20 +48,20 @@ public class ValueNodeBuilderTests {
         //ACT - ASSERT
         //noinspection DataFlowIssue
         Assertions.assertThrows(NullPointerException.class, () ->
-                builder().key(null).build());
+                this.builder().key(null).build());
     }
 
     @Test
     public void NodeBuilder_should_throw_exception_with_null_typetoken() {
         //ARRANGE
-        var key = "My Key";
+        final var key = "My Key";
 
         System.getenv("");
 
         //ACT - ASSERT
         //noinspection DataFlowIssue
         Assertions.assertThrows(NullPointerException.class, () ->
-                builder()
+                this.builder()
                         .key(key)
                         .of((TypeToken<?>) null)
                         .build());
@@ -69,19 +70,19 @@ public class ValueNodeBuilderTests {
     @Test
     public void NodeBuilder_should_append_value_with_provided_key() {
         //ARRANGE
-        var key = "My first key";
-        var secondKey = "My second key";
-        var type = TypeToken.of(String.class);
+        final var key = "My first key";
+        final var secondKey = "My second key";
+        final var type = TypeToken.of(String.class);
 
         //ACT
-        var builder = builder().key(key).append(secondKey).of(String.class);
-        NodeBuilder.ContainerFinalStep.Original originalBuilder = builder.complete();
-        ContainerNode result = originalBuilder.build();
+        final var builder = this.builder().key(key).append(secondKey).of(String.class);
+        final NodeBuilder.ContainerFinalStep.Original originalBuilder = builder.complete();
+        final ContainerNode result = originalBuilder.build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
 
-        Optional<@NonNull ValueNode<String>> opNode = result.valueNode(String.class, secondKey);
+        final Optional<ValueNode<String>> opNode = result.valueNode(String.class, secondKey);
         Assertions.assertTrue(opNode.isPresent());
         Assertions.assertEquals(secondKey, opNode.get().key());
         Assertions.assertInstanceOf(ValueNode.class, opNode.get());

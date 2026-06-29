@@ -5,7 +5,7 @@ import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistryOptions;
 import com.pixelatedslice.easyconfig.impl.utils.DistinctByGatherer;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
@@ -16,27 +16,28 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+@NullMarked
 public class SerializerRegistryImpl implements SerializerRegistry {
 
     private final @Nullable SerializerRegistryImpl parent;
-    private final @NonNull Map<TypeToken<?>, Serializer<?>> serializers = new ConcurrentHashMap<>();
+    private final Map<TypeToken<?>, Serializer<?>> serializers = new ConcurrentHashMap<>();
 
     public SerializerRegistryImpl(@Nullable SerializerRegistryImpl parent) {
         this.parent = parent;
     }
 
     @Override
-    public @NonNull SerializerRegistry createChild() {
+    public SerializerRegistry createChild() {
         return new SerializerRegistryImpl(this);
     }
 
     @Override
-    public @NonNull Optional<SerializerRegistry> parent() {
-        return Optional.ofNullable(parent);
+    public Optional<SerializerRegistry> parent() {
+        return Optional.ofNullable(this.parent);
     }
 
     @Override
-    public @NonNull Stream<@NonNull Serializer<?>> stream() {
+    public Stream<Serializer<?>> stream() {
         Stream<SerializerRegistryImpl> stream = Stream.of(this);
         var target = this;
         while (target.parent != null) {
@@ -50,22 +51,23 @@ public class SerializerRegistryImpl implements SerializerRegistry {
     }
 
     @Override
-    public @NonNull <T> Optional<Serializer<T>> serializerFor(@NonNull TypeToken<T> token) {
-        @SuppressWarnings("unchecked") var result = (Serializer<T>) this.serializers.get(Objects.requireNonNull(token));
-        if (result == null && this.parent != null) {
-            return this.parent.serializerFor(token);
-        }
-        return Optional.ofNullable(result);
+    public <T> Optional<Serializer<T>> serializerFor(TypeToken<T> token) {
+        @SuppressWarnings("unchecked") final var result = (Serializer<T>) this.serializers.get(Objects.requireNonNull(
+                token));
+        return ((result == null) && (this.parent != null))
+                ? this.parent.serializerFor(token)
+                : Optional.ofNullable(result);
     }
 
     @Override
-    public SerializerRegistry register(@NonNull Consumer<SerializerRegistryOptions> options, @NonNull Iterator<Serializer<?>> serializers) {
-        var optionsImpl = new SerializerRegistryOptionsImpl();
+    public SerializerRegistry register(Consumer<SerializerRegistryOptions> options,
+            Iterator<Serializer<?>> serializers) {
+        final var optionsImpl = new SerializerRegistryOptionsImpl();
         options.accept(optionsImpl);
         while (serializers.hasNext()) {
             var serializer = serializers.next();
-            var type = serializer.type();
-            var originalSerializer = this.serializers.get(type);
+            final var type = serializer.type();
+            final var originalSerializer = this.serializers.get(type);
             if (originalSerializer != null) {
                 serializer = optionsImpl.duplicateRegisterStyle().action().apply(originalSerializer, serializer);
             }

@@ -7,7 +7,7 @@ import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.CollectionNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeChildBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public abstract class AbstractCollectionNodeBuilder<Self extends AbstractCollectionNodeBuilder<Self>> implements NodeBuilder.CollectionStep, InternalNodeBuilder<Self> {
+@NullMarked
+public abstract class AbstractCollectionNodeBuilder<Self extends AbstractCollectionNodeBuilder<Self>>
+        implements NodeBuilder.CollectionStep, InternalNodeBuilder<Self> {
 
     private final List<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
-    private final @NonNull String key;
+    private final String key;
     private @Nullable Config config;
     private @Nullable AbstractNode parent;
 
@@ -29,12 +31,12 @@ public abstract class AbstractCollectionNodeBuilder<Self extends AbstractCollect
         from.children().forEach(this::appendChild);
     }
 
-    public AbstractCollectionNodeBuilder(@NonNull String key) {
+    public AbstractCollectionNodeBuilder(String key) {
         this.key = key;
     }
 
     @Override
-    public @NonNull Self parent(@Nullable AbstractNode node) {
+    public Self parent(@Nullable AbstractNode node) {
         this.parent = node;
         //noinspection unchecked
         return (Self) this;
@@ -46,7 +48,7 @@ public abstract class AbstractCollectionNodeBuilder<Self extends AbstractCollect
     }
 
     @Override
-    public @NonNull Self config(@Nullable Config config) {
+    public Self config(@Nullable Config config) {
         this.config = config;
         //noinspection unchecked
         return (Self) this;
@@ -63,17 +65,17 @@ public abstract class AbstractCollectionNodeBuilder<Self extends AbstractCollect
     }
 
     @Override
-    public @NonNull List<InternalNodeBuilder<?>> children() {
+    public List<InternalNodeBuilder<?>> children() {
         return Collections.unmodifiableList(this.children);
     }
 
     @Override
-    public void appendChild(@NonNull InternalNodeBuilder<?> builder) {
+    public void appendChild(InternalNodeBuilder<?> builder) {
         if (builder instanceof ContainerNodeChildBuilder<?> childBuilder) {
             this.children.add(childBuilder);
             return;
         }
-        if(builder instanceof ContainerNodeOriginalBuilder originalBuilder){
+        if (builder instanceof ContainerNodeOriginalBuilder originalBuilder) {
             this.children.add(originalBuilder);
             return;
         }
@@ -81,7 +83,7 @@ public abstract class AbstractCollectionNodeBuilder<Self extends AbstractCollect
             this.children.add(collectionBuilder);
             return;
         }
-        if(builder instanceof CollectionNodeOriginalBuilder collectionBuilder){
+        if (builder instanceof CollectionNodeOriginalBuilder collectionBuilder) {
             this.children.add(collectionBuilder);
             return;
         }
@@ -89,7 +91,7 @@ public abstract class AbstractCollectionNodeBuilder<Self extends AbstractCollect
     }
 
     @Override
-    public @NonNull CollectionNodeImpl build() {
+    public CollectionNodeImpl build() {
         return new CollectionNodeImpl(this);
     }
 }

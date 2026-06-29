@@ -7,7 +7,7 @@ import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -15,25 +15,27 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBuilder<Self, T>, T> implements NodeBuilder.ValueFinalStep<T>, NodeBuilder.ValueSafeStep<T>, InternalNodeBuilder<Self> {
+@NullMarked
+public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBuilder<Self, T>, T>
+        implements NodeBuilder.ValueFinalStep<T>, NodeBuilder.ValueSafeStep<T>, InternalNodeBuilder<Self> {
 
-    @NonNull String key;
+    String key;
     @Nullable T defaultValue;
     @Nullable T value;
-    @NonNull TypeToken<T> typeToken;
+    TypeToken<T> typeToken;
     @Nullable Validator<T> validator;
     @Nullable Serializer<T> serializer;
     @Nullable Config config;
     @Nullable AbstractNode parent;
-    @NonNull Collection<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
+    Collection<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
 
-    public AbstractValueNodeBuilder(@NonNull TypeToken<T> token, @NonNull String key) {
+    public AbstractValueNodeBuilder(TypeToken<T> token, String key) {
         this.key = Objects.requireNonNull(key);
         this.typeToken = Objects.requireNonNull(token);
     }
 
-    public @NonNull String key() {
-        return key;
+    public String key() {
+        return this.key;
     }
 
     public @Nullable T defaultValue() {
@@ -44,7 +46,7 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
         return this.value;
     }
 
-    public @NonNull TypeToken<T> type() {
+    public TypeToken<T> type() {
         return this.typeToken;
     }
 
@@ -61,7 +63,7 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     }
 
     @Override
-    public Self validator(@NonNull Validator<T> validator) {
+    public Self validator(@Nullable Validator<T> validator) {
         this.validator = validator;
         return (Self) this;
     }
@@ -81,7 +83,7 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     }
 
     @Override
-    public @NonNull Self parent(@Nullable AbstractNode node) {
+    public Self parent(@Nullable AbstractNode node) {
         this.parent = node;
         return (Self) this;
     }
@@ -92,7 +94,7 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     }
 
     @Override
-    public @NonNull Self config(@Nullable Config config) {
+    public Self config(@Nullable Config config) {
         this.config = config;
         return (Self) this;
     }
@@ -108,7 +110,7 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     }
 
     @Override
-    public void appendChild(@NonNull InternalNodeBuilder<?> builder) {
+    public void appendChild(InternalNodeBuilder<?> builder) {
         this.children.add(builder);
     }
 }

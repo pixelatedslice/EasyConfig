@@ -7,58 +7,63 @@ import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeChildBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.container.ContainerNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeChildBuilder;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Objects;
 
-public class ContainerNodeChildBuilder<Previous extends InternalNodeBuilder<?>> extends AbstractContainerNodeBuilder<ContainerNodeChildBuilder<Previous>> implements NodeBuilder.ContainerFinalStep.Child<Previous> {
+@NullMarked
+public class ContainerNodeChildBuilder<Previous extends InternalNodeBuilder<?>>
+        extends AbstractContainerNodeBuilder<ContainerNodeChildBuilder<Previous>>
+        implements NodeBuilder.ContainerFinalStep.Child<Previous> {
 
-    private final @NonNull Previous previous;
-    private final @NonNull Collection<InternalNodeBuilder<?>> children = new LinkedList<>();
+    private final Previous previous;
+    private final Collection<InternalNodeBuilder<?>> children = new LinkedList<>();
 
-    public ContainerNodeChildBuilder(@NonNull Previous previous, @NonNull String key) {
+    public ContainerNodeChildBuilder(Previous previous, String key) {
         this.key = key;
         this.previous = previous;
     }
 
     @Override
-    public @NonNull Child<Child<Previous>> append(@NonNull String key) {
-        ContainerNodeChildBuilder<ContainerNodeChildBuilder<Previous>> builder = new ContainerNodeChildBuilder<>(this, key);
+    public Child<Child<Previous>> append(String key) {
+        final ContainerNodeChildBuilder<ContainerNodeChildBuilder<Previous>> builder = new ContainerNodeChildBuilder<>(
+                this,
+                key);
         //noinspection unchecked
         return (Child<Child<Previous>>) (Object) builder;
     }
 
     @Override
-    public CollectionStep.@NonNull Child<Previous> collection() {
+    public CollectionStep.Child<Previous> collection() {
         return new CollectionNodeChildBuilder<>(this, this.previous);
     }
 
     @Override
-    public @NonNull Previous complete() {
+    public Previous complete() {
         this.previous.appendChild(this);
         return this.previous;
     }
 
     @Override
-    public <T> ValueNodeChildBuilder<T, Previous> of(@NonNull TypeToken<T> token) {
+    public <T> ValueNodeChildBuilder<T, Previous> of(TypeToken<T> token) {
         return new ValueNodeChildBuilder<>(token, Objects.requireNonNull(this.key()), this.previous);
     }
 
     @Override
-    public @NonNull Collection<InternalNodeBuilder<?>> children() {
+    public Collection<InternalNodeBuilder<?>> children() {
         return Collections.unmodifiableCollection(this.children);
     }
 
     @Override
-    public void appendChild(@NonNull InternalNodeBuilder<?> builder) {
+    public void appendChild(InternalNodeBuilder<?> builder) {
         this.children.add(builder);
     }
 
     @Override
-    public @NonNull AbstractNode build() {
+    public AbstractNode build() {
         return new ContainerNodeImpl(this);
     }
 }

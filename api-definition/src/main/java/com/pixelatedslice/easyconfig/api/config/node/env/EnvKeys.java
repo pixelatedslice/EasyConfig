@@ -58,6 +58,7 @@ public final class EnvKeys {
 
     }
 
+    @NullMarked
     record DefinedEnv<T extends @Nullable Object>(String key, Function<String, @Nullable T> adapter)
             implements NodeBuilder.PredefinedEnv<T> {
 

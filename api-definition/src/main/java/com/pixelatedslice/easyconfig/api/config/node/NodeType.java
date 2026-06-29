@@ -2,6 +2,7 @@ package com.pixelatedslice.easyconfig.api.config.node;
 
 import org.jspecify.annotations.NullMarked;
 
+
 import java.util.stream.Stream;
 
 @NullMarked

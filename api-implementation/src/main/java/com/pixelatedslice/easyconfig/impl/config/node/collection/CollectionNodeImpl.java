@@ -8,17 +8,18 @@ import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.ReturnKnownNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeOriginalBuilder;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
+@NullMarked
 public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
 
     private final List<AbstractNode> children = new CopyOnWriteArrayList<>();
 
-    public CollectionNodeImpl(@NonNull InternalNodeBuilder<?> builder) {
+    public CollectionNodeImpl(InternalNodeBuilder<?> builder) {
         super(builder);
     }
 
@@ -28,7 +29,7 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
     }
 
     @Override
-    public @NonNull Stream<ReturnedNode> stream() {
+    public Stream<ReturnedNode> stream() {
         return this.children.stream().map(ReturnKnownNodeImpl::new);
     }
 
@@ -38,13 +39,13 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
     }
 
     @Override
-    protected void internalAppendChild(@NonNull AbstractNode node) {
+    protected void internalAppendChild(AbstractNode node) {
         this.children.add(node);
     }
 
     @Override
-    public @NonNull CollectionNodeOriginalBuilder toBuilder() {
-        var builder = new CollectionNodeOriginalBuilder(this.key()).parent(this.parent).config(this.attached);
+    public CollectionNodeOriginalBuilder toBuilder() {
+        final var builder = new CollectionNodeOriginalBuilder(this.key()).parent(this.parent).config(this.attached);
         this.children.stream().map(AbstractNode::toBuilder).forEach(builder::appendChild);
         return builder;
     }

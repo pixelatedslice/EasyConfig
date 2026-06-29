@@ -10,16 +10,17 @@ import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.value.builder.AbstractValueNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeOriginalBuilder;
 import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
 
+@NullMarked
 public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
 
-    private final @NonNull TypeToken<T> token;
-    private final @NonNull Validator<T> validator;
+    private final TypeToken<T> token;
+    private final Validator<T> validator;
     private final @Nullable Serializer<T> serializer;
     private final @Nullable T defaultValue;
     private @Nullable T value;
@@ -38,34 +39,31 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     }
 
     @Override
-    public @NonNull Optional<T> value(@NonNull ValidateOption<T> option) {
+    public Optional<T> value(ValidateOption<T> option) {
         return Optional.ofNullable(this.value).flatMap(value -> {
-            var context = new ValidatorContextImpl();
+            final var context = new ValidatorContextImpl();
             this.validator.validate(value, context);
-            if (context.hasError()) {
-                return option.onValidationError(value, context);
-            }
-            return Optional.of(value);
+            return context.hasError() ? option.onValidationError(value, context) : Optional.of(value);
         });
     }
 
     @Override
-    public @NonNull Optional<T> defaultValue() {
+    public Optional<T> defaultValue() {
         return Optional.ofNullable(this.defaultValue);
     }
 
     @Override
-    public @NonNull Optional<@NonNull Serializer<T>> serializer() {
+    public Optional<Serializer<T>> serializer() {
         return Optional.ofNullable(this.serializer);
     }
 
     @Override
-    public @NonNull Validator<T> validator() {
+    public Validator<T> validator() {
         return this.validator;
     }
 
     @Override
-    public @NonNull TypeToken<T> typeToken() {
+    public TypeToken<T> typeToken() {
         return this.token;
     }
 
@@ -75,7 +73,7 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     }
 
     @Override
-    public @NonNull ValueNodeOriginalBuilder<T> toBuilder() {
+    public ValueNodeOriginalBuilder<T> toBuilder() {
         return new ValueNodeOriginalBuilder<>(this.token, this.key())
                 .defaultValue(this.defaultValue)
                 .value(this.value)
@@ -84,7 +82,7 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     }
 
     @Override
-    protected void internalAppendChild(@NonNull AbstractNode node) {
+    protected void internalAppendChild(AbstractNode node) {
         throw new IllegalStateException("Value node! should not have called");
     }
 }

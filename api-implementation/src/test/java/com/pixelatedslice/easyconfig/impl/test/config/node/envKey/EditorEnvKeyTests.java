@@ -1,6 +1,7 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.envKey;
 
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvKeys;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,15 +9,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+@NullMarked
 public class EditorEnvKeyTests {
 
     @Test
     public void editor_has_correct_key() {
         //ARRANGE
-        var key = "EDITOR";
+        final var key = "EDITOR";
 
         //ACT
-        var result = EnvKeys.EDITOR.key();
+        final var result = EnvKeys.EDITOR.key();
 
         //ASSERT
         Assertions.assertEquals(key, result);
@@ -25,11 +27,11 @@ public class EditorEnvKeyTests {
     @Test
     public void editor_splits_valid_result_into_Lang_Result() throws IOException {
         //ARRANGE
-        Path expected = new File(".").toPath().toRealPath();
-        String input = expected.toString();
+        final Path expected = new File(".").toPath().toRealPath();
+        final String input = expected.toString();
 
         //ACT
-        var result = EnvKeys.EDITOR.adapter().apply(input);
+        final var result = EnvKeys.EDITOR.adapter().apply(input);
 
         //ASSERT
         Assertions.assertNotNull(result);
@@ -39,10 +41,10 @@ public class EditorEnvKeyTests {
     @Test
     public void editor_returns_null_when_invalid() {
         //ARRANGE
-        String input = "!";
+        final String input = "!";
 
         //ACT
-        var result = EnvKeys.EDITOR.adapter().apply(input);
+        final var result = EnvKeys.EDITOR.adapter().apply(input);
 
         //ASSERT
         Assertions.assertNull(result);

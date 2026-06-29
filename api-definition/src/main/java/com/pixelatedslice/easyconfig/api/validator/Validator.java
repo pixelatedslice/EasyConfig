@@ -1,6 +1,7 @@
 package com.pixelatedslice.easyconfig.api.validator;
 
 import org.jspecify.annotations.NullMarked;
+
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.DoublePredicate;
