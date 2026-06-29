@@ -7,8 +7,7 @@ import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
-import com.pixelatedslice.easyconfig.impl.config.node.value.builder.AbstractValueNodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -25,7 +24,7 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     private final @Nullable T defaultValue;
     private @Nullable T value;
 
-    public ValueNodeImpl(AbstractValueNodeBuilder<?, T> builder) {
+    public ValueNodeImpl(ValueNodeBuilder<?, T> builder) {
         super(builder);
         this.defaultValue = builder.defaultValue();
         this.token = Objects.requireNonNull(builder.type());
@@ -73,8 +72,8 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     }
 
     @Override
-    public ValueNodeOriginalBuilder<T> toBuilder() {
-        return new ValueNodeOriginalBuilder<>(this.token, this.key())
+    public ValueNodeBuilder<T> toBuilder() {
+        return new ValueNodeBuilder(this.token, this.key())
                 .defaultValue(this.defaultValue)
                 .value(this.value)
                 .serializer(this.serializer)

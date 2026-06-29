@@ -1,7 +1,9 @@
 package com.pixelatedslice.easyconfig.impl.config.node.factory.value;
 
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.factory.AbstractFactoryNodeBuilder;
 import org.jspecify.annotations.NullMarked;
@@ -12,9 +14,9 @@ import java.util.Objects;
 @NullMarked
 public class FactoryContainerNodeBuilder
         extends
-        AbstractFactoryNodeBuilder<ContainerNode, FactoryNodeBuilder.KeyStep.Container,
-                FactoryNodeBuilder.GroupStep.Container>
-        implements FactoryNodeBuilder.GroupStep.Container, FactoryNodeBuilder.GroupStep.Container.Buildable {
+        AbstractFactoryNodeBuilder<ContainerNode, FactoryNodeBuilderKeySteps.Container,
+                FactoryNodeBuilderGroupStep.Container>
+        implements FactoryNodeBuilderGroupStep.Container, FactoryNodeBuilderGroupStep.Container.Buildable {
 
     private final ContainerNodeOriginalBuilder builder =
             new ContainerNodeOriginalBuilder()

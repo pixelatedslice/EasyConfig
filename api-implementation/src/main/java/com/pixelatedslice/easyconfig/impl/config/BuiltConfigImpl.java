@@ -1,7 +1,7 @@
 package com.pixelatedslice.easyconfig.impl.config;
 
 import com.pixelatedslice.easyconfig.api.config.BuiltConfig;
-import com.pixelatedslice.easyconfig.api.config.node.Node;
+import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import org.jspecify.annotations.NullMarked;
 

@@ -2,10 +2,11 @@ package com.pixelatedslice.easyconfig.impl.config.node;
 
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
-import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
+import com.pixelatedslice.easyconfig.api.config.node.for_impl.ForImplNode;
+import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -14,7 +15,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @NullMarked
-public abstract class AbstractNode implements Node {
+public abstract class AbstractNode implements ForImplNode {
 
     protected final @Nullable AbstractNode parent;
     protected final @Nullable Config attached;

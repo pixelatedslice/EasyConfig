@@ -2,7 +2,7 @@ package com.pixelatedslice.easyconfig.impl.config.node;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 

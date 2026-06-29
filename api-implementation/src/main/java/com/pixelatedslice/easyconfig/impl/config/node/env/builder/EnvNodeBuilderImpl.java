@@ -2,12 +2,14 @@ package com.pixelatedslice.easyconfig.impl.config.node.env.builder;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderEnvStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.env.EnvNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.value.builder.AbstractValueNodeBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.factory.AbstractFactoryNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -17,28 +19,22 @@ import java.util.Objects;
 import java.util.function.Function;
 
 @NullMarked
-public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderImpl<T, Self>>
-        implements InternalNodeBuilder<Self>, NodeBuilder.EnvAdapterStep<T>, NodeBuilder.EnvFinalStep<T> {
+public class EnvNodeBuilderImpl<T> extends
+        AbstractFactoryNodeBuilder<EnvNode<T>, FactoryNodeBuilderKeySteps.Env<T>,
+                FactoryNodeBuilderEnvStep.VariableStep<T>>
+        implements FactoryNodeBuilderEnvStep.VariableStep<T>, FactoryNodeBuilderEnvStep.AdapterValidatorStep<T>,
+        InternalNodeBuilder<EnvNodeBuilderImpl<T>> {
 
     private final String key;
-    private final String envKey;
     private final TypeToken<T> typeToken;
+    private String envKey;
     private @Nullable AbstractNode parent;
     private @Nullable Config config;
     private @Nullable Function<String, @Nullable T> adapter;
     private @Nullable Validator<T> validator;
 
-    public AbstractEnvNodeBuilderImpl(AbstractValueNodeBuilder<?, T> builder, String envKey) {
-        this.key = Objects.requireNonNull(builder.key());
-        this.config = builder.config();
-        this.parent = builder.parent();
-        this.envKey = Objects.requireNonNull(envKey);
-        this.typeToken = Objects.requireNonNull(builder.type());
-    }
-
-    public AbstractEnvNodeBuilderImpl(String key, TypeToken<T> typeToken, String envKey) {
+    public EnvNodeBuilderImpl(String key, TypeToken<T> typeToken) {
         this.key = Objects.requireNonNull(key);
-        this.envKey = Objects.requireNonNull(envKey);
         this.typeToken = Objects.requireNonNull(typeToken);
     }
 
@@ -59,10 +55,10 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
     }
 
     @Override
-    public Self parent(@Nullable AbstractNode node) {
+    public EnvNodeBuilderImpl<T> parent(@Nullable AbstractNode node) {
         this.parent = node;
         //noinspection unchecked
-        return (Self) this;
+        return this;
     }
 
     @Override
@@ -71,10 +67,10 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
     }
 
     @Override
-    public Self config(@Nullable Config config) {
+    public EnvNodeBuilderImpl<T> config(@Nullable Config config) {
         this.config = config;
         //noinspection unchecked
-        return (Self) this;
+        return this;
     }
 
     @Override
@@ -103,16 +99,22 @@ public class AbstractEnvNodeBuilderImpl<T, Self extends AbstractEnvNodeBuilderIm
     }
 
     @Override
-    public Self adapter(Function<String, T> adapter) {
+    public EnvNodeBuilderImpl<T> adapter(Function<String, T> adapter) {
         this.adapter = adapter;
         //noinspection unchecked
-        return (Self) this;
+        return this;
     }
 
     @Override
-    public Self validator(Validator<T> validator) {
+    public EnvNodeBuilderImpl<T> validator(Validator<T> validator) {
         this.validator = validator;
         //noinspection unchecked
-        return (Self) this;
+        return this;
+    }
+
+    @Override
+    public FactoryNodeBuilderEnvStep.AdapterValidatorStep<T> variable(String variable) {
+        this.envKey = variable;
+        return this;
     }
 }

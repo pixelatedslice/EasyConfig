@@ -1,7 +1,9 @@
 package com.pixelatedslice.easyconfig.impl.config.node.factory.value;
 
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeOriginalBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.factory.AbstractFactoryNodeBuilder;
 import org.jspecify.annotations.NullMarked;
@@ -12,9 +14,9 @@ import java.util.Objects;
 @NullMarked
 public class FactoryCollectionNodeBuilder
         extends
-        AbstractFactoryNodeBuilder<CollectionNode, FactoryNodeBuilder.KeyStep.Collection,
-                FactoryNodeBuilder.GroupStep.Collection>
-        implements FactoryNodeBuilder.GroupStep.Collection, FactoryNodeBuilder.GroupStep.Collection.Buildable {
+        AbstractFactoryNodeBuilder<CollectionNode, FactoryNodeBuilderKeySteps.Collection,
+                FactoryNodeBuilderGroupStep.Collection>
+        implements FactoryNodeBuilderGroupStep.Collection, FactoryNodeBuilderGroupStep.Collection.Buildable {
 
     private final CollectionNodeOriginalBuilder builder =
             new CollectionNodeOriginalBuilder(Objects.requireNonNull(this.key))

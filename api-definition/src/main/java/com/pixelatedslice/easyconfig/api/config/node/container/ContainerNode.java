@@ -2,11 +2,12 @@ package com.pixelatedslice.easyconfig.api.config.node.container;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
+import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
+import com.pixelatedslice.easyconfig.api.config.node.for_impl.ForImplNode;
+import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 @SuppressWarnings("unused")
 @NullMarked
-public interface ContainerNode extends Node, Editable<EditableContainerNode> {
+public non-sealed interface ContainerNode extends Node, ForImplNode, Editable<EditableContainerNode> {
 
     default NodeType nodeType() {
         return NodeType.CONTAINER_NODE;

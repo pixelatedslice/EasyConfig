@@ -3,7 +3,6 @@ package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
 import com.pixelatedslice.easyconfig.impl.config.node.value.ValueNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeOriginalBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

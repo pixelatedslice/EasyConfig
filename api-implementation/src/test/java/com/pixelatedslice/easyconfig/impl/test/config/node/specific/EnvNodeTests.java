@@ -3,7 +3,6 @@ package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvAdapter;
 import com.pixelatedslice.easyconfig.impl.config.node.env.EnvNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.env.builder.OriginalEnvNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -58,7 +57,7 @@ public class EnvNodeTests {
 
         //ASSERT
         Assertions.assertInstanceOf(OriginalEnvNodeBuilder.class, result);
-        final var castResult = (OriginalEnvNodeBuilder<?>) result;
+        final var castResult = result;
         Assertions.assertEquals(key, castResult.key());
         Assertions.assertEquals(envKey, castResult.envKey());
         Assertions.assertEquals(token, castResult.type());

@@ -1,6 +1,7 @@
 package com.pixelatedslice.easyconfig.api.config.node.factory;
 
 import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilder;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
 import org.jspecify.annotations.NullMarked;
 

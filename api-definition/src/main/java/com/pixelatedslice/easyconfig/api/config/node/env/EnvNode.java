@@ -1,9 +1,10 @@
 package com.pixelatedslice.easyconfig.api.config.node.env;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
+import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.for_impl.ForImplNode;
+import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
@@ -13,7 +14,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @NullMarked
-public interface EnvNode<T> extends Node {
+public non-sealed interface EnvNode<T> extends Node, ForImplNode {
 
     default NodeType nodeType() {
         return NodeType.ENV_NODE;

@@ -2,11 +2,15 @@ package com.pixelatedslice.easyconfig.impl.config.node.value.builder;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderValueStep;
+import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.factory.AbstractFactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.value.ValueNodeImpl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -16,8 +20,11 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @NullMarked
-public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBuilder<Self, T>, T>
-        implements NodeBuilder.ValueFinalStep<T>, NodeBuilder.ValueSafeStep<T>, InternalNodeBuilder<Self> {
+public class ValueNodeBuilder<T>
+        extends
+        AbstractFactoryNodeBuilder<ValueNode<T>, FactoryNodeBuilderKeySteps.Value<T>, FactoryNodeBuilderValueStep<T>>
+        implements FactoryNodeBuilderValueStep.FirstStep<T>, FactoryNodeBuilderValueStep.DefaultValueAndExtrasStep<T>,
+        FactoryNodeBuilderValueStep.ValueAndExtrasStep<T>, InternalNodeBuilder<ValueNodeBuilder<T>> {
 
     String key;
     @Nullable T defaultValue;
@@ -29,7 +36,7 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     @Nullable AbstractNode parent;
     Collection<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
 
-    public AbstractValueNodeBuilder(TypeToken<T> token, String key) {
+    public ValueNodeBuilder(TypeToken<T> token, String key) {
         this.key = Objects.requireNonNull(key);
         this.typeToken = Objects.requireNonNull(token);
     }
@@ -51,21 +58,21 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     }
 
     @Override
-    public Self defaultValue(@Nullable T defaultValue) {
+    public ValueAndExtrasStep<T> defaultValue(@Nullable T defaultValue) {
         this.defaultValue = defaultValue;
-        return (Self) this;
+        return this;
     }
 
     @Override
-    public Self value(@Nullable T value) {
+    public DefaultValueAndExtrasStep<T> value(@Nullable T value) {
         this.value = value;
-        return (Self) this;
+        return this;
     }
 
     @Override
-    public Self validator(@Nullable Validator<T> validator) {
+    public ExtrasStep<T> validator(@Nullable Validator<T> validator) {
         this.validator = validator;
-        return (Self) this;
+        return this;
     }
 
     public @Nullable Validator<T> validator() {
@@ -77,15 +84,15 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     }
 
     @Override
-    public Self serializer(@Nullable Serializer<T> serializer) {
+    public ExtrasStep<T> serializer(@Nullable Serializer<T> serializer) {
         this.serializer = serializer;
-        return (Self) this;
+        return this;
     }
 
     @Override
-    public Self parent(@Nullable AbstractNode node) {
+    public ValueNodeBuilder<T> parent(@Nullable AbstractNode node) {
         this.parent = node;
-        return (Self) this;
+        return this;
     }
 
     @Override
@@ -94,9 +101,9 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     }
 
     @Override
-    public Self config(@Nullable Config config) {
+    public ValueNodeBuilder<T> config(@Nullable Config config) {
         this.config = config;
-        return (Self) this;
+        return this;
     }
 
     @Override
@@ -112,5 +119,10 @@ public abstract class AbstractValueNodeBuilder<Self extends AbstractValueNodeBui
     @Override
     public void appendChild(InternalNodeBuilder<?> builder) {
         this.children.add(builder);
+    }
+
+    @Override
+    public ValueNodeImpl<T> build() {
+        return new ValueNodeImpl<>(this);
     }
 }

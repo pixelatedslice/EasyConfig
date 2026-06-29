@@ -5,8 +5,7 @@ import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
-import com.pixelatedslice.easyconfig.impl.config.node.env.builder.AbstractEnvNodeBuilderImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.env.builder.OriginalEnvNodeBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.env.builder.EnvNodeBuilderImpl;
 import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -23,7 +22,7 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     private final TypeToken<T> type;
     private final Validator<T> validator;
 
-    public EnvNodeImpl(AbstractEnvNodeBuilderImpl<T, ?> builder) {
+    public EnvNodeImpl(EnvNodeBuilderImpl<T, ?> builder) {
         super(builder);
         this.envKey = Objects.requireNonNull(builder.envKey());
         this.adapter = Objects.requireNonNull(builder.adapter());

@@ -1,12 +1,9 @@
 package com.pixelatedslice.easyconfig.impl.config.node.container.builder;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
+import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeChildBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.container.ContainerNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeChildBuilder;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
@@ -60,10 +57,5 @@ public class ContainerNodeChildBuilder<Previous extends InternalNodeBuilder<?>>
     @Override
     public void appendChild(InternalNodeBuilder<?> builder) {
         this.children.add(builder);
-    }
-
-    @Override
-    public AbstractNode build() {
-        return new ContainerNodeImpl(this);
     }
 }

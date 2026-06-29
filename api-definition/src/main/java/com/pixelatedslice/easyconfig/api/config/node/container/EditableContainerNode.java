@@ -1,6 +1,6 @@
 package com.pixelatedslice.easyconfig.api.config.node.container;
 
-import com.pixelatedslice.easyconfig.api.config.node.Node;
+import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.api.editable.EditableVariant;
 import org.jspecify.annotations.NullMarked;
 
