@@ -22,4 +22,5 @@ open module com.pixelatedslice.easyconfig.api {
     exports com.pixelatedslice.easyconfig.api.validator;
     exports com.pixelatedslice.easyconfig.api.validator.option;
     exports com.pixelatedslice.easyconfig.api.config;
+    exports com.pixelatedslice.easyconfig.api.config.node.factory;
 }

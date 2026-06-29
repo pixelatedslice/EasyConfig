@@ -5,5 +5,5 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public interface ValueNodeBuilderParentStep<T>
-        extends GenericNodeBuilderParentStep<ValueNodeBuilderTypeStep<T>>, ValueNodeBuilderTypeStep<T> {
+        extends GenericNodeBuilderParentStep<ValueNodeBuilderValueStep<T>>, ValueNodeBuilderValueStep<T> {
 }
