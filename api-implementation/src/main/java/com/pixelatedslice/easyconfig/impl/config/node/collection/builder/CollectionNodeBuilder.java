@@ -5,6 +5,7 @@ import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNode
 import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderGroupStep;
 import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
+import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.builder.GroupNodeBuilderHelper;
@@ -98,11 +99,29 @@ public class CollectionNodeBuilder
     }
 
     @Override
+    public Buildable builtChildren(@Nullable Node @Nullable ... nodes) {
+        if (nodes == null) {
+            return this;
+        }
+        GroupNodeBuilderHelper.builtChildren(Arrays.stream(nodes), this.children);
+        return this;
+    }
+
+    @Override
     public Buildable children(java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
         if (nodes == null) {
             return this;
         }
         GroupNodeBuilderHelper.children(nodes.stream(), this.children);
+        return this;
+    }
+
+    @Override
+    public Buildable builtChildren(java.util.@Nullable Collection<? extends Node> nodes) {
+        if (nodes == null) {
+            return this;
+        }
+        GroupNodeBuilderHelper.builtChildren(nodes.stream(), this.children);
         return this;
     }
 

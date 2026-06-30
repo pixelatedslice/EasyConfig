@@ -10,9 +10,13 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public interface FactoryNodeBuilderGroupStep<Next extends FactoryNodeBuilder, NodeType extends Node> extends
         FactoryNodeBuilder {
+    Next builtChildren(@Nullable Node @Nullable ... nodes);
+
     Next children(@Nullable BuildStep<?> @Nullable ... nodes);
 
     Next children(java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes);
+
+    Next builtChildren(java.util.@Nullable Collection<? extends Node> nodes);
 
     @NullMarked
     interface Original<NodeType extends Node>
