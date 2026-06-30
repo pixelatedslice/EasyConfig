@@ -1,7 +1,7 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import org.jspecify.annotations.NullMarked;
 
@@ -12,6 +12,6 @@ public interface Serializer<T> extends Serialize<T>, Deserialize<T> {
 
     TypeToken<T> type();
 
-    Node buildStructure(NodeBuilder.ContainerSafeStep.Original builder);
+    Node buildStructure(OldNodeBuilder.ContainerSafeStep.Original builder);
 
 }

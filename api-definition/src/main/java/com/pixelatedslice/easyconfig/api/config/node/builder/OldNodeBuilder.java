@@ -14,7 +14,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.Function;
 
 @NullMarked
-public interface NodeBuilder {
+public interface OldNodeBuilder {
 
     @NullMarked
     interface BaseOriginal<T> {
@@ -27,13 +27,13 @@ public interface NodeBuilder {
     }
 
     @NullMarked
-    interface FirstStep extends NodeBuilder {
+    interface FirstStep extends OldNodeBuilder {
 
         ContainerFinalStep.Original key(String key);
     }
 
     @NullMarked
-    interface ValueAbstractStep<T> extends NodeBuilder {
+    interface ValueAbstractStep<T> extends OldNodeBuilder {
         ValueFinalStep<T> defaultValue(@Nullable T defaultValue);
 
         ValueFinalStep<T> value(@Nullable T value);
@@ -55,7 +55,7 @@ public interface NodeBuilder {
         }
 
         @NullMarked
-        interface Child<T, ParentNode extends NodeBuilder> extends ValueAbstractStep<T>, BaseChild<ParentNode> {
+        interface Child<T, ParentNode extends OldNodeBuilder> extends ValueAbstractStep<T>, BaseChild<ParentNode> {
 
             ValueFinalStep.Child<T, ParentNode> defaultValue(@Nullable T defaultValue);
 
@@ -94,7 +94,7 @@ public interface NodeBuilder {
         }
 
         @NullMarked
-        interface Child<T, ParentNode extends NodeBuilder>
+        interface Child<T, ParentNode extends OldNodeBuilder>
                 extends ValueSafeStep<T>, ValueAbstractStep.Child<T, ParentNode> {
 
             @Override
@@ -103,7 +103,7 @@ public interface NodeBuilder {
     }
 
     @NullMarked
-    interface EnvAdapterStep<T> extends NodeBuilder {
+    interface EnvAdapterStep<T> extends OldNodeBuilder {
 
         EnvFinalStep<T> adapter(@Nullable Function<String, @Nullable T> adapter);
 
@@ -120,7 +120,7 @@ public interface NodeBuilder {
         }
 
         @NullMarked
-        interface Child<T, Previous extends NodeBuilder> extends EnvAdapterStep<T> {
+        interface Child<T, Previous extends OldNodeBuilder> extends EnvAdapterStep<T> {
 
             @Override
             EnvFinalStep.Child<T, Previous> adapter(@Nullable Function<String, @Nullable T> adapter);
@@ -131,7 +131,7 @@ public interface NodeBuilder {
     }
 
     @NullMarked
-    interface EnvFinalStep<T> extends NodeBuilder {
+    interface EnvFinalStep<T> extends OldNodeBuilder {
 
         EnvFinalStep<T> validator(@Nullable Validator<T> validator);
 
@@ -143,7 +143,7 @@ public interface NodeBuilder {
         }
 
         @NullMarked
-        interface Child<T, ParentNode extends NodeBuilder> extends EnvFinalStep<T>, BaseChild<ParentNode> {
+        interface Child<T, ParentNode extends OldNodeBuilder> extends EnvFinalStep<T>, BaseChild<ParentNode> {
 
             @Override
             EnvFinalStep.Child<T, ParentNode> validator(@Nullable Validator<T> validator);
@@ -170,13 +170,13 @@ public interface NodeBuilder {
         }
 
         @NullMarked
-        interface Child<T, ParentBuilder extends NodeBuilder>
+        interface Child<T, ParentBuilder extends OldNodeBuilder>
                 extends ValueFinalStep<T>, ValueAbstractStep.Child<T, ParentBuilder> {
         }
     }
 
     @NullMarked
-    interface CollectionStep extends NodeBuilder {
+    interface CollectionStep extends OldNodeBuilder {
 
         ContainerSafeStep.Child<? extends CollectionStep> append();
 
@@ -188,7 +188,7 @@ public interface NodeBuilder {
         }
 
         @NullMarked
-        interface Child<ParentNode extends NodeBuilder> extends CollectionStep, BaseChild<ParentNode> {
+        interface Child<ParentNode extends OldNodeBuilder> extends CollectionStep, BaseChild<ParentNode> {
 
             @Override
             ContainerSafeStep.Child<CollectionStep.Child<ParentNode>> append();
@@ -198,13 +198,13 @@ public interface NodeBuilder {
     }
 
     @NullMarked
-    interface ContainerSafeStep extends NodeBuilder {
+    interface ContainerSafeStep extends OldNodeBuilder {
 
         @CheckReturnValue
         CollectionStep collection();
 
         @CheckReturnValue
-        ContainerSafeStep.Child<? extends NodeBuilder> append(String key);
+        ContainerSafeStep.Child<? extends OldNodeBuilder> append(String key);
 
         @NullMarked
         interface Original extends ContainerSafeStep, BaseOriginal<ContainerNode> {
@@ -217,7 +217,7 @@ public interface NodeBuilder {
         }
 
         @NullMarked
-        interface Child<Parent extends NodeBuilder> extends ContainerFinalStep, BaseChild<Parent> {
+        interface Child<Parent extends OldNodeBuilder> extends ContainerFinalStep, BaseChild<Parent> {
             @Override
             ContainerSafeStep.Child<? extends ContainerSafeStep.Child<Parent>> append(String key);
 
@@ -255,7 +255,7 @@ public interface NodeBuilder {
         }
 
         @NullMarked
-        interface Child<Parent extends NodeBuilder> extends ContainerFinalStep, ContainerSafeStep.Child<Parent> {
+        interface Child<Parent extends OldNodeBuilder> extends ContainerFinalStep, ContainerSafeStep.Child<Parent> {
             @Override
             ContainerFinalStep.Child<ContainerFinalStep.Child<Parent>> append(String key);
 

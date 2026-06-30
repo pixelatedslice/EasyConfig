@@ -1,7 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 
 import com.pixelatedslice.easyconfig.impl.config.node.collection.CollectionNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeOriginalBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

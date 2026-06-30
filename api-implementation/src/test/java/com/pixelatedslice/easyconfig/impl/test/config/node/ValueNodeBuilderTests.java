@@ -1,10 +1,9 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
-import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import java.util.Optional;
 @NullMarked
 public class ValueNodeBuilderTests {
 
-    private NodeBuilder.FirstStep builder() {
+    private OldNodeBuilder.FirstStep builder() {
         return new ContainerNodeOriginalBuilder();
     }
 
@@ -76,7 +75,7 @@ public class ValueNodeBuilderTests {
 
         //ACT
         final var builder = this.builder().key(key).append(secondKey).of(String.class);
-        final NodeBuilder.ContainerFinalStep.Original originalBuilder = builder.complete();
+        final OldNodeBuilder.ContainerFinalStep.Original originalBuilder = builder.complete();
         final ContainerNode result = originalBuilder.build();
 
         //ASSERT

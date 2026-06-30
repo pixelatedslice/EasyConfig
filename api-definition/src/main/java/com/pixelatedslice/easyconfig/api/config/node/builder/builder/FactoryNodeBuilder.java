@@ -1,4 +1,4 @@
-package com.pixelatedslice.easyconfig.api.config.node.factory.builder;
+package com.pixelatedslice.easyconfig.api.config.node.builder.builder;
 
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import org.jspecify.annotations.NullMarked;

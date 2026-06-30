@@ -7,7 +7,7 @@ import com.pixelatedslice.easyconfig.api.config.node.container.EditableContainer
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
@@ -58,7 +58,9 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
     }
 
     @Override
-    public ContainerNodeOriginalBuilder toBuilder() {
-        return new ContainerNodeOriginalBuilder().parent(this.parent).config(this.attached).key(this.key());
+    public ContainerNodeBuilder toBuilder() {
+        return new ContainerNodeBuilder(this.key())
+                .parent(this.parent)
+                .config(this.attached);
     }
 }

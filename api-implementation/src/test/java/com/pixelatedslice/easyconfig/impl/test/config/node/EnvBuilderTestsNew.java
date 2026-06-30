@@ -1,7 +1,8 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.impl.config.node.env.builder.EnvNodeBuilderImpl;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,10 +10,10 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Function;
 
 @NullMarked
-public class EnvBuilderTests {
+public class EnvBuilderTestsNew {
 
-    private OldNodeBuilder.FirstStep builder() {
-        return new ContainerNodeOriginalBuilder();
+    private <T> FactoryNodeBuilderKeySteps.Env<T> builder(TypeToken<T> typeToken) {
+        return new EnvNodeBuilderImpl<>(typeToken);
     }
 
     @Test
@@ -24,7 +25,7 @@ public class EnvBuilderTests {
         final Function<String, String> adapter = t -> t;
 
         //ACT
-        final var result = this.builder().key(key).of(String.class).env(envKey).adapter(adapter).build();
+        final var result = this.builder(typeToken).key(key).variable(envKey).adapter(adapter).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());

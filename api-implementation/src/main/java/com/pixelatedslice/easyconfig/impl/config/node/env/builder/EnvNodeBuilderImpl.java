@@ -2,39 +2,36 @@ package com.pixelatedslice.easyconfig.impl.config.node.env.builder;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.Config;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderEnvStep;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderEnvStep;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.env.EnvNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.factory.AbstractFactoryNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
 
 @NullMarked
-public class EnvNodeBuilderImpl<T> extends
-        AbstractFactoryNodeBuilder<EnvNode<T>, FactoryNodeBuilderKeySteps.Env<T>,
-                FactoryNodeBuilderEnvStep.VariableStep<T>>
-        implements FactoryNodeBuilderEnvStep.VariableStep<T>, FactoryNodeBuilderEnvStep.AdapterValidatorStep<T>,
-        InternalNodeBuilder<EnvNodeBuilderImpl<T>> {
+public class EnvNodeBuilderImpl<T>
+        implements FactoryNodeBuilderKeySteps.Env<T>, FactoryNodeBuilderEnvStep.VariableStep<T>,
+        FactoryNodeBuilderEnvStep.AdapterValidatorStep<T>,
+        InternalNodeBuilder<EnvNodeBuilderImpl<T>>, FactoryNodeBuilder.BuildStep<EnvNode<T>> {
 
-    private final String key;
     private final TypeToken<T> typeToken;
-    private String envKey;
+    private @Nullable String key;
+    private @Nullable String envKey;
     private @Nullable AbstractNode parent;
     private @Nullable Config config;
     private @Nullable Function<String, @Nullable T> adapter;
     private @Nullable Validator<T> validator;
 
-    public EnvNodeBuilderImpl(String key, TypeToken<T> typeToken) {
-        this.key = Objects.requireNonNull(key);
+    public EnvNodeBuilderImpl(TypeToken<T> typeToken) {
         this.typeToken = Objects.requireNonNull(typeToken);
     }
 
@@ -42,7 +39,7 @@ public class EnvNodeBuilderImpl<T> extends
         return this.validator;
     }
 
-    public @Nullable Function<String, T> adapter() {
+    public @Nullable Function<String, @Nullable T> adapter() {
         return this.adapter;
     }
 
@@ -51,7 +48,7 @@ public class EnvNodeBuilderImpl<T> extends
     }
 
     public String envKey() {
-        return this.envKey;
+        return Objects.requireNonNull(this.envKey);
     }
 
     @Override
@@ -84,7 +81,7 @@ public class EnvNodeBuilderImpl<T> extends
     }
 
     @Override
-    public Collection<InternalNodeBuilder<?>> children() {
+    public java.util.Collection<InternalNodeBuilder<?>> children() {
         return Collections.emptyList();
     }
 
@@ -99,7 +96,7 @@ public class EnvNodeBuilderImpl<T> extends
     }
 
     @Override
-    public EnvNodeBuilderImpl<T> adapter(Function<String, T> adapter) {
+    public EnvNodeBuilderImpl<T> adapter(@Nullable Function<String, @Nullable T> adapter) {
         this.adapter = adapter;
         //noinspection unchecked
         return this;
@@ -115,6 +112,12 @@ public class EnvNodeBuilderImpl<T> extends
     @Override
     public FactoryNodeBuilderEnvStep.AdapterValidatorStep<T> variable(String variable) {
         this.envKey = variable;
+        return this;
+    }
+
+    @Override
+    public FactoryNodeBuilderEnvStep.VariableStep<T> key(String key) {
+        this.key = key;
         return this;
     }
 }

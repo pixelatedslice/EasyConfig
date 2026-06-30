@@ -3,6 +3,7 @@ package com.pixelatedslice.easyconfig.impl.config.node;
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.config.node.for_impl.ForImplNode;
@@ -54,7 +55,7 @@ public abstract class AbstractNode implements ForImplNode {
     protected abstract void internalAppendChild(AbstractNode node);
 
     @Override
-    public abstract InternalNodeBuilder<?> toBuilder();
+    public abstract FactoryNodeBuilder.KeyStep<?> toBuilder();
 
     @Override
     public String key() {
@@ -68,7 +69,7 @@ public abstract class AbstractNode implements ForImplNode {
 
     @Override
     public ConfigStructure toStructure() {
-        return new ConfigStructureImpl(this.toBuilder().build());
+        return new ConfigStructureImpl(this);
     }
 
     public @Nullable Config config() {

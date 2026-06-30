@@ -1,7 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -93,7 +92,7 @@ public class CollectionNodeBuilderTests {
         //ACT - ASSERT
         Assertions.assertThrows(RuntimeException.class, () -> {
             final var collectionBuilder =
-                    (NodeBuilder.ContainerFinalStep.Child<NodeBuilder.CollectionStep.Original>) this.builder()
+                    (OldNodeBuilder.ContainerFinalStep.Child<OldNodeBuilder.CollectionStep.Original>) this.builder()
                             .key(key)
                             .collection()
                             .append();
@@ -101,7 +100,7 @@ public class CollectionNodeBuilderTests {
         });
     }
 
-    private NodeBuilder.FirstStep builder() {
+    private OldNodeBuilder.FirstStep builder() {
         return new ContainerNodeOriginalBuilder();
     }
 }

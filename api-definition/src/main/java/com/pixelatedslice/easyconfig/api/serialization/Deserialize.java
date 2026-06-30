@@ -1,6 +1,6 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import org.jspecify.annotations.NullMarked;
 
@@ -10,7 +10,7 @@ import org.jspecify.annotations.NullMarked;
 public interface Deserialize<T> {
 
 
-    Node deserialize(T value, NodeBuilder.ContainerSafeStep.Original builder,
+    Node deserialize(T value, OldNodeBuilder.ContainerSafeStep.Original builder,
             SerializeContext context);
 
 }

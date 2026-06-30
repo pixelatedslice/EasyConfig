@@ -2,31 +2,30 @@ package com.pixelatedslice.easyconfig.impl.config.node.value.builder;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderValueStep;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderValueStep;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.factory.AbstractFactoryNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.value.ValueNodeImpl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @NullMarked
 public class ValueNodeBuilder<T>
-        extends
-        AbstractFactoryNodeBuilder<ValueNode<T>, FactoryNodeBuilderKeySteps.Value<T>, FactoryNodeBuilderValueStep<T>>
-        implements FactoryNodeBuilderValueStep.FirstStep<T>, FactoryNodeBuilderValueStep.DefaultValueAndExtrasStep<T>,
-        FactoryNodeBuilderValueStep.ValueAndExtrasStep<T>, InternalNodeBuilder<ValueNodeBuilder<T>> {
+        implements FactoryNodeBuilderKeySteps.Value<T>, FactoryNodeBuilderValueStep.FirstStep<T>,
+        FactoryNodeBuilderValueStep.DefaultValueAndExtrasStep<T>,
+        FactoryNodeBuilderValueStep.ValueAndExtrasStep<T>, InternalNodeBuilder<ValueNodeBuilder<T>>,
+        FactoryNodeBuilder.BuildStep<ValueNode<T>> {
 
-    String key;
+    @Nullable String key;
     @Nullable T defaultValue;
     @Nullable T value;
     TypeToken<T> typeToken;
@@ -34,15 +33,14 @@ public class ValueNodeBuilder<T>
     @Nullable Serializer<T> serializer;
     @Nullable Config config;
     @Nullable AbstractNode parent;
-    Collection<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
+    java.util.Collection<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
 
-    public ValueNodeBuilder(TypeToken<T> token, String key) {
-        this.key = Objects.requireNonNull(key);
+    public ValueNodeBuilder(TypeToken<T> token) {
         this.typeToken = Objects.requireNonNull(token);
     }
 
     public String key() {
-        return this.key;
+        return Objects.requireNonNull(this.key);
     }
 
     public @Nullable T defaultValue() {
@@ -112,7 +110,7 @@ public class ValueNodeBuilder<T>
     }
 
     @Override
-    public Collection<InternalNodeBuilder<?>> children() {
+    public java.util.Collection<InternalNodeBuilder<?>> children() {
         return Collections.unmodifiableCollection(this.children);
     }
 
@@ -124,5 +122,11 @@ public class ValueNodeBuilder<T>
     @Override
     public ValueNodeImpl<T> build() {
         return new ValueNodeImpl<>(this);
+    }
+
+    @Override
+    public FactoryNodeBuilderValueStep.FirstStep<T> key(String key) {
+        this.key = key;
+        return this;
     }
 }

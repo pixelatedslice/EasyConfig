@@ -1,7 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,7 @@ import org.junit.jupiter.api.Test;
 @NullMarked
 public class ContainerNodeBuilderTests {
 
-    private NodeBuilder.FirstStep builder() {
+    private OldNodeBuilder.FirstStep builder() {
         return new ContainerNodeOriginalBuilder();
     }
 

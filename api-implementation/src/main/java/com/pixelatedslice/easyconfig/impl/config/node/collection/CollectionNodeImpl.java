@@ -7,7 +7,7 @@ import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.ReturnKnownNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
@@ -44,9 +44,13 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
     }
 
     @Override
-    public CollectionNodeOriginalBuilder toBuilder() {
-        final var builder = new CollectionNodeOriginalBuilder(this.key()).parent(this.parent).config(this.attached);
-        this.children.stream().map(AbstractNode::toBuilder).forEach(builder::appendChild);
+    public CollectionNodeBuilder toBuilder() {
+        final var builder = new CollectionNodeBuilder(this.key()).parent(this.parent).config(this.attached);
+        this.children
+                .stream()
+                .map(AbstractNode::toBuilder)
+                .map(keyStep -> (InternalNodeBuilder<?>) keyStep)
+                .forEach(builder::appendChild);
         return builder;
     }
 }

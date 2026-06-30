@@ -24,7 +24,7 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     private final @Nullable T defaultValue;
     private @Nullable T value;
 
-    public ValueNodeImpl(ValueNodeBuilder<?, T> builder) {
+    public ValueNodeImpl(ValueNodeBuilder<T> builder) {
         super(builder);
         this.defaultValue = builder.defaultValue();
         this.token = Objects.requireNonNull(builder.type());
@@ -73,7 +73,8 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
 
     @Override
     public ValueNodeBuilder<T> toBuilder() {
-        return new ValueNodeBuilder(this.token, this.key())
+        return (ValueNodeBuilder<T>) new ValueNodeBuilder<>(this.token)
+                .key(this.key())
                 .defaultValue(this.defaultValue)
                 .value(this.value)
                 .serializer(this.serializer)

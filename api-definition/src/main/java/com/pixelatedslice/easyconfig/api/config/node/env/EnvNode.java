@@ -2,7 +2,7 @@ package com.pixelatedslice.easyconfig.api.config.node.env;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
-import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.config.node.for_impl.ForImplNode;
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
@@ -36,5 +36,5 @@ public non-sealed interface EnvNode<T> extends Node, ForImplNode {
     TypeToken<T> typeToken();
 
     @Override
-    NodeBuilder.EnvFinalStep<T> toBuilder();
+    FactoryNodeBuilderKeySteps.Env<T> toBuilder();
 }

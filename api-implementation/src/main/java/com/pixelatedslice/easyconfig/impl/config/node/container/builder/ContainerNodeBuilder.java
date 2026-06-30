@@ -1,37 +1,38 @@
 package com.pixelatedslice.easyconfig.impl.config.node.container.builder;
 
 import com.pixelatedslice.easyconfig.api.config.Config;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderGroupStep;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.builder.GroupNodeBuilderHelper;
 import com.pixelatedslice.easyconfig.impl.config.node.container.ContainerNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.factory.AbstractFactoryNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @NullMarked
-public class AbstractContainerNodeBuilder
-        extends
-        AbstractFactoryNodeBuilder<ContainerNode, FactoryNodeBuilderKeySteps.Container,
-                FactoryNodeBuilderGroupStep.Container>
-        implements FactoryNodeBuilderGroupStep.Container, FactoryNodeBuilderGroupStep.Container.Buildable,
-        InternalNodeBuilder<AbstractContainerNodeBuilder> {
+public class ContainerNodeBuilder
+        implements FactoryNodeBuilderKeySteps.Container, FactoryNodeBuilderGroupStep.Container,
+        FactoryNodeBuilderGroupStep.Container.Buildable,
+        InternalNodeBuilder<ContainerNodeBuilder>, FactoryNodeBuilder.BuildStep<ContainerNode> {
 
-    @Nullable String key;
     @Nullable AbstractNode parent;
     @Nullable Config config;
     java.util.Collection<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
+    private String key;
+
+    public ContainerNodeBuilder(String key) {
+        this.key = key;
+    }
 
     @Override
-    public AbstractContainerNodeBuilder parent(@Nullable AbstractNode node) {
+    public ContainerNodeBuilder parent(@Nullable AbstractNode node) {
         this.parent = node;
         //noinspection unchecked
         return this;
@@ -43,7 +44,7 @@ public class AbstractContainerNodeBuilder
     }
 
     @Override
-    public AbstractContainerNodeBuilder config(@Nullable Config config) {
+    public ContainerNodeBuilder config(@Nullable Config config) {
         this.config = config;
         //noinspection unchecked
         return this;
@@ -70,29 +71,32 @@ public class AbstractContainerNodeBuilder
 
     @Override
     public ContainerNodeImpl build() {
-        return new ContainerNodeImpl(this);
+        final var built = new ContainerNodeImpl(this);
+        this.buildChildren(built);
+        return built;
     }
 
     @Override
     public Buildable children(@Nullable BuildStep<?> @Nullable ... nodes) {
-        return (nodes != null) ? this.children(Arrays.stream(nodes)) : this;
+        if (nodes == null) {
+            return this;
+        }
+        GroupNodeBuilderHelper.children(Arrays.stream(nodes), this.children);
+        return this;
     }
 
     @Override
     public Buildable children(java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
-        return (nodes != null) ? this.children(nodes.stream()) : this;
+        if (nodes == null) {
+            return this;
+        }
+        GroupNodeBuilderHelper.children(nodes.stream(), this.children);
+        return this;
     }
 
-    private Buildable children(Stream<? extends @Nullable BuildStep<?>> nodeStream) {
-        final var internalBuilders = nodeStream
-                .filter((@Nullable BuildStep<?> buildStep) -> buildStep != null)
-                .map(BuildStep::build)
-                .map(node -> (AbstractNode) node)
-                .map(AbstractNode::toBuilder)
-                .collect(Collectors.toSet());
-
-        this.children.addAll(internalBuilders);
-
+    @Override
+    public FactoryNodeBuilderGroupStep.Container key(String key) {
+        this.key = key;
         return this;
     }
 }

@@ -22,7 +22,7 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     private final TypeToken<T> type;
     private final Validator<T> validator;
 
-    public EnvNodeImpl(EnvNodeBuilderImpl<T, ?> builder) {
+    public EnvNodeImpl(EnvNodeBuilderImpl<T> builder) {
         super(builder);
         this.envKey = Objects.requireNonNull(builder.envKey());
         this.adapter = Objects.requireNonNull(builder.adapter());
@@ -68,10 +68,12 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public OriginalEnvNodeBuilder<T> toBuilder() {
-        return new OriginalEnvNodeBuilder<>(this.key(), this.typeToken(), this.envKey())
+    public EnvNodeBuilderImpl<T> toBuilder() {
+        return (EnvNodeBuilderImpl<T>) new EnvNodeBuilderImpl<>(this.type)
                 .config(this.attached)
                 .parent(this.parent)
-                .adapter(this.adapter);
+                .adapter(this.adapter)
+                .key(this.key())
+                .variable(this.envKey);
     }
 }

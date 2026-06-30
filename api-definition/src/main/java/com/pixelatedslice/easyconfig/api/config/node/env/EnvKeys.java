@@ -1,6 +1,6 @@
 package com.pixelatedslice.easyconfig.api.config.node.env;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -16,23 +16,23 @@ import java.util.stream.Stream;
 @NullMarked
 public final class EnvKeys {
 
-    public static final NodeBuilder.PredefinedEnv<String> DEBUGGER_ID = new DefinedEnv<>("DEBUGGER_ID", t -> t);
-    public static final NodeBuilder.PredefinedEnv<Boolean> DEBUGGING_ENABLED = new DefinedEnv<>("DEBUGGER_ENABLED",
+    public static final OldNodeBuilder.PredefinedEnv<String> DEBUGGER_ID = new DefinedEnv<>("DEBUGGER_ID", t -> t);
+    public static final OldNodeBuilder.PredefinedEnv<Boolean> DEBUGGING_ENABLED = new DefinedEnv<>("DEBUGGER_ENABLED",
             Boolean::parseBoolean);
-    public static final NodeBuilder.PredefinedEnv<@Nullable Integer> DISPLAY = new DefinedEnv<>("DISPLAY", input -> {
+    public static final OldNodeBuilder.PredefinedEnv<@Nullable Integer> DISPLAY = new DefinedEnv<>("DISPLAY", input -> {
         try {
             return Integer.parseInt(input.substring(1));
         } catch (NumberFormatException e) {
             return null;
         }
     });
-    public static final NodeBuilder.PredefinedEnv<@Nullable Path> EDITOR = DefinedEnv.path("EDITOR");
-    public static final NodeBuilder.PredefinedEnv<@Nullable Path> HOME = DefinedEnv.path("HOME");
-    public static final NodeBuilder.PredefinedEnv<@Nullable LangResult> LANG = new DefinedEnv<>("LANG", input -> {
+    public static final OldNodeBuilder.PredefinedEnv<@Nullable Path> EDITOR = DefinedEnv.path("EDITOR");
+    public static final OldNodeBuilder.PredefinedEnv<@Nullable Path> HOME = DefinedEnv.path("HOME");
+    public static final OldNodeBuilder.PredefinedEnv<@Nullable LangResult> LANG = new DefinedEnv<>("LANG", input -> {
         String[] split = input.split("\\.", 2);
         return (split.length != 2) ? null : new LangResult(Locale.of(split[0]), split[1]);
     });
-    public static final NodeBuilder.PredefinedEnv<@Nullable Collection<Path>> PATHS = new DefinedEnv<>("PATH",
+    public static final OldNodeBuilder.PredefinedEnv<@Nullable Collection<Path>> PATHS = new DefinedEnv<>("PATH",
             (String input) -> {
                 var split = input.split(";");
                 try {
@@ -47,8 +47,8 @@ public final class EnvKeys {
                     return null;
                 }
             });
-    public static final NodeBuilder.PredefinedEnv<@Nullable Path> SHELL = DefinedEnv.path("SHELL");
-    public static final NodeBuilder.PredefinedEnv<String> USER = new DefinedEnv<>("USER", t -> t);
+    public static final OldNodeBuilder.PredefinedEnv<@Nullable Path> SHELL = DefinedEnv.path("SHELL");
+    public static final OldNodeBuilder.PredefinedEnv<String> USER = new DefinedEnv<>("USER", t -> t);
 
     private EnvKeys() {
 
@@ -60,7 +60,7 @@ public final class EnvKeys {
 
     @NullMarked
     record DefinedEnv<T extends @Nullable Object>(String key, Function<String, @Nullable T> adapter)
-            implements NodeBuilder.PredefinedEnv<T> {
+            implements OldNodeBuilder.PredefinedEnv<T> {
 
         @SuppressWarnings("DataFlowIssue")
         static DefinedEnv<@Nullable Path> path(String key) {

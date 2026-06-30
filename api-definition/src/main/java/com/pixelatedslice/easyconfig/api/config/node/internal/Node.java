@@ -4,7 +4,7 @@ import com.google.errorprone.annotations.CheckReturnValue;
 import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
-import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.stream.Stream;
@@ -26,7 +26,7 @@ public sealed interface Node permits com.pixelatedslice.easyconfig.api.config.no
 
 
     @CheckReturnValue
-    NodeBuilder toBuilder();
+    FactoryNodeBuilder.KeyStep<?> toBuilder();
 
 
     @CheckReturnValue

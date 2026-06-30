@@ -2,7 +2,7 @@ package com.pixelatedslice.easyconfig.api.config.node.value;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
-import com.pixelatedslice.easyconfig.api.config.node.builder.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.config.node.for_impl.ForImplNode;
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public non-sealed interface ValueNode<T> extends Node, ForImplNode, Editable<EditableValueNode<T>> {
 
     @Override
-    NodeBuilder.ValueFinalStep.Original<T> toBuilder();
+    FactoryNodeBuilderKeySteps.Value<T> toBuilder();
 
     default NodeType nodeType() {
         return NodeType.VALUE_NODE;
