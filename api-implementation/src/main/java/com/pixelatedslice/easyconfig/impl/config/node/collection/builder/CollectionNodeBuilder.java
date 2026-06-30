@@ -1,10 +1,8 @@
 package com.pixelatedslice.easyconfig.impl.config.node.collection.builder;
 
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderGroupStep;
 import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
-import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
@@ -22,9 +20,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @NullMarked
 public class CollectionNodeBuilder
-        implements FactoryNodeBuilderKeySteps.Collection, FactoryNodeBuilderGroupStep.Collection,
+        implements FactoryNodeBuilderGroupStep.Collection, FactoryNodeBuilderKeySteps.Collection,
         FactoryNodeBuilderGroupStep.Collection.Buildable,
-        InternalNodeBuilder<CollectionNodeBuilder>, FactoryNodeBuilder.BuildStep<CollectionNode> {
+        InternalNodeBuilder<CollectionNodeBuilder> {
 
     private final List<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
     private String key;
@@ -90,7 +88,7 @@ public class CollectionNodeBuilder
     }
 
     @Override
-    public Buildable children(@Nullable BuildStep<?> @Nullable ... nodes) {
+    public FactoryNodeBuilderGroupStep.Collection.Buildable children(@Nullable BuildStep<?> @Nullable ... nodes) {
         if (nodes == null) {
             return this;
         }
@@ -99,7 +97,7 @@ public class CollectionNodeBuilder
     }
 
     @Override
-    public Buildable builtChildren(@Nullable Node @Nullable ... nodes) {
+    public FactoryNodeBuilderGroupStep.Collection.Buildable builtChildren(@Nullable Node @Nullable ... nodes) {
         if (nodes == null) {
             return this;
         }
@@ -108,7 +106,8 @@ public class CollectionNodeBuilder
     }
 
     @Override
-    public Buildable children(java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
+    public FactoryNodeBuilderGroupStep.Collection.Buildable children(
+            java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
         if (nodes == null) {
             return this;
         }
@@ -117,7 +116,8 @@ public class CollectionNodeBuilder
     }
 
     @Override
-    public Buildable builtChildren(java.util.@Nullable Collection<? extends Node> nodes) {
+    public FactoryNodeBuilderGroupStep.Collection.Buildable builtChildren(
+            java.util.@Nullable Collection<? extends Node> nodes) {
         if (nodes == null) {
             return this;
         }

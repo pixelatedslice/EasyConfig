@@ -1,10 +1,8 @@
 package com.pixelatedslice.easyconfig.impl.config.node.container.builder;
 
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderGroupStep;
 import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
-import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
@@ -19,9 +17,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @NullMarked
 public class ContainerNodeBuilder
-        implements FactoryNodeBuilderKeySteps.Container, FactoryNodeBuilderGroupStep.Container,
+        implements FactoryNodeBuilderGroupStep.Container, FactoryNodeBuilderKeySteps.Container,
         FactoryNodeBuilderGroupStep.Container.Buildable,
-        InternalNodeBuilder<ContainerNodeBuilder>, FactoryNodeBuilder.BuildStep<ContainerNode> {
+        InternalNodeBuilder<ContainerNodeBuilder> {
 
     @Nullable AbstractNode parent;
     @Nullable Config config;

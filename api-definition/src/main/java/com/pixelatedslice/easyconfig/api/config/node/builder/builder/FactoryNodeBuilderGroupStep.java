@@ -19,13 +19,8 @@ public interface FactoryNodeBuilderGroupStep<Next extends FactoryNodeBuilder, No
     Next builtChildren(java.util.@Nullable Collection<? extends Node> nodes);
 
     @NullMarked
-    interface Original<NodeType extends Node>
-            extends FactoryNodeBuilder, FactoryNodeBuilderGroupStep<Buildable<NodeType>, NodeType> {
-    }
-
-    @NullMarked
-    interface Buildable<NodeType extends Node>
-            extends FactoryNodeBuilder, BuildStep<NodeType> {
+    interface Buildable<NestedBuildable extends Buildable<NestedBuildable, NodeType>, NodeType extends Node>
+            extends FactoryNodeBuilderGroupStep<NestedBuildable, NodeType>, BuildStep<NodeType> {
     }
 
     @NullMarked
@@ -33,7 +28,7 @@ public interface FactoryNodeBuilderGroupStep<Next extends FactoryNodeBuilder, No
             extends FactoryNodeBuilder, FactoryNodeBuilderGroupStep<Container.Buildable, ContainerNode> {
 
         @NullMarked
-        interface Buildable extends FactoryNodeBuilderGroupStep.Buildable<ContainerNode> {
+        interface Buildable extends FactoryNodeBuilderGroupStep.Buildable<Container.Buildable, ContainerNode> {
         }
     }
 
@@ -42,7 +37,8 @@ public interface FactoryNodeBuilderGroupStep<Next extends FactoryNodeBuilder, No
             extends FactoryNodeBuilder, FactoryNodeBuilderGroupStep<Collection.Buildable, CollectionNode> {
 
         @NullMarked
-        interface Buildable extends FactoryNodeBuilderGroupStep.Buildable<CollectionNode> {
+        interface Buildable
+                extends Collection, FactoryNodeBuilderGroupStep.Buildable<Collection.Buildable, CollectionNode> {
         }
     }
 }
