@@ -21,4 +21,11 @@ public interface FactoryNodeBuilderEnvStep {
 
         AdapterValidatorStep<T> validator(@Nullable Validator<T> validator);
     }
+
+    @NullMarked
+    interface PreDefined<T extends @Nullable Object> {
+        String key();
+
+        Function<String, @Nullable T> adapter();
+    }
 }

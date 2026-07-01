@@ -7,7 +7,7 @@ import org.jspecify.annotations.NullMarked;
 public interface FactoryNodeBuilderKeySteps {
     @NullMarked
     interface Value<T> extends FactoryNodeBuilderKeySteps,
-            FactoryNodeBuilder.KeyStep<FactoryNodeBuilderValueStep.FirstStep<T>> {
+            FactoryNodeBuilder.KeyStep<FactoryNodeBuilderValueStep<T>> {
     }
 
     @NullMarked

@@ -1,6 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 
-import com.pixelatedslice.easyconfig.impl.config.node.collection.CollectionNodeImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ public class CollectionNodeTests {
     @Test
     public void CollectionNode_can_build_correctly() {
         //ARRANGE
-        final var builder = new CollectionNodeOriginalBuilder("key").append().complete();
+        final var builder = new CollectionNodeBuilder("key");
 
         //ACT
         final var result = builder.build();
@@ -24,7 +24,7 @@ public class CollectionNodeTests {
     @Test
     public void CollectionNode_toBuilder() {
         //ARRANGE
-        final var node = (CollectionNodeImpl) new CollectionNodeOriginalBuilder("key").append().complete().build();
+        final var node = new CollectionNodeBuilder("key").build();
 
         //ACT
         final var toBuilder = node.toBuilder();

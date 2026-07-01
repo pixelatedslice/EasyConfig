@@ -68,17 +68,20 @@ public class CollectionNodeBuilderTests {
         final String fourKey = "Four key";
 
         //ACT
-        final var result = this.builder()
-                .key(key)
-                .collection()
-                .append()
-                .collection()
-                .append()
-                .append(fourKey)
-                .complete()
-                .complete()
-                .complete()
-                .build();
+        // Old: final var result = this.builder()
+        //         .key(key)
+        //         .collection()
+        //         .append()
+        //           .collection()
+        //             .append()
+        //              .append(fourKey)
+        //             .complete()
+        //           .complete()
+        //         .complete()
+        //         .build();
+        final var result = Nodes.collection(key)
+                .children(Nodes.collection("test")
+                        .children(Nodes.collection("test2").children(Nodes.collection(fourKey)))).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -89,21 +92,5 @@ public class CollectionNodeBuilderTests {
         Assertions.assertTrue(opThirdChildNode.isPresent()); //index container
         final var opFourChildNode = opThirdChildNode.get().containerNode(fourKey);
         Assertions.assertTrue(opFourChildNode.isPresent());
-    }
-
-    @Test
-    public void NodeBuilder_collection_builds_throws_exception_when_invalid_child_appends() {
-        //ARRANGE
-        final String key = "First key";
-
-        //ACT - ASSERT
-        Assertions.assertThrows(RuntimeException.class, () -> {
-            final var collectionBuilder =
-                    (OldNodeBuilder.ContainerFinalStep.Child<OldNodeBuilder.CollectionStep.Original>) this.builder()
-                            .key(key)
-                            .collection()
-                            .append();
-            collectionBuilder.of(String.class).complete();
-        });
     }
 }

@@ -1,7 +1,9 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 
+import com.pixelatedslice.easyconfig.api.config.node.builder.Nodes;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.impl.config.node.container.ContainerNodeImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.test.testUtils.CollectionAssert;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
@@ -16,7 +18,7 @@ public class ContainerNodeTests {
     @Test
     public void ContainerNode_fails_when_creating_without_key() {
         //ARRANGE
-        final var internalBuilder = new ContainerNodeOriginalBuilder();
+        final var internalBuilder = new ContainerNodeBuilder(null);
 
         //ACT - ASSERT
         Assertions.assertThrows(NullPointerException.class, () -> new ContainerNodeImpl(internalBuilder));
@@ -26,7 +28,7 @@ public class ContainerNodeTests {
     public void ContainerNode_can_maintain_values() {
         //ARRANGE
         final var key = "key";
-        final var internalBuilder = new ContainerNodeOriginalBuilder().key(key);
+        final var internalBuilder = new ContainerNodeBuilder(key);
 
         //ACT
         final var result = new ContainerNodeImpl(internalBuilder);
@@ -40,7 +42,7 @@ public class ContainerNodeTests {
     public void ContainerNode_to_builder() {
         //ARRANGE
         final var key = "key";
-        final var internalBuilder = new ContainerNodeOriginalBuilder().key(key);
+        final var internalBuilder = new ContainerNodeBuilder(key);
 
         final ContainerNode node = new ContainerNodeImpl(internalBuilder);
 
@@ -48,8 +50,8 @@ public class ContainerNodeTests {
         final var result = node.toBuilder();
 
         //ASSERT
-        Assertions.assertInstanceOf(ContainerNodeOriginalBuilder.class, result);
-        final var castResult = (ContainerNodeOriginalBuilder) result;
+        Assertions.assertInstanceOf(ContainerNodeBuilder.class, result);
+        final var castResult = (ContainerNodeBuilder) result;
         Assertions.assertEquals(key, castResult.key());
     }
 
@@ -57,9 +59,9 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_addNode() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = new ContainerNodeOriginalBuilder().key(key).build();
+        final var originalNode = new ContainerNodeBuilder(key).build();
 
-        final var toAdd = new ContainerNodeOriginalBuilder().key("adding").build();
+        final var toAdd = new ContainerNodeBuilder("adding").build();
 
         //ACT
         try (var editable = originalNode.editable()) {
@@ -74,7 +76,7 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_clearNodes() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = new ContainerNodeOriginalBuilder().key(key).append("added").complete().build();
+        final var originalNode = Nodes.container(key).builtChildren(Nodes.emptyValue(String.class, "added")).build();
 
         //ACT
         try (var editable = originalNode.editable()) {
@@ -89,12 +91,8 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_removeNode() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = new ContainerNodeOriginalBuilder()
-                .key(key)
-                .append("added")
-                .complete()
-                .append("second")
-                .complete()
+        final var originalNode = Nodes.container(key)
+                .builtChildren(Nodes.emptyValue(String.class, "added"), Nodes.emptyValue(String.class, "second"))
                 .build();
         final var toRemain = originalNode.children().getLast();
         final var toRemove = originalNode.children().getFirst();
@@ -112,15 +110,11 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_setNode() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = new ContainerNodeOriginalBuilder()
-                .key(key)
-                .append("added")
-                .complete()
-                .append("second")
-                .complete()
+        final var originalNode = Nodes.container(key)
+                .builtChildren(Nodes.emptyValue(String.class, "added"), Nodes.emptyValue(String.class, "second"))
                 .build();
 
-        final var toSet = new ContainerNodeOriginalBuilder().key("set").build();
+        final var toSet = new ContainerNodeBuilder("set").build();
 
         //ACT
         try (var editable = originalNode.editable()) {

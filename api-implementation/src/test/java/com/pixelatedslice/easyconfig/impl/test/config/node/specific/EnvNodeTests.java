@@ -3,6 +3,7 @@ package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvAdapter;
 import com.pixelatedslice.easyconfig.impl.config.node.env.EnvNodeImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.env.builder.EnvNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ public class EnvNodeTests {
         final var key = "key";
         final var token = TypeToken.of(String.class);
         final String envKey = "LANG";
-        final var internalBuilder = new OriginalEnvNodeBuilder<>(key, token, envKey);
+        final var internalBuilder = new EnvNodeBuilder<>(token, key, envKey);
 
         //ACT - ASSERT
         Assertions.assertThrows(NullPointerException.class, () -> new EnvNodeImpl<>(internalBuilder));
@@ -28,8 +29,8 @@ public class EnvNodeTests {
         final String key = "key";
         final var token = TypeToken.of(String.class);
         final var envKey = "LANG";
-        final EnvAdapter<String> adapter = t -> t;
-        final var internalBuilder = new OriginalEnvNodeBuilder<>(key, token, envKey).adapter(adapter);
+        final EnvAdapter<String> adapter = (String t) -> t;
+        final var internalBuilder = new EnvNodeBuilder<>(token, key, envKey).adapter(adapter);
 
         //ACT
         final var result = new EnvNodeImpl<>(internalBuilder);
@@ -48,7 +49,7 @@ public class EnvNodeTests {
         final var token = TypeToken.of(String.class);
         final var envKey = "LANG";
         final EnvAdapter<String> adapter = t -> t;
-        final var internalBuilder = new OriginalEnvNodeBuilder<>(key, token, envKey).adapter(adapter);
+        final var internalBuilder = new EnvNodeBuilder<>(token, key, envKey).adapter(adapter);
 
         final var node = new EnvNodeImpl<>(internalBuilder);
 
@@ -56,7 +57,7 @@ public class EnvNodeTests {
         final var result = node.toBuilder();
 
         //ASSERT
-        Assertions.assertInstanceOf(OriginalEnvNodeBuilder.class, result);
+        Assertions.assertInstanceOf(EnvNodeBuilder.class, result);
         final var castResult = result;
         Assertions.assertEquals(key, castResult.key());
         Assertions.assertEquals(envKey, castResult.envKey());

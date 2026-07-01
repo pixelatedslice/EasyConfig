@@ -10,7 +10,7 @@ import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.env.builder.EnvNodeBuilderImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.env.builder.EnvNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -31,18 +31,18 @@ public class NodeBuildersImpl implements NodeBuilders {
 
     @Override
     public <T> FactoryNodeBuilderKeySteps.Env<T> createEnvNodeBuilder(TypeToken<T> typeToken) {
-        return new EnvNodeBuilderImpl<>(typeToken);
+        return new EnvNodeBuilder<>(typeToken);
     }
 
     @Override
     public <T> EnvNode<T> createEnvNode(TypeToken<T> typeToken, String key, String variable) {
-        return new EnvNodeBuilderImpl<>(typeToken).key(key).variable(variable).build();
+        return new EnvNodeBuilder<>(typeToken).key(key).variable(variable).build();
     }
 
     @Override
     public <T> FactoryNodeBuilderEnvStep.AdapterValidatorStep<T> createEnvNodeBuilder(TypeToken<T> typeToken,
             String key, String variable) {
-        return new EnvNodeBuilderImpl<>(typeToken).key(key).variable(variable);
+        return new EnvNodeBuilder<>(typeToken).key(key).variable(variable);
     }
 
     @Override

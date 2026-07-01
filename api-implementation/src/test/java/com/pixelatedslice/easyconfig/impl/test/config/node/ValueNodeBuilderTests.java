@@ -1,6 +1,7 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
 import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.config.node.builder.Nodes;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import org.jspecify.annotations.NullMarked;
@@ -11,11 +12,6 @@ import java.util.Optional;
 
 @NullMarked
 public class ValueNodeBuilderTests {
-
-    private OldNodeBuilder.FirstStep builder() {
-        return new ContainerNodeOriginalBuilder();
-    }
-
     @Test
     public void NodeBuilder_should_build_value_node_with_expected() {
         //ARRANGE
@@ -25,9 +21,8 @@ public class ValueNodeBuilderTests {
         final var value = "value";
 
         //ACT
-        final var node = this.builder()
+        final var node = Nodes.value(String.class)
                 .key(key)
-                .of(String.class)
                 .defaultValue(defaultValue)
                 .value(value)
                 .build();
@@ -46,7 +41,7 @@ public class ValueNodeBuilderTests {
         //ACT - ASSERT
         //noinspection DataFlowIssue
         Assertions.assertThrows(NullPointerException.class, () ->
-                this.builder().key(null).build());
+                Nodes.value(String.class).key(null).build());
     }
 
     @Test
@@ -57,12 +52,13 @@ public class ValueNodeBuilderTests {
         System.getenv("");
 
         //ACT - ASSERT
+        // Old: Assertions.assertThrows(NullPointerException.class, () ->
+        //         this.builder()
+        //                 .key(key)
+        //                 .of((TypeToken<?>) null)
+        //                 .build());
         //noinspection DataFlowIssue
-        Assertions.assertThrows(NullPointerException.class, () ->
-                this.builder()
-                        .key(key)
-                        .of((TypeToken<?>) null)
-                        .build());
+        Assertions.assertThrows(NullPointerException.class, () -> Nodes.value((TypeToken<?>) null).key(key));
     }
 
     @Test
@@ -73,9 +69,10 @@ public class ValueNodeBuilderTests {
         final var type = TypeToken.of(String.class);
 
         //ACT
-        final var builder = this.builder().key(key).append(secondKey).of(String.class);
-        final OldNodeBuilder.ContainerFinalStep.Original originalBuilder = builder.complete();
-        final ContainerNode result = originalBuilder.build();
+        // final var builder = this.builder().key(key).append(secondKey).of(String.class);
+        final var builder = Nodes.container(key).children(Nodes.value(String.class).key(secondKey));
+        // final OldNodeBuilder.ContainerFinalStep.Original originalBuilder = builder.complete();
+        final ContainerNode result = builder.build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());

@@ -85,7 +85,7 @@ public class CollectionNodeBuilder
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection.Buildable children(@Nullable BuildStep<?> @Nullable ... nodes) {
+    public FactoryNodeBuilderGroupStep.Collection children(@Nullable BuildStep<?> @Nullable ... nodes) {
         if (nodes == null) {
             return this;
         }
@@ -94,7 +94,7 @@ public class CollectionNodeBuilder
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection.Buildable builtChildren(@Nullable Node @Nullable ... nodes) {
+    public FactoryNodeBuilderGroupStep.Collection builtChildren(@Nullable Node @Nullable ... nodes) {
         if (nodes == null) {
             return this;
         }
@@ -103,7 +103,7 @@ public class CollectionNodeBuilder
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection.Buildable children(
+    public FactoryNodeBuilderGroupStep.Collection children(
             java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
         if (nodes == null) {
             return this;
@@ -113,7 +113,7 @@ public class CollectionNodeBuilder
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection.Buildable builtChildren(
+    public FactoryNodeBuilderGroupStep.Collection builtChildren(
             java.util.@Nullable Collection<? extends Node> nodes) {
         if (nodes == null) {
             return this;

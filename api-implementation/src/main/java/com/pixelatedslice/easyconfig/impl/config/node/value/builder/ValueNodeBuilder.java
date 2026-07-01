@@ -35,6 +35,13 @@ public class ValueNodeBuilder<T>
         this.typeToken = Objects.requireNonNull(token);
     }
 
+    public ValueNodeBuilder(TypeToken<T> typeToken, String key, @Nullable T defaultValue, @Nullable T value) {
+        this.typeToken = typeToken;
+        this.key = key;
+        this.defaultValue = defaultValue;
+        this.value = value;
+    }
+
     public String key() {
         return Objects.requireNonNull(this.key);
     }
@@ -52,19 +59,19 @@ public class ValueNodeBuilder<T>
     }
 
     @Override
-    public ValueAndExtrasStep<T> defaultValue(@Nullable T defaultValue) {
+    public FactoryNodeBuilderValueStep<T> defaultValue(@Nullable T defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }
 
     @Override
-    public DefaultValueAndExtrasStep<T> value(@Nullable T value) {
+    public FactoryNodeBuilderValueStep<T> value(@Nullable T value) {
         this.value = value;
         return this;
     }
 
     @Override
-    public ExtrasStep<T> validator(@Nullable Validator<T> validator) {
+    public FactoryNodeBuilderValueStep<T> validator(@Nullable Validator<T> validator) {
         this.validator = validator;
         return this;
     }
@@ -78,7 +85,7 @@ public class ValueNodeBuilder<T>
     }
 
     @Override
-    public ExtrasStep<T> serializer(@Nullable Serializer<T> serializer) {
+    public FactoryNodeBuilderValueStep<T> serializer(@Nullable Serializer<T> serializer) {
         this.serializer = serializer;
         return this;
     }
@@ -121,7 +128,7 @@ public class ValueNodeBuilder<T>
     }
 
     @Override
-    public FactoryNodeBuilderValueStep.FirstStep<T> key(String key) {
+    public FactoryNodeBuilderValueStep<T> key(String key) {
         this.key = key;
         return this;
     }

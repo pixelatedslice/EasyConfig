@@ -264,15 +264,15 @@ public final class LocationSerializerImpl implements BuiltInBukkitSerializer<Loc
   public Location deserialize( ConfigSection section) {
     Objects.requireNonNull(section);
 
-    var world = section
+    final var world = section
             .node(String.class, "world")
             .flatMap(ConfigNode::value)
             .map(Bukkit::getWorld)
             .orElse(null);
-    var x = section.node(Double.class, "x").flatMap(ConfigNode::value).orElseThrow();
-    var y = section.node(Double.class, "y").flatMap(ConfigNode::value).orElseThrow();
-    var z = section.node(Double.class, "z").flatMap(ConfigNode::value).orElseThrow();
-    var yaw = section.node(Float.class, "yaw")
+    final var x = section.node(Double.class, "x").flatMap(ConfigNode::value).orElseThrow();
+    final var y = section.node(Double.class, "y").flatMap(ConfigNode::value).orElseThrow();
+    final var z = section.node(Double.class, "z").flatMap(ConfigNode::value).orElseThrow();
+    final var yaw = section.node(Float.class, "yaw")
             .flatMap(ConfigNode::value)
             .orElseThrow();
     final var pitch = section.node(Float.class, "pitch")

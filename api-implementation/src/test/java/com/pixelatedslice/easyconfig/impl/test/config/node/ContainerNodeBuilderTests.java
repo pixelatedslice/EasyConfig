@@ -1,5 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
+import com.pixelatedslice.easyconfig.api.config.node.builder.Nodes;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,30 +8,29 @@ import org.junit.jupiter.api.Test;
 @NullMarked
 public class ContainerNodeBuilderTests {
 
-    private OldNodeBuilder.FirstStep builder() {
-        return new ContainerNodeOriginalBuilder();
-    }
-
     @Test
     public void NodeBuilder_should_build_container_node_with_key() {
         //ARRANGE
         final String key = "My Key";
 
         //ACT
-        final var node = this.builder().key(key).build();
+        // Old: final var node = this.builder().key(key).build();
+        final var node = Nodes.container(key).build();
 
         //ASSERT
         Assertions.assertEquals(key, node.key());
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Test
     public void NodeBuilder_should_throw_exception_with_null_key() {
         //ARRANGE
 
         //ACT - ASSERT
-        //noinspection DataFlowIssue
-        Assertions.assertThrows(NullPointerException.class, () ->
-                this.builder().key(null).build());
+        // Old: Assertions.assertThrows(NullPointerException.class, () ->
+        //        this.builder().key(null).build());
+
+        Assertions.assertThrows(NullPointerException.class, () -> Nodes.container(null).build());
     }
 
     @Test
@@ -40,7 +40,8 @@ public class ContainerNodeBuilderTests {
         final var secondKey = "My second key";
 
         //ACT
-        final var result = this.builder().key(key).append(secondKey).complete().build();
+        // Old: final var result = this.builder().key(key).append(secondKey).complete().build();
+        final var result = Nodes.container(key).builtChildren(Nodes.emptyValue(String.class, key)).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -57,7 +58,12 @@ public class ContainerNodeBuilderTests {
         final var thirdKey = "My third key";
 
         //ACT
-        final var result = this.builder().key(key).append(secondKey).append(thirdKey).complete().complete().build();
+        // Old: final var result = this.builder().key(key).append(secondKey).append(thirdKey).complete().complete()
+        // .build();
+        final var result = Nodes
+                .container(key)
+                .children(Nodes.container(secondKey).builtChildren(Nodes.emptyValue(String.class, thirdKey)))
+                .build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());

@@ -1,16 +1,14 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
 import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderGroupStep;
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import org.jspecify.annotations.NullMarked;
 
 @SuppressWarnings("unused")
 @NullMarked
 public interface Serializer<T> extends Serialize<T>, Deserialize<T> {
-
-
     TypeToken<T> type();
 
-    Node buildStructure(OldNodeBuilder.ContainerSafeStep.Original builder);
-
+    Node buildStructure(FactoryNodeBuilderGroupStep.Container builder);
 }

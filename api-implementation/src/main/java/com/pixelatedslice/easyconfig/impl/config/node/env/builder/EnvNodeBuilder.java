@@ -17,19 +17,25 @@ import java.util.function.Function;
 
 @SuppressWarnings("PublicMethodNotExposedInInterface")
 @NullMarked
-public class EnvNodeBuilderImpl<T>
-        implements FactoryNodeBuilderHandlers.Env<T>, InternalNodeBuilder<EnvNodeBuilderImpl<T>> {
+public class EnvNodeBuilder<T>
+        implements FactoryNodeBuilderHandlers.Env<T>, InternalNodeBuilder<EnvNodeBuilder<T>> {
 
     private final TypeToken<T> typeToken;
     private @Nullable String key;
-    private @Nullable String envKey;
+    private @Nullable String variable;
     private @Nullable AbstractNode parent;
     private @Nullable Config config;
     private @Nullable Function<String, @Nullable T> adapter;
     private @Nullable Validator<T> validator;
 
-    public EnvNodeBuilderImpl(TypeToken<T> typeToken) {
+    public EnvNodeBuilder(TypeToken<T> typeToken) {
         this.typeToken = Objects.requireNonNull(typeToken);
+    }
+
+    public EnvNodeBuilder(TypeToken<T> typeToken, String key, String variable) {
+        this.typeToken = typeToken;
+        this.key = key;
+        this.variable = variable;
     }
 
     public Validator<T> validator() {
@@ -45,11 +51,11 @@ public class EnvNodeBuilderImpl<T>
     }
 
     public String envKey() {
-        return Objects.requireNonNull(this.envKey);
+        return Objects.requireNonNull(this.variable);
     }
 
     @Override
-    public EnvNodeBuilderImpl<T> parent(@Nullable AbstractNode node) {
+    public EnvNodeBuilder<T> parent(@Nullable AbstractNode node) {
         this.parent = node;
         return this;
     }
@@ -60,7 +66,7 @@ public class EnvNodeBuilderImpl<T>
     }
 
     @Override
-    public EnvNodeBuilderImpl<T> config(@Nullable Config config) {
+    public EnvNodeBuilder<T> config(@Nullable Config config) {
         this.config = config;
         return this;
     }
@@ -91,20 +97,20 @@ public class EnvNodeBuilderImpl<T>
     }
 
     @Override
-    public EnvNodeBuilderImpl<T> adapter(@Nullable Function<String, @Nullable T> adapter) {
+    public EnvNodeBuilder<T> adapter(@Nullable Function<String, @Nullable T> adapter) {
         this.adapter = adapter;
         return this;
     }
 
     @Override
-    public EnvNodeBuilderImpl<T> validator(@Nullable Validator<T> validator) {
+    public EnvNodeBuilder<T> validator(@Nullable Validator<T> validator) {
         this.validator = validator;
         return this;
     }
 
     @Override
     public FactoryNodeBuilderEnvStep.AdapterValidatorStep<T> variable(String variable) {
-        this.envKey = variable;
+        this.variable = variable;
         return this;
     }
 

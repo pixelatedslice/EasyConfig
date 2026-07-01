@@ -9,38 +9,12 @@ import org.jspecify.annotations.Nullable;
 @SuppressWarnings("unused")
 @NullMarked
 public interface FactoryNodeBuilderValueStep<T>
-        extends FactoryNodeBuilder {
+        extends FactoryNodeBuilder, FactoryNodeBuilder.BuildStep<ValueNode<T>> {
+    FactoryNodeBuilderValueStep<T> value(@Nullable T value);
 
-    @NullMarked
-    interface CurrentValueStep<T> extends FactoryNodeBuilderValueStep<T> {
-        DefaultValueAndExtrasStep<T> value(@Nullable T value);
-    }
+    FactoryNodeBuilderValueStep<T> defaultValue(@Nullable T defaultValue);
 
-    @NullMarked
-    interface CurrentDefaultValueStep<T> extends FactoryNodeBuilderValueStep<T> {
-        ValueAndExtrasStep<T> defaultValue(@Nullable T defaultValue);
-    }
+    FactoryNodeBuilderValueStep<T> validator(@Nullable Validator<T> validator);
 
-    @NullMarked
-    interface FirstStep<T> extends FactoryNodeBuilderValueStep<T>, CurrentValueStep<T>,
-            CurrentDefaultValueStep<T> {
-    }
-
-    @NullMarked
-    interface DefaultValueAndExtrasStep<T>
-            extends FactoryNodeBuilderValueStep<T>, CurrentDefaultValueStep<T>,
-            ExtrasStep<T> {
-    }
-
-    @NullMarked
-    interface ValueAndExtrasStep<T>
-            extends FactoryNodeBuilderValueStep<T>, CurrentValueStep<T>, ExtrasStep<T> {
-    }
-
-    @NullMarked
-    interface ExtrasStep<T> extends BuildStep<ValueNode<T>> {
-        ExtrasStep<T> validator(@Nullable Validator<T> validator);
-
-        ExtrasStep<T> serializer(@Nullable Serializer<T> serializer);
-    }
+    FactoryNodeBuilderValueStep<T> serializer(@Nullable Serializer<T> serializer);
 }

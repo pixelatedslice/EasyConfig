@@ -24,8 +24,16 @@ public interface Nodes {
         return Nodes.value(TypeTokenUtils.getSimpleOrThrow(simpleType));
     }
 
+    static <T> ValueNode<T> emptyValue(Class<T> simpleType, String key) {
+        return Nodes.emptyValue(TypeTokenUtils.getSimpleOrThrow(simpleType), key);
+    }
+
     static <T> FactoryNodeBuilderKeySteps.Value<T> value(TypeToken<T> typeToken) {
         return NODE_BUILDERS.createValueNodeBuilder(typeToken);
+    }
+
+    static <T> ValueNode<T> emptyValue(TypeToken<T> typeToken, String key) {
+        return Nodes.value(typeToken, key, null, null);
     }
 
     static <T> ValueNode<T> value(Class<T> simpleType, String key, @Nullable T defaultValue) {

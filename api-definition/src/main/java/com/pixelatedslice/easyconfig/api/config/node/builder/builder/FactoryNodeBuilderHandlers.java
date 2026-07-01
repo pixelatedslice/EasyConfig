@@ -8,9 +8,7 @@ import org.jspecify.annotations.NullMarked;
 public interface FactoryNodeBuilderHandlers {
     interface Value<T> extends
             FactoryNodeBuilderKeySteps.Value<T>,
-            FactoryNodeBuilderValueStep.FirstStep<T>,
-            FactoryNodeBuilderValueStep.DefaultValueAndExtrasStep<T>,
-            FactoryNodeBuilderValueStep.ValueAndExtrasStep<T>,
+            FactoryNodeBuilderValueStep<T>,
             FactoryNodeBuilder.BuildStep<ValueNode<T>> {
     }
 

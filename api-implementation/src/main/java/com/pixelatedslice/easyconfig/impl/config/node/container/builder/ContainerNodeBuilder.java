@@ -73,7 +73,7 @@ public class ContainerNodeBuilder
     }
 
     @Override
-    public Buildable children(@Nullable BuildStep<?> @Nullable ... nodes) {
+    public FactoryNodeBuilderGroupStep.Container children(@Nullable BuildStep<?> @Nullable ... nodes) {
         if (nodes == null) {
             return this;
         }
@@ -82,7 +82,7 @@ public class ContainerNodeBuilder
     }
 
     @Override
-    public Buildable builtChildren(@Nullable Node @Nullable ... nodes) {
+    public FactoryNodeBuilderGroupStep.Container builtChildren(@Nullable Node @Nullable ... nodes) {
         if (nodes == null) {
             return this;
         }
@@ -91,7 +91,8 @@ public class ContainerNodeBuilder
     }
 
     @Override
-    public Buildable children(java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
+    public FactoryNodeBuilderGroupStep.Container children(
+            java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
         if (nodes == null) {
             return this;
         }
@@ -100,7 +101,7 @@ public class ContainerNodeBuilder
     }
 
     @Override
-    public Buildable builtChildren(java.util.@Nullable Collection<? extends Node> nodes) {
+    public FactoryNodeBuilderGroupStep.Container builtChildren(java.util.@Nullable Collection<? extends Node> nodes) {
         if (nodes == null) {
             return this;
         }
