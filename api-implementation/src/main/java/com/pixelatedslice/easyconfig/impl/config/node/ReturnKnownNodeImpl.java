@@ -14,11 +14,29 @@ import java.util.Optional;
 
 @NullMarked
 public class ReturnKnownNodeImpl implements ReturnedNode {
-
+    private final String toString;
     private final @Nullable Node node;
 
     public ReturnKnownNodeImpl(@Nullable Node node) {
         this.node = node;
+
+        final StringBuilder sb = new StringBuilder("ReturnKnownNodeImpl{");
+        if (node == null) {
+            sb.append("key='null', parent=null, fullPath=null");
+        } else {
+            node.parent();
+            sb.append("key='").append(node.key()).append('\'')
+                    .append(", parent=").append(node.parent().nodeKey().isPresent()
+                            ? node.parent().nodeKey().orElse(null)
+                            : null)
+                    .append(", fullPath=").append(String.join(",", node.fullPath()));
+        }
+        this.toString = sb.append('}').toString();
+    }
+
+    @Override
+    public Optional<String> nodeKey() {
+        return this.plainNode().map(Node::key);
     }
 
     @Override
@@ -75,5 +93,10 @@ public class ReturnKnownNodeImpl implements ReturnedNode {
     @Override
     public Optional<EnvNode<?>> unsafeEnv() {
         return this.node(EnvNode.class).map(node -> (EnvNode<?>) node);
+    }
+
+    @Override
+    public String toString() {
+        return this.toString;
     }
 }

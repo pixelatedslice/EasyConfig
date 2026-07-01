@@ -33,6 +33,7 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
                 "key='" + this.key() + '\'' +
                 ", envKey='" + this.envKey + '\'' +
                 ", type=" + this.type +
+                ", fullPath=" + String.join(",", this.fullPath()) +
                 '}';
     }
 

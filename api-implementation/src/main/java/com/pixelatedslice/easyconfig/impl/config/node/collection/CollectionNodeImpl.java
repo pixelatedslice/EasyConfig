@@ -65,6 +65,7 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
                 "key='" + this.key() + '\'' +
                 ", childCount=" + this.children.size() +
                 ", children=" + joiner +
+                ", fullPath=" + String.join(",", this.fullPath()) +
                 '}';
     }
 

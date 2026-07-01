@@ -82,7 +82,11 @@ public class CollectionNodeBuilderTests {
         final var result = Nodes.collection(key)
                 .children(Nodes.collection("index_0")
                         .children(Nodes.container("test")
-                                .children(Nodes.container(fourKey)))).build();
+                                .children(
+                                        Nodes.container(fourKey)
+                                )
+                        )
+                ).build();
 
         System.out.println("result = " + result);
 
@@ -91,6 +95,7 @@ public class CollectionNodeBuilderTests {
         final var opSecondCollection = result.atIndex(0).collectionNode();
         Assertions.assertTrue(opSecondCollection.isPresent());
         Assertions.assertEquals("index_0", opSecondCollection.get().key());
+        System.out.println("opSecondCollection.get() = " + opSecondCollection.get());
         final var opThirdChildNode = opSecondCollection.get().atIndex(0).container();
         Assertions.assertTrue(opThirdChildNode.isPresent()); //index container
         System.out.println("opThirdChildNode.get() = " + opThirdChildNode.get());

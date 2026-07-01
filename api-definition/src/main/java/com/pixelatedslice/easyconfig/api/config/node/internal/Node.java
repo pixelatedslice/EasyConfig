@@ -43,6 +43,12 @@ public sealed interface Node permits com.pixelatedslice.easyconfig.api.config.no
             current = current.parent().plainNode().get();
         }
 
-        return stream.toArray(String[]::new);
+        final var result = stream.toArray(String[]::new);
+        final var reversed = new String[result.length];
+        for (int i = 0; i < result.length; i++) {
+            reversed[result.length - (1 + i)] = result[i];
+        }
+        
+        return reversed;
     }
 }

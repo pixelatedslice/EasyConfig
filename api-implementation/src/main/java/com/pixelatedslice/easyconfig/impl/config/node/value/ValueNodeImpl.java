@@ -93,6 +93,7 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
                 ", type=" + this.token +
                 ", value=" + this.value +
                 ", defaultValue=" + this.defaultValue +
+                ", fullPath=" + String.join(",", this.fullPath()) +
                 '}';
     }
 

@@ -76,6 +76,7 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
                 "key='" + this.key() + '\'' +
                 ", childCount=" + this.immediateChildren.size() +
                 ", children=" + joiner +
+                ", fullPath=" + String.join(",", this.fullPath()) +
                 '}';
     }
 
