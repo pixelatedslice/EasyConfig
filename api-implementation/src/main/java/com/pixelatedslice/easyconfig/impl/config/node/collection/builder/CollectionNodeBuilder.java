@@ -2,7 +2,7 @@ package com.pixelatedslice.easyconfig.impl.config.node.collection.builder;
 
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderGroupStep;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderHandlers;
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
@@ -20,8 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @NullMarked
 public class CollectionNodeBuilder
-        implements FactoryNodeBuilderGroupStep.Collection, FactoryNodeBuilderKeySteps.Collection,
-        FactoryNodeBuilderGroupStep.Collection.Buildable,
+        implements FactoryNodeBuilderHandlers.Collection,
         InternalNodeBuilder<CollectionNodeBuilder> {
 
     private final List<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
@@ -43,7 +42,6 @@ public class CollectionNodeBuilder
     @Override
     public CollectionNodeBuilder parent(@Nullable AbstractNode node) {
         this.parent = node;
-        //noinspection unchecked
         return this;
     }
 
@@ -55,7 +53,6 @@ public class CollectionNodeBuilder
     @Override
     public CollectionNodeBuilder config(@Nullable Config config) {
         this.config = config;
-        //noinspection unchecked
         return this;
     }
 

@@ -9,16 +9,14 @@ import java.util.function.Function;
 
 @SuppressWarnings("unused")
 @NullMarked
-public interface FactoryNodeBuilderEnvStep<Next extends FactoryNodeBuilderEnvStep<Next, T>, T>
-        extends FactoryNodeBuilder {
-
+public interface FactoryNodeBuilderEnvStep {
     @NullMarked
     interface VariableStep<T> extends FactoryNodeBuilder {
         AdapterValidatorStep<T> variable(String variable);
     }
 
     @NullMarked
-    interface AdapterValidatorStep<T> extends FactoryNodeBuilder, BuildStep<EnvNode<T>> {
+    interface AdapterValidatorStep<T> extends FactoryNodeBuilder.BuildStep<EnvNode<T>> {
         AdapterValidatorStep<T> adapter(@Nullable Function<String, @Nullable T> adapter);
 
         AdapterValidatorStep<T> validator(@Nullable Validator<T> validator);

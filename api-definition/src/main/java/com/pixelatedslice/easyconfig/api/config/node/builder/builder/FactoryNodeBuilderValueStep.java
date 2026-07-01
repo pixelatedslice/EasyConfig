@@ -38,7 +38,7 @@ public interface FactoryNodeBuilderValueStep<T>
     }
 
     @NullMarked
-    interface ExtrasStep<T> extends FactoryNodeBuilder, BuildStep<ValueNode<T>> {
+    interface ExtrasStep<T> extends BuildStep<ValueNode<T>> {
         ExtrasStep<T> validator(@Nullable Validator<T> validator);
 
         ExtrasStep<T> serializer(@Nullable Serializer<T> serializer);

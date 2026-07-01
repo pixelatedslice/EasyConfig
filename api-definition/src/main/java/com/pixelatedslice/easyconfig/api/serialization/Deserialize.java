@@ -1,6 +1,5 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import org.jspecify.annotations.NullMarked;
 

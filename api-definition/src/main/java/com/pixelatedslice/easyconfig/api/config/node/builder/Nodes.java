@@ -8,6 +8,7 @@ import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ServiceLoader;
 
@@ -27,19 +28,19 @@ public interface Nodes {
         return NODE_BUILDERS.createValueNodeBuilder(typeToken);
     }
 
-    static <T> ValueNode<T> value(Class<T> simpleType, String key, T defaultValue) {
+    static <T> ValueNode<T> value(Class<T> simpleType, String key, @Nullable T defaultValue) {
         return Nodes.value(TypeTokenUtils.getSimpleOrThrow(simpleType), key, defaultValue);
     }
 
-    static <T> ValueNode<T> value(Class<T> simpleType, String key, T defaultValue, T value) {
+    static <T> ValueNode<T> value(Class<T> simpleType, String key, @Nullable T defaultValue, @Nullable T value) {
         return Nodes.value(TypeTokenUtils.getSimpleOrThrow(simpleType), key, defaultValue, value);
     }
 
-    static <T> ValueNode<T> value(TypeToken<T> typeToken, String key, T defaultValue) {
+    static <T> ValueNode<T> value(TypeToken<T> typeToken, String key, @Nullable T defaultValue) {
         return NODE_BUILDERS.createValueNode(typeToken, key, defaultValue, null);
     }
 
-    static <T> ValueNode<T> value(TypeToken<T> typeToken, String key, T defaultValue, T value) {
+    static <T> ValueNode<T> value(TypeToken<T> typeToken, String key, @Nullable T defaultValue, @Nullable T value) {
         return NODE_BUILDERS.createValueNode(typeToken, key, defaultValue, value);
     }
 

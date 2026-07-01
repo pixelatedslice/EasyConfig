@@ -2,10 +2,8 @@ package com.pixelatedslice.easyconfig.impl.config.node.value.builder;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderHandlers;
 import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderValueStep;
-import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
@@ -18,12 +16,10 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@SuppressWarnings("PublicMethodNotExposedInInterface")
 @NullMarked
 public class ValueNodeBuilder<T>
-        implements FactoryNodeBuilderKeySteps.Value<T>, FactoryNodeBuilderValueStep.FirstStep<T>,
-        FactoryNodeBuilderValueStep.DefaultValueAndExtrasStep<T>,
-        FactoryNodeBuilderValueStep.ValueAndExtrasStep<T>, InternalNodeBuilder<ValueNodeBuilder<T>>,
-        FactoryNodeBuilder.BuildStep<ValueNode<T>> {
+        implements FactoryNodeBuilderHandlers.Value<T>, InternalNodeBuilder<ValueNodeBuilder<T>> {
 
     @Nullable String key;
     @Nullable T defaultValue;

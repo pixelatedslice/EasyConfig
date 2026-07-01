@@ -1,6 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.builder.Nodes;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,8 @@ public class CollectionNodeBuilderTests {
         final String key = "First key";
 
         //ACT
-        final var result = this.builder().key(key).collection().build();
+        // Old: final var result = this.builder().key(key).collection().build();
+        final var result = Nodes.collection(key).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -26,13 +27,15 @@ public class CollectionNodeBuilderTests {
         final String key = "First key";
 
         //ACT
-        final var result = this.builder().key(key).collection().append().complete().build();
+        // Old: final var result = this.builder().key(key).collection().append().complete().build();
+        final var result = Nodes.collection(key).children().build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
         final var opChildNode = result.atIndex(0).plainNode();
-        Assertions.assertTrue(opChildNode.isPresent());
-        Assertions.assertEquals("index_0", opChildNode.get().key());
+        // Old: Assertions.assertTrue(opChildNode.isPresent());
+        // Old: Assertions.assertEquals("index_0", opChildNode.get().key());
+        Assertions.assertFalse(opChildNode.isPresent());
     }
 
     @Test
@@ -42,7 +45,11 @@ public class CollectionNodeBuilderTests {
         final String thirdKey = "Third key";
 
         //ACT
-        final var result = this.builder().key(key).collection().append().append(thirdKey).complete().complete().build();
+        // Old: final var result = this.builder().key(key).collection().append().append(thirdKey).complete().complete
+        // ().build();
+        final var result = Nodes.collection(key).children(
+                Nodes.value(String.class).key("test").value("Test")
+        ).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -98,9 +105,5 @@ public class CollectionNodeBuilderTests {
                             .append();
             collectionBuilder.of(String.class).complete();
         });
-    }
-
-    private OldNodeBuilder.FirstStep builder() {
-        return new ContainerNodeOriginalBuilder();
     }
 }

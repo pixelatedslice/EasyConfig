@@ -1,7 +1,6 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import org.jspecify.annotations.NullMarked;

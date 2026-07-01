@@ -1,6 +1,5 @@
 package com.pixelatedslice.easyconfig.api.config.node.env;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.OldNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 

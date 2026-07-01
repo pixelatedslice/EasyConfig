@@ -2,10 +2,8 @@ package com.pixelatedslice.easyconfig.impl.config.node.env.builder;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderEnvStep;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
-import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
+import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderHandlers;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
@@ -17,11 +15,10 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
 
+@SuppressWarnings("PublicMethodNotExposedInInterface")
 @NullMarked
 public class EnvNodeBuilderImpl<T>
-        implements FactoryNodeBuilderKeySteps.Env<T>, FactoryNodeBuilderEnvStep.VariableStep<T>,
-        FactoryNodeBuilderEnvStep.AdapterValidatorStep<T>,
-        InternalNodeBuilder<EnvNodeBuilderImpl<T>>, FactoryNodeBuilder.BuildStep<EnvNode<T>> {
+        implements FactoryNodeBuilderHandlers.Env<T>, InternalNodeBuilder<EnvNodeBuilderImpl<T>> {
 
     private final TypeToken<T> typeToken;
     private @Nullable String key;
@@ -36,11 +33,11 @@ public class EnvNodeBuilderImpl<T>
     }
 
     public Validator<T> validator() {
-        return this.validator;
+        return Objects.requireNonNull(this.validator);
     }
 
     public @Nullable Function<String, @Nullable T> adapter() {
-        return this.adapter;
+        return Objects.requireNonNull(this.adapter);
     }
 
     public TypeToken<T> type() {
@@ -54,7 +51,6 @@ public class EnvNodeBuilderImpl<T>
     @Override
     public EnvNodeBuilderImpl<T> parent(@Nullable AbstractNode node) {
         this.parent = node;
-        //noinspection unchecked
         return this;
     }
 
@@ -66,7 +62,6 @@ public class EnvNodeBuilderImpl<T>
     @Override
     public EnvNodeBuilderImpl<T> config(@Nullable Config config) {
         this.config = config;
-        //noinspection unchecked
         return this;
     }
 
@@ -98,14 +93,12 @@ public class EnvNodeBuilderImpl<T>
     @Override
     public EnvNodeBuilderImpl<T> adapter(@Nullable Function<String, @Nullable T> adapter) {
         this.adapter = adapter;
-        //noinspection unchecked
         return this;
     }
 
     @Override
-    public EnvNodeBuilderImpl<T> validator(Validator<T> validator) {
+    public EnvNodeBuilderImpl<T> validator(@Nullable Validator<T> validator) {
         this.validator = validator;
-        //noinspection unchecked
         return this;
     }
 
