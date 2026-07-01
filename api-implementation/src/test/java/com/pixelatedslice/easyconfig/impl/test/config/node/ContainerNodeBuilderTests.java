@@ -41,7 +41,7 @@ public class ContainerNodeBuilderTests {
 
         //ACT
         // Old: final var result = this.builder().key(key).append(secondKey).complete().build();
-        final var result = Nodes.container(key).builtChildren(Nodes.emptyValue(String.class, key)).build();
+        final var result = Nodes.container(key).children(Nodes.container(key)).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -62,7 +62,7 @@ public class ContainerNodeBuilderTests {
         // .build();
         final var result = Nodes
                 .container(key)
-                .children(Nodes.container(secondKey).builtChildren(Nodes.emptyValue(String.class, thirdKey)))
+                .children(Nodes.container(secondKey).children(Nodes.container(thirdKey)))
                 .build();
 
         //ASSERT

@@ -48,7 +48,7 @@ public class CollectionNodeBuilderTests {
         // Old: final var result = this.builder().key(key).collection().append().append(thirdKey).complete().complete
         // ().build();
         final var result = Nodes.collection(key).children(
-                Nodes.value(String.class).key("test").value("Test")
+                Nodes.container("index_0").children(Nodes.container(thirdKey))
         ).build();
 
         //ASSERT
@@ -80,8 +80,11 @@ public class CollectionNodeBuilderTests {
         //         .complete()
         //         .build();
         final var result = Nodes.collection(key)
-                .children(Nodes.collection("test")
-                        .children(Nodes.collection("test2").children(Nodes.collection(fourKey)))).build();
+                .children(Nodes.collection("index_0")
+                        .children(Nodes.container("test")
+                                .children(Nodes.container(fourKey)))).build();
+
+        System.out.println("result = " + result);
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -90,6 +93,7 @@ public class CollectionNodeBuilderTests {
         Assertions.assertEquals("index_0", opSecondCollection.get().key());
         final var opThirdChildNode = opSecondCollection.get().atIndex(0).container();
         Assertions.assertTrue(opThirdChildNode.isPresent()); //index container
+        System.out.println("opThirdChildNode.get() = " + opThirdChildNode.get());
         final var opFourChildNode = opThirdChildNode.get().containerNode(fourKey);
         Assertions.assertTrue(opFourChildNode.isPresent());
     }

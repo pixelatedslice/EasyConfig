@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 @NullMarked
 public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
-
+    private final String toString;
     private final String envKey;
     private final Function<String, @Nullable T> adapter;
     private final TypeToken<T> type;
@@ -28,6 +28,12 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
         this.adapter = Objects.requireNonNull(builder.adapter());
         this.type = Objects.requireNonNull(builder.type());
         this.validator = Objects.requireNonNullElseGet(builder.validator(), Validator::empty);
+
+        this.toString = "EnvNodeImpl{" +
+                "key='" + this.key() + '\'' +
+                ", envKey='" + this.envKey + '\'' +
+                ", type=" + this.type +
+                '}';
     }
 
     @Override
@@ -48,7 +54,7 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public Function<String, T> adapter() {
+    public Function<String, @Nullable T> adapter() {
         return this.adapter;
     }
 
@@ -75,5 +81,10 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
                 .adapter(this.adapter)
                 .key(this.key())
                 .variable(this.envKey);
+    }
+
+    @Override
+    public String toString() {
+        return this.toString;
     }
 }

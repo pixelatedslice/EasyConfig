@@ -15,8 +15,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @NullMarked
 public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
-
     private final Collection<Node> immediateChildren = new LinkedBlockingQueue<>();
+    private String toString = this.generateToString();
 
     public ContainerNodeImpl(InternalNodeBuilder<?> builder) {
         super(builder);
@@ -30,10 +30,12 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
     @Override
     protected synchronized void internalAppendChild(AbstractNode node) {
         this.immediateChildren.add(node);
+        this.toString = this.generateToString();
     }
 
     protected synchronized void internalAppendChildren(Collection<AbstractNode> node) {
         this.immediateChildren.addAll(node);
+        this.toString = this.generateToString();
     }
 
     @Override
@@ -62,5 +64,23 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
         return new ContainerNodeBuilder(this.key())
                 .parent(this.parent)
                 .config(this.attached);
+    }
+
+    private String generateToString() {
+        final var joiner = new java.util.StringJoiner(", ", "[", "]");
+        for (final var child : this.immediateChildren) {
+            joiner.add(child.key());
+        }
+
+        return "ContainerNodeImpl{" +
+                "key='" + this.key() + '\'' +
+                ", childCount=" + this.immediateChildren.size() +
+                ", children=" + joiner +
+                '}';
+    }
+
+    @Override
+    public String toString() {
+        return this.toString;
     }
 }

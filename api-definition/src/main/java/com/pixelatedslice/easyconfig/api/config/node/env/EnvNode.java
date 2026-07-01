@@ -9,6 +9,7 @@ import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -29,7 +30,7 @@ public non-sealed interface EnvNode<T> extends Node, ForImplNode {
     Optional<T> value(ValidateOption<T> validateOption);
 
 
-    Function<String, T> adapter();
+    Function<String, @Nullable T> adapter();
 
     Validator<T> validator();
 
