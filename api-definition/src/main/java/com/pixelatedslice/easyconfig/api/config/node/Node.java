@@ -1,21 +1,24 @@
-package com.pixelatedslice.easyconfig.api.config.node.internal;
+package com.pixelatedslice.easyconfig.api.config.node;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
-import com.pixelatedslice.easyconfig.api.config.node.NodeType;
-import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.CommonNodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
+
 
 @SuppressWarnings("unused")
 @NullMarked
-public sealed interface Node permits com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode,
-        com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode,
-        com.pixelatedslice.easyconfig.api.config.node.env.EnvNode,
-        com.pixelatedslice.easyconfig.api.config.node.for_impl.ForImplNode,
-        com.pixelatedslice.easyconfig.api.config.node.value.ValueNode {
+public interface Node {
+    static <N extends Node> N of(
+            BiFunction<? super Nodes, ? super CommonNodes, ? extends FactoryNodeBuilder.BuildStep<N>> builder) {
+        return builder.apply(Nodes.INSTANCE, CommonNodes.INSTANCE).build();
+    }
+
     default NodeType nodeType() {
         return NodeType.PLAIN_NODE;
     }
@@ -48,7 +51,7 @@ public sealed interface Node permits com.pixelatedslice.easyconfig.api.config.no
         for (int i = 0; i < result.length; i++) {
             reversed[result.length - (1 + i)] = result[i];
         }
-        
+
         return reversed;
     }
 }

@@ -1,10 +1,9 @@
 package com.pixelatedslice.easyconfig.api.config.node.value;
 
 import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderKeySteps;
-import com.pixelatedslice.easyconfig.api.config.node.for_impl.ForImplNode;
-import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
@@ -15,7 +14,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Optional;
 
 @NullMarked
-public non-sealed interface ValueNode<T> extends Node, ForImplNode, Editable<EditableValueNode<T>> {
+public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
 
     @Override
     FactoryNodeBuilderKeySteps.Value<T> toBuilder();

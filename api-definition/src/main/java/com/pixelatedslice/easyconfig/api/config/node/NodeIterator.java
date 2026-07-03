@@ -3,7 +3,6 @@ package com.pixelatedslice.easyconfig.api.config.node;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
-import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.exception.NodeException;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;

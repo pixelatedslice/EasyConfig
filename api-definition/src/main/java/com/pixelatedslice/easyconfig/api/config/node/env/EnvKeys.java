@@ -1,6 +1,6 @@
 package com.pixelatedslice.easyconfig.api.config.node.env;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderEnvStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderEnvStep;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 

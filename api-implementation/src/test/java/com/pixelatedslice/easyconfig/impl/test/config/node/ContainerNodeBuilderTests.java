@@ -1,6 +1,8 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.CommonNodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,7 @@ public class ContainerNodeBuilderTests {
 
         //ACT
         // Old: final var node = this.builder().key(key).build();
-        final var node = Nodes.container(key).build();
+        final var node = Nodes.INSTANCE.container(key).build();
 
         //ASSERT
         Assertions.assertEquals(key, node.key());
@@ -30,7 +32,7 @@ public class ContainerNodeBuilderTests {
         // Old: Assertions.assertThrows(NullPointerException.class, () ->
         //        this.builder().key(null).build());
 
-        Assertions.assertThrows(NullPointerException.class, () -> Nodes.container(null).build());
+        Assertions.assertThrows(NullPointerException.class, () -> Nodes.INSTANCE.container(null).build());
     }
 
     @Test
@@ -41,7 +43,9 @@ public class ContainerNodeBuilderTests {
 
         //ACT
         // Old: final var result = this.builder().key(key).append(secondKey).complete().build();
-        final var result = Nodes.container(key).children(Nodes.container(key)).build();
+        final var result = Node.of((Nodes n, CommonNodes _) ->
+                n.container(key).children(n.container(secondKey))
+        );
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -60,10 +64,9 @@ public class ContainerNodeBuilderTests {
         //ACT
         // Old: final var result = this.builder().key(key).append(secondKey).append(thirdKey).complete().complete()
         // .build();
-        final var result = Nodes
+        final var result = Node.of((Nodes n, CommonNodes c) -> n
                 .container(key)
-                .children(Nodes.container(secondKey).children(Nodes.container(thirdKey)))
-                .build();
+                .children(n.container(secondKey).children(n.container(thirdKey))));
 
         //ASSERT
         Assertions.assertEquals(key, result.key());

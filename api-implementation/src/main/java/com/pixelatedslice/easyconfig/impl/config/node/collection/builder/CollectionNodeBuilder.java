@@ -1,14 +1,14 @@
 package com.pixelatedslice.easyconfig.impl.config.node.collection.builder;
 
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderGroupStep;
-import com.pixelatedslice.easyconfig.api.config.node.builder.builder.FactoryNodeBuilderHandlers;
-import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderHandlers;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.builder.GroupNodeBuilderHelper;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.CollectionNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.factory.AbstractGroupNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -16,14 +16,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @NullMarked
-public class CollectionNodeBuilder
-        implements FactoryNodeBuilderHandlers.Collection,
+public class CollectionNodeBuilder extends AbstractGroupNodeBuilder implements FactoryNodeBuilderHandlers.Collection,
         InternalNodeBuilder<CollectionNodeBuilder> {
 
-    private final List<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
     private String key;
     private @Nullable Config config;
     private @Nullable AbstractNode parent;
@@ -89,7 +86,7 @@ public class CollectionNodeBuilder
         if (nodes == null) {
             return this;
         }
-        GroupNodeBuilderHelper.children(Arrays.stream(nodes), this.children);
+        this.internalChildren(Arrays.stream(nodes));
         return this;
     }
 
@@ -98,7 +95,7 @@ public class CollectionNodeBuilder
         if (nodes == null) {
             return this;
         }
-        GroupNodeBuilderHelper.builtChildren(Arrays.stream(nodes), this.children);
+        this.internalBuiltChildren(Arrays.stream(nodes));
         return this;
     }
 
@@ -108,7 +105,7 @@ public class CollectionNodeBuilder
         if (nodes == null) {
             return this;
         }
-        GroupNodeBuilderHelper.children(nodes.stream(), this.children);
+        this.internalChildren(nodes.stream());
         return this;
     }
 
@@ -118,7 +115,7 @@ public class CollectionNodeBuilder
         if (nodes == null) {
             return this;
         }
-        GroupNodeBuilderHelper.builtChildren(nodes.stream(), this.children);
+        this.internalBuiltChildren(nodes.stream());
         return this;
     }
 

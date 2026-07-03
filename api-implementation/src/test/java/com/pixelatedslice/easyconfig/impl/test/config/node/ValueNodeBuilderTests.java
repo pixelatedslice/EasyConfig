@@ -1,8 +1,10 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.node.builder.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.CommonNodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
@@ -21,7 +23,7 @@ public class ValueNodeBuilderTests {
         final var value = "value";
 
         //ACT
-        final var node = Nodes.value(String.class)
+        final var node = Nodes.INSTANCE.value(String.class)
                 .key(key)
                 .defaultValue(defaultValue)
                 .value(value)
@@ -41,7 +43,7 @@ public class ValueNodeBuilderTests {
         //ACT - ASSERT
         //noinspection DataFlowIssue
         Assertions.assertThrows(NullPointerException.class, () ->
-                Nodes.value(String.class).key(null).build());
+                Nodes.INSTANCE.value(String.class).key(null).build());
     }
 
     @Test
@@ -58,7 +60,7 @@ public class ValueNodeBuilderTests {
         //                 .of((TypeToken<?>) null)
         //                 .build());
         //noinspection DataFlowIssue
-        Assertions.assertThrows(NullPointerException.class, () -> Nodes.value((TypeToken<?>) null).key(key));
+        Assertions.assertThrows(NullPointerException.class, () -> Nodes.INSTANCE.value((TypeToken<?>) null).key(key));
     }
 
     @Test
@@ -70,9 +72,10 @@ public class ValueNodeBuilderTests {
 
         //ACT
         // final var builder = this.builder().key(key).append(secondKey).of(String.class);
-        final var builder = Nodes.container(key).children(Nodes.value(String.class).key(secondKey));
         // final OldNodeBuilder.ContainerFinalStep.Original originalBuilder = builder.complete();
-        final ContainerNode result = builder.build();
+        final ContainerNode result = Node.of((Nodes n, CommonNodes _) -> n
+                .container(key)
+                .children(n.value(String.class).key(secondKey)));
 
         //ASSERT
         Assertions.assertEquals(key, result.key());

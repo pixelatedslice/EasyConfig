@@ -1,4 +1,4 @@
-package com.pixelatedslice.easyconfig.api.config.node.builder.builder;
+package com.pixelatedslice.easyconfig.api.config.node.factory.builder;
 
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;

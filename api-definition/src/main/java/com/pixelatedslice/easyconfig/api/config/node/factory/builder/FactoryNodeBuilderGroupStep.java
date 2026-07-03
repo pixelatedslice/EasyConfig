@@ -1,8 +1,8 @@
-package com.pixelatedslice.easyconfig.api.config.node.builder.builder;
+package com.pixelatedslice.easyconfig.api.config.node.factory.builder;
 
+import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
-import com.pixelatedslice.easyconfig.api.config.node.internal.Node;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 

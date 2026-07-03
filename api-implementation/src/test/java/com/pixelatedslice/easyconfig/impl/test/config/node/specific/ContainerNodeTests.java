@@ -1,7 +1,9 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.CommonNodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
 import com.pixelatedslice.easyconfig.impl.config.node.container.ContainerNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.test.testUtils.CollectionAssert;
@@ -76,7 +78,10 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_clearNodes() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = Nodes.container(key).builtChildren(Nodes.emptyValue(String.class, "added")).build();
+        final var originalNode = Node
+                .of((Nodes n, CommonNodes c) -> n
+                        .container(key)
+                        .builtChildren(c.emptyStringValue("added")));
 
         //ACT
         try (var editable = originalNode.editable()) {
@@ -91,9 +96,9 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_removeNode() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = Nodes.container(key)
-                .builtChildren(Nodes.emptyValue(String.class, "added"), Nodes.emptyValue(String.class, "second"))
-                .build();
+        final var originalNode = Node.of((Nodes n, CommonNodes c) -> n
+                .container(key)
+                .builtChildren(c.emptyStringValue("added"), c.emptyStringValue("second")));
         final var toRemain = originalNode.children().getLast();
         final var toRemove = originalNode.children().getFirst();
 
@@ -110,9 +115,9 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_setNode() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = Nodes.container(key)
-                .builtChildren(Nodes.emptyValue(String.class, "added"), Nodes.emptyValue(String.class, "second"))
-                .build();
+        final var originalNode = Node.of((Nodes n, CommonNodes c) -> n
+                .container(key)
+                .builtChildren(c.emptyStringValue("added"), c.emptyStringValue("second")));
 
         final var toSet = new ContainerNodeBuilder("set").build();
 

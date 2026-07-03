@@ -1,6 +1,8 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.CommonNodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,7 @@ public class CollectionNodeBuilderTests {
 
         //ACT
         // Old: final var result = this.builder().key(key).collection().build();
-        final var result = Nodes.collection(key).build();
+        final var result = Nodes.INSTANCE.collection(key).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -28,7 +30,7 @@ public class CollectionNodeBuilderTests {
 
         //ACT
         // Old: final var result = this.builder().key(key).collection().append().complete().build();
-        final var result = Nodes.collection(key).children().build();
+        final var result = Nodes.INSTANCE.collection(key).children().build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -47,9 +49,11 @@ public class CollectionNodeBuilderTests {
         //ACT
         // Old: final var result = this.builder().key(key).collection().append().append(thirdKey).complete().complete
         // ().build();
-        final var result = Nodes.collection(key).children(
-                Nodes.container("index_0").children(Nodes.container(thirdKey))
-        ).build();
+        final var result = Node.of((Nodes n, CommonNodes _) ->
+                n.collection(key).children(
+                        n.container("index_0").children(n.container(thirdKey))
+                )
+        );
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -79,14 +83,20 @@ public class CollectionNodeBuilderTests {
         //           .complete()
         //         .complete()
         //         .build();
-        final var result = Nodes.collection(key)
-                .children(Nodes.collection("index_0")
-                        .children(Nodes.container("test")
-                                .children(
-                                        Nodes.container(fourKey)
+
+        final var firstNode = Nodes.INSTANCE.collection(key);
+        final var secondNode = Nodes.INSTANCE.collection("Second key");
+        final var thirdNode = Nodes.INSTANCE.container("Third key");
+        final var fourthNode = Nodes.INSTANCE.container(fourKey);
+
+        final var result = Node.of((Nodes n, CommonNodes _) ->
+                firstNode.children(
+                        secondNode.children(
+                                thirdNode.children(
+                                        fourthNode
                                 )
                         )
-                ).build();
+                ));
 
         System.out.println("result = " + result);
 
@@ -94,7 +104,7 @@ public class CollectionNodeBuilderTests {
         Assertions.assertEquals(key, result.key());
         final var opSecondCollection = result.atIndex(0).collectionNode();
         Assertions.assertTrue(opSecondCollection.isPresent());
-        Assertions.assertEquals("index_0", opSecondCollection.get().key());
+        Assertions.assertEquals("Second key", opSecondCollection.get().key());
         System.out.println("opSecondCollection.get() = " + opSecondCollection.get());
         final var opThirdChildNode = opSecondCollection.get().atIndex(0).container();
         Assertions.assertTrue(opThirdChildNode.isPresent()); //index container
