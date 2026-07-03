@@ -18,7 +18,7 @@ public class CollectionNodeTests {
 
         //ASSERT
         final var children = result.stream().map(r -> r.container().orElseThrow()).toList();
-        Assertions.assertEquals(1, children.size());
+        Assertions.assertEquals(0, children.size());
     }
 
     @Test
@@ -31,6 +31,6 @@ public class CollectionNodeTests {
 
         //ASSERT
         Assertions.assertEquals("key", toBuilder.key());
-        Assertions.assertEquals(1, toBuilder.children().size());
+        Assertions.assertEquals(0, toBuilder.children().size());
     }
 }

@@ -4,6 +4,7 @@ import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderHandlers;
+import com.pixelatedslice.easyconfig.api.validator.null_policy.NullPolicy;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.CollectionNodeImpl;
@@ -82,40 +83,42 @@ public class CollectionNodeBuilder extends AbstractGroupNodeBuilder implements F
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection children(@Nullable BuildStep<?> @Nullable ... nodes) {
+    public FactoryNodeBuilderGroupStep.Collection children(NullPolicy nullPolicy,
+            @Nullable BuildStep<?> @Nullable ... nodes) {
         if (nodes == null) {
             return this;
         }
-        this.internalChildren(Arrays.stream(nodes));
+        this.internalChildren(nullPolicy, Arrays.stream(nodes));
         return this;
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection builtChildren(@Nullable Node @Nullable ... nodes) {
-        if (nodes == null) {
-            return this;
-        }
-        this.internalBuiltChildren(Arrays.stream(nodes));
-        return this;
-    }
-
-    @Override
-    public FactoryNodeBuilderGroupStep.Collection children(
+    public FactoryNodeBuilderGroupStep.Collection children(NullPolicy nullPolicy,
             java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
         if (nodes == null) {
             return this;
         }
-        this.internalChildren(nodes.stream());
+        this.internalChildren(nullPolicy, nodes.stream());
         return this;
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection builtChildren(
+    public FactoryNodeBuilderGroupStep.Collection builtChildren(NullPolicy nullPolicy,
+            @Nullable Node @Nullable ... nodes) {
+        if (nodes == null) {
+            return this;
+        }
+        this.internalBuiltChildren(nullPolicy, Arrays.stream(nodes));
+        return this;
+    }
+
+    @Override
+    public FactoryNodeBuilderGroupStep.Collection builtChildren(NullPolicy nullPolicy,
             java.util.@Nullable Collection<? extends Node> nodes) {
         if (nodes == null) {
             return this;
         }
-        this.internalBuiltChildren(nodes.stream());
+        this.internalBuiltChildren(nullPolicy, nodes.stream());
         return this;
     }
 

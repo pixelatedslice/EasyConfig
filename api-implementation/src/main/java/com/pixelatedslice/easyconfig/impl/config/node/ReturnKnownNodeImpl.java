@@ -35,6 +35,11 @@ public class ReturnKnownNodeImpl implements ReturnedNode {
     }
 
     @Override
+    public boolean hasNode() {
+        return this.node == null;
+    }
+
+    @Override
     public Optional<String> nodeKey() {
         return this.plainNode().map(Node::key);
     }

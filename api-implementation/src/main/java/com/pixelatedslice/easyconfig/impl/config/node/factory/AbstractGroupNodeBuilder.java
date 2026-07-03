@@ -2,6 +2,7 @@ package com.pixelatedslice.easyconfig.impl.config.node.factory;
 
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.validator.null_policy.NullPolicy;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import org.jspecify.annotations.Nullable;
@@ -16,27 +17,34 @@ public abstract class AbstractGroupNodeBuilder {
     protected final List<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
 
     protected void internalChildren(
-            Stream<? extends FactoryNodeBuilder.@Nullable BuildStep<?>> nodeStream) {
-        final var builtNodes = nodeStream
-                .filter((FactoryNodeBuilder.@Nullable BuildStep<?> buildStep) -> buildStep != null)
-                .map(FactoryNodeBuilder.BuildStep::build);
-
-        this.internalBuiltChildren(builtNodes);
-    }
-
-    protected void internalBuiltChildren(
-            Stream<? extends @Nullable Node> nodeStream) {
+            NullPolicy nullPolicy,
+            Stream<? extends FactoryNodeBuilder.@Nullable BuildStep<?>> nodeStream
+    ) {
         final var internalBuilders = nodeStream
                 .filter(Objects::nonNull)
-                .map(this::requireAbstractNode)
-                .map(AbstractNode::toBuilder)
-                .map(this::requireInternalNodeBuilder)
+                .map(builder -> this.requireInternalNodeBuilder(nullPolicy, builder))
                 .collect(Collectors.toSet());
 
         this.children.addAll(internalBuilders);
     }
 
-    private AbstractNode requireAbstractNode(@Nullable Node node) {
+    protected void internalBuiltChildren(
+            NullPolicy nullPolicy,
+            Stream<? extends @Nullable Node> nodeStream
+    ) {
+        final var internalBuilders = nodeStream
+                .filter(Objects::nonNull)
+                .map(node -> this.requireAbstractNode(nullPolicy, node))
+                .map(AbstractNode::toBuilder)
+                .map(builder -> this.requireInternalNodeBuilder(nullPolicy, builder))
+                .collect(Collectors.toSet());
+
+        this.children.addAll(internalBuilders);
+    }
+
+    private AbstractNode requireAbstractNode(NullPolicy nullPolicy, @Nullable Node node) {
+        nullPolicy.checkIfNull(node);
+
         if (node instanceof AbstractNode abstractNode) {
             return abstractNode;
         }
@@ -46,12 +54,14 @@ public abstract class AbstractGroupNodeBuilder {
                 "Expected an AbstractNode implementation, but got: " + actual);
     }
 
-    private InternalNodeBuilder<?> requireInternalNodeBuilder(FactoryNodeBuilder.KeyStep<?> keyStep) {
-        if (keyStep instanceof InternalNodeBuilder<?> internalNodeBuilder) {
+    private InternalNodeBuilder<?> requireInternalNodeBuilder(NullPolicy nullPolicy, FactoryNodeBuilder step) {
+        nullPolicy.checkIfNull(step);
+
+        if (step instanceof InternalNodeBuilder<?> internalNodeBuilder) {
             return internalNodeBuilder;
         }
 
-        final String actual = (keyStep == null) ? "null" : keyStep.getClass().getName();
+        final String actual = (step == null) ? "null" : step.getClass().getName();
         throw new IllegalArgumentException(
                 "Expected an InternalNodeBuilder, but got: " + actual);
     }

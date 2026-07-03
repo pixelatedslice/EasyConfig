@@ -26,7 +26,7 @@ public class EnvNodeBuilder<T>
     private @Nullable AbstractNode parent;
     private @Nullable Config config;
     private @Nullable Function<String, @Nullable T> adapter;
-    private @Nullable Validator<T> validator;
+    private @Nullable Validator<T> validator = Validator.empty();
 
     public EnvNodeBuilder(TypeToken<T> typeToken) {
         this.typeToken = Objects.requireNonNull(typeToken);

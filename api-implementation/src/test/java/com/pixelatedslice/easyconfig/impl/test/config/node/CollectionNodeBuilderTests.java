@@ -30,7 +30,7 @@ public class CollectionNodeBuilderTests {
 
         //ACT
         // Old: final var result = this.builder().key(key).collection().append().complete().build();
-        final var result = Nodes.INSTANCE.collection(key).children().build();
+        final var result = Nodes.INSTANCE.collection(key).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());

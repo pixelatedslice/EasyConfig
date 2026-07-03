@@ -12,6 +12,8 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @NullMarked
 public interface ReturnedNode {
+    boolean hasNode();
+
     Optional<String> nodeKey();
 
     Optional<Node> plainNode();

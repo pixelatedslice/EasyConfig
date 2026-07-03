@@ -33,7 +33,7 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
         this.toString = this.generateToString();
     }
 
-    protected synchronized void internalAppendChildren(Collection<AbstractNode> node) {
+    protected synchronized void internalAppendChildren(Collection<? extends AbstractNode> node) {
         this.immediateChildren.addAll(node);
         this.toString = this.generateToString();
     }

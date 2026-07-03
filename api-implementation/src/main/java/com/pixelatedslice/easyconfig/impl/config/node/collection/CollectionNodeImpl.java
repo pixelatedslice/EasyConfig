@@ -2,6 +2,7 @@ package com.pixelatedslice.easyconfig.impl.config.node.collection;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
@@ -35,7 +36,11 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
 
     @Override
     public ReturnedNode atIndex(int index) {
-        return new ReturnKnownNodeImpl(this.children.get(index));
+        final Node child = ((index < 0) || (index >= this.children.size()))
+                ? null
+                : this.children.get(index);
+
+        return new ReturnKnownNodeImpl(child);
     }
 
     @Override
