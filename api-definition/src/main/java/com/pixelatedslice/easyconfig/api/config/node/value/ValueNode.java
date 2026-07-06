@@ -4,8 +4,10 @@ import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
+import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
@@ -15,6 +17,13 @@ import java.util.Optional;
 
 @NullMarked
 public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
+    static FactoryNodeBuilderKeySteps.Value<?> of(Class<?> simpleType) {
+        return of(TypeTokenUtils.getSimpleOrThrow(simpleType));
+    }
+
+    static FactoryNodeBuilderKeySteps.Value<?> of(TypeToken<?> typeToken) {
+        return Nodes.INSTANCE.value(typeToken);
+    }
 
     @Override
     FactoryNodeBuilderKeySteps.Value<T> toBuilder();

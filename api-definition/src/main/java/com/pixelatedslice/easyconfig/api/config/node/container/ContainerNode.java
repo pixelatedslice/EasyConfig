@@ -6,7 +6,9 @@ import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
@@ -18,6 +20,9 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @NullMarked
 public interface ContainerNode extends Node, Editable<EditableContainerNode> {
+    static FactoryNodeBuilderGroupStep.Container of(String key) {
+        return Nodes.INSTANCE.container(key);
+    }
 
     default NodeType nodeType() {
         return NodeType.CONTAINER_NODE;
