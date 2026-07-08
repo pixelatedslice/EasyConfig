@@ -2,8 +2,8 @@ package com.pixelatedslice.easyconfig.impl.config.node.collection.builder;
 
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderHandlers;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderGroupStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderHandlers;
 import com.pixelatedslice.easyconfig.api.validator.null_policy.NullPolicy;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
@@ -16,22 +16,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @NullMarked
-public class CollectionNodeBuilder extends AbstractGroupNodeBuilder implements FactoryNodeBuilderHandlers.Collection,
+public class CollectionNodeBuilder extends AbstractGroupNodeBuilder implements NodeBuilderHandlers.Collection,
         InternalNodeBuilder<CollectionNodeBuilder> {
 
     private String key;
     private @Nullable Config config;
     private @Nullable AbstractNode parent;
-
-    public CollectionNodeBuilder(InternalNodeBuilder<?> from) {
-        this.key = Objects.requireNonNull(from.key());
-        this.parent = from.parent();
-        this.config = from.config();
-        from.children().forEach(this::appendChild);
-    }
 
     public CollectionNodeBuilder(String key) {
         this.key = key;
@@ -83,7 +75,7 @@ public class CollectionNodeBuilder extends AbstractGroupNodeBuilder implements F
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection children(NullPolicy nullPolicy,
+    public NodeBuilderGroupStep.Collection children(NullPolicy nullPolicy,
             @Nullable BuildStep<?> @Nullable ... nodes) {
         if (nodes == null) {
             return this;
@@ -93,7 +85,7 @@ public class CollectionNodeBuilder extends AbstractGroupNodeBuilder implements F
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection children(NullPolicy nullPolicy,
+    public NodeBuilderGroupStep.Collection children(NullPolicy nullPolicy,
             java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
         if (nodes == null) {
             return this;
@@ -103,7 +95,7 @@ public class CollectionNodeBuilder extends AbstractGroupNodeBuilder implements F
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection builtChildren(NullPolicy nullPolicy,
+    public NodeBuilderGroupStep.Collection builtChildren(NullPolicy nullPolicy,
             @Nullable Node @Nullable ... nodes) {
         if (nodes == null) {
             return this;
@@ -113,7 +105,7 @@ public class CollectionNodeBuilder extends AbstractGroupNodeBuilder implements F
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection builtChildren(NullPolicy nullPolicy,
+    public NodeBuilderGroupStep.Collection builtChildren(NullPolicy nullPolicy,
             java.util.@Nullable Collection<? extends Node> nodes) {
         if (nodes == null) {
             return this;
@@ -130,7 +122,7 @@ public class CollectionNodeBuilder extends AbstractGroupNodeBuilder implements F
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection key(String key) {
+    public NodeBuilderGroupStep.Collection key(String key) {
         this.key = key;
         return this;
     }

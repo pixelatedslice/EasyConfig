@@ -2,23 +2,15 @@ package com.pixelatedslice.easyconfig.api.config.node;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilder;
-import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.CommonNodes;
-import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 
 @SuppressWarnings("unused")
 @NullMarked
 public interface Node {
-    static <N extends Node> N of(
-            BiFunction<? super Nodes, ? super CommonNodes, ? extends FactoryNodeBuilder.BuildStep<N>> builder) {
-        return builder.apply(Nodes.INSTANCE, CommonNodes.INSTANCE).build();
-    }
-
     default NodeType nodeType() {
         return NodeType.PLAIN_NODE;
     }
@@ -29,7 +21,7 @@ public interface Node {
 
 
     @CheckReturnValue
-    FactoryNodeBuilder.KeyStep<?> toBuilder();
+    NodeBuilder.KeyStep<?> toBuilder();
 
 
     @CheckReturnValue

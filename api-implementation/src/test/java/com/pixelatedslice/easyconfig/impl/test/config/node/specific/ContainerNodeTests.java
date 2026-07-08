@@ -1,9 +1,8 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 
 import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.CommonNodes;
-import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.CommonTypes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.Nodes;
 import com.pixelatedslice.easyconfig.impl.config.node.container.ContainerNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.test.testUtils.CollectionAssert;
@@ -17,6 +16,7 @@ import java.util.List;
 @NullMarked
 public class ContainerNodeTests {
 
+    @SuppressWarnings("DataFlowIssue")
     @Test
     public void ContainerNode_fails_when_creating_without_key() {
         //ARRANGE
@@ -46,7 +46,7 @@ public class ContainerNodeTests {
         final var key = "key";
         final var internalBuilder = new ContainerNodeBuilder(key);
 
-        final ContainerNode node = new ContainerNodeImpl(internalBuilder);
+        final Node node = new ContainerNodeImpl(internalBuilder);
 
         //ACT
         final var result = node.toBuilder();
@@ -78,10 +78,10 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_clearNodes() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = Node
-                .of((Nodes n, CommonNodes c) -> n
-                        .container(key)
-                        .builtChildren(c.emptyStringValue("added")));
+        final var originalNode = Nodes
+                .container(key)
+                .builtChildren(Nodes.emptyValue(CommonTypes.STRING, "added"))
+                .build();
 
         //ACT
         try (var editable = originalNode.editable()) {
@@ -96,9 +96,12 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_removeNode() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = Node.of((Nodes n, CommonNodes c) -> n
+        final var originalNode = Nodes
                 .container(key)
-                .builtChildren(c.emptyStringValue("added"), c.emptyStringValue("second")));
+                .builtChildren(
+                        Nodes.emptyValue(CommonTypes.STRING, "added"),
+                        Nodes.emptyValue(CommonTypes.STRING, "second")
+                ).build();
         final var toRemain = originalNode.children().getLast();
         final var toRemove = originalNode.children().getFirst();
 
@@ -115,9 +118,11 @@ public class ContainerNodeTests {
     public void ContainerNode_editable_setNode() {
         //ARRANGE
         final var key = "original";
-        final var originalNode = Node.of((Nodes n, CommonNodes c) -> n
+        final var originalNode = Nodes
                 .container(key)
-                .builtChildren(c.emptyStringValue("added"), c.emptyStringValue("second")));
+                .builtChildren(Nodes.emptyValue(CommonTypes.STRING, "added"),
+                        Nodes.emptyValue(CommonTypes.STRING, "second"))
+                .build();
 
         final var toSet = new ContainerNodeBuilder("set").build();
 

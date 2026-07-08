@@ -3,8 +3,8 @@ package com.pixelatedslice.easyconfig.api.config.node.env;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
-import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
@@ -17,12 +17,12 @@ import java.util.function.Function;
 
 @NullMarked
 public interface EnvNode<T> extends Node {
-    static FactoryNodeBuilderKeySteps.Env<?> of(Class<?> simpleType) {
+    static NodeBuilderKeySteps.Env<?> of(Class<?> simpleType) {
         return of(TypeTokenUtils.getSimpleOrThrow(simpleType));
     }
 
-    static FactoryNodeBuilderKeySteps.Env<?> of(TypeToken<?> typeToken) {
-        return Nodes.INSTANCE.env(typeToken);
+    static NodeBuilderKeySteps.Env<?> of(TypeToken<?> typeToken) {
+        return Nodes.env(typeToken);
     }
 
     default NodeType nodeType() {
@@ -45,5 +45,5 @@ public interface EnvNode<T> extends Node {
     TypeToken<T> typeToken();
 
     @Override
-    FactoryNodeBuilderKeySteps.Env<T> toBuilder();
+    NodeBuilderKeySteps.Env<T> toBuilder();
 }

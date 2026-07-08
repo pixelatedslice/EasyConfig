@@ -2,8 +2,8 @@ package com.pixelatedslice.easyconfig.impl.config.node.value.builder;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderHandlers;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderValueStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderHandlers;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderValueStep;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @SuppressWarnings("PublicMethodNotExposedInInterface")
 @NullMarked
 public class ValueNodeBuilder<T>
-        implements FactoryNodeBuilderHandlers.Value<T>, InternalNodeBuilder<ValueNodeBuilder<T>> {
+        implements NodeBuilderHandlers.Value<T>, InternalNodeBuilder<ValueNodeBuilder<T>> {
 
     @Nullable String key;
     @Nullable T defaultValue;
@@ -59,19 +59,19 @@ public class ValueNodeBuilder<T>
     }
 
     @Override
-    public FactoryNodeBuilderValueStep<T> defaultValue(@Nullable T defaultValue) {
+    public NodeBuilderValueStep<T> defaultValue(@Nullable T defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }
 
     @Override
-    public FactoryNodeBuilderValueStep<T> value(@Nullable T value) {
+    public NodeBuilderValueStep<T> value(@Nullable T value) {
         this.value = value;
         return this;
     }
 
     @Override
-    public FactoryNodeBuilderValueStep<T> validator(@Nullable Validator<T> validator) {
+    public NodeBuilderValueStep<T> validator(@Nullable Validator<T> validator) {
         this.validator = validator;
         return this;
     }
@@ -85,7 +85,7 @@ public class ValueNodeBuilder<T>
     }
 
     @Override
-    public FactoryNodeBuilderValueStep<T> serializer(@Nullable Serializer<T> serializer) {
+    public NodeBuilderValueStep<T> serializer(@Nullable Serializer<T> serializer) {
         this.serializer = serializer;
         return this;
     }
@@ -128,7 +128,7 @@ public class ValueNodeBuilder<T>
     }
 
     @Override
-    public FactoryNodeBuilderValueStep<T> key(String key) {
+    public NodeBuilderValueStep<T> key(String key) {
         this.key = key;
         return this;
     }

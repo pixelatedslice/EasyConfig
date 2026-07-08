@@ -6,7 +6,7 @@ import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -37,8 +37,12 @@ public abstract class AbstractNode implements Node {
             return new ReturnKnownNodeImpl(node);
         }
         final var targetKey = path[index];
-        final var opChildNode = children(node).filter(n -> n.key().equals(targetKey)).findFirst();
-        return opChildNode.map(value -> travel(value, index + 1, path)).orElseGet(() -> new ReturnKnownNodeImpl(null));
+        final var opChildNode = children(node)
+                .filter((Node childNode) -> childNode.key().equals(targetKey))
+                .findFirst();
+        return opChildNode
+                .map((Node value) -> travel(value, index + 1, path))
+                .orElseGet(() -> new ReturnKnownNodeImpl(null));
     }
 
     private static Stream<Node> children(Node node) {
@@ -54,7 +58,7 @@ public abstract class AbstractNode implements Node {
     protected abstract void internalAppendChild(AbstractNode node);
 
     @Override
-    public abstract FactoryNodeBuilder.KeyStep<?> toBuilder();
+    public abstract NodeBuilder.KeyStep<?> toBuilder();
 
     @Override
     public String key() {
@@ -71,6 +75,7 @@ public abstract class AbstractNode implements Node {
         return new ConfigStructureImpl(this);
     }
 
+    @SuppressWarnings("PublicMethodNotExposedInInterface")
     public @Nullable Config config() {
         if (this.attached != null) {
             return this.attached;

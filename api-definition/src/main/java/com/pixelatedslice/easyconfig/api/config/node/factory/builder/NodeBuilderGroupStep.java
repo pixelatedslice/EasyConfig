@@ -9,8 +9,8 @@ import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("unused")
 @NullMarked
-public interface FactoryNodeBuilderGroupStep<Next extends FactoryNodeBuilder, NodeType extends Node> extends
-        FactoryNodeBuilder, FactoryNodeBuilder.BuildStep<NodeType> {
+public interface NodeBuilderGroupStep<Next extends NodeBuilder, NodeType extends Node> extends
+        NodeBuilder, NodeBuilder.BuildStep<NodeType> {
     Next children(NullPolicy nullPolicy, @Nullable BuildStep<?> @Nullable ... nodes);
 
     default Next children(@Nullable BuildStep<?> @Nullable ... nodes) {
@@ -37,11 +37,11 @@ public interface FactoryNodeBuilderGroupStep<Next extends FactoryNodeBuilder, No
 
     @NullMarked
     interface Container
-            extends FactoryNodeBuilderGroupStep<Container, ContainerNode> {
+            extends NodeBuilderGroupStep<Container, ContainerNode> {
     }
 
     @NullMarked
     interface Collection
-            extends FactoryNodeBuilderGroupStep<Collection, CollectionNode> {
+            extends NodeBuilderGroupStep<Collection, CollectionNode> {
     }
 }

@@ -1,7 +1,7 @@
 package com.pixelatedslice.easyconfig.impl.config.node.factory;
 
 import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.validator.null_policy.NullPolicy;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
@@ -18,7 +18,7 @@ public abstract class AbstractGroupNodeBuilder {
 
     protected void internalChildren(
             NullPolicy nullPolicy,
-            Stream<? extends FactoryNodeBuilder.@Nullable BuildStep<?>> nodeStream
+            Stream<? extends NodeBuilder.@Nullable BuildStep<?>> nodeStream
     ) {
         final var internalBuilders = nodeStream
                 .filter(Objects::nonNull)
@@ -54,7 +54,7 @@ public abstract class AbstractGroupNodeBuilder {
                 "Expected an AbstractNode implementation, but got: " + actual);
     }
 
-    private InternalNodeBuilder<?> requireInternalNodeBuilder(NullPolicy nullPolicy, FactoryNodeBuilder step) {
+    private InternalNodeBuilder<?> requireInternalNodeBuilder(NullPolicy nullPolicy, NodeBuilder step) {
         nullPolicy.checkIfNull(step);
 
         if (step instanceof InternalNodeBuilder<?> internalNodeBuilder) {

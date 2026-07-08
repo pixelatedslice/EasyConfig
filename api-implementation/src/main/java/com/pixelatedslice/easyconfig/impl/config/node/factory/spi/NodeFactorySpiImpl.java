@@ -1,12 +1,12 @@
-package com.pixelatedslice.easyconfig.impl.config.node.factory;
+package com.pixelatedslice.easyconfig.impl.config.node.factory.spi;
 
 import com.google.auto.service.AutoService;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.NodeBuilders;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderEnvStep;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderEnvStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderGroupStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.config.node.factory.spi.NodeFactorySpi;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeBuilder;
@@ -18,11 +18,11 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 
-@AutoService(NodeBuilders.class)
+@AutoService(NodeFactorySpi.class)
 @NullMarked
-public class NodeBuildersImpl implements NodeBuilders {
+public class NodeFactorySpiImpl implements NodeFactorySpi {
     @Override
-    public <T> FactoryNodeBuilderKeySteps.Value<T> createValueNodeBuilder(TypeToken<T> typeToken) {
+    public <T> NodeBuilderKeySteps.Value<T> createValueNodeBuilder(TypeToken<T> typeToken) {
         return new ValueNodeBuilder<>(typeToken);
     }
 
@@ -33,7 +33,7 @@ public class NodeBuildersImpl implements NodeBuilders {
     }
 
     @Override
-    public <T> FactoryNodeBuilderKeySteps.Env<T> createEnvNodeBuilder(TypeToken<T> typeToken) {
+    public <T> NodeBuilderKeySteps.Env<T> createEnvNodeBuilder(TypeToken<T> typeToken) {
         return new EnvNodeBuilder<>(typeToken);
     }
 
@@ -49,18 +49,18 @@ public class NodeBuildersImpl implements NodeBuilders {
     }
 
     @Override
-    public <T> FactoryNodeBuilderEnvStep.AdapterValidatorStep<T> createEnvNodeBuilder(TypeToken<T> typeToken,
+    public <T> NodeBuilderEnvStep.AdapterValidatorStep<T> createEnvNodeBuilder(TypeToken<T> typeToken,
             String key, String variable) {
         return new EnvNodeBuilder<>(typeToken).key(key).variable(variable);
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Container createContainerNodeBuilder(String key) {
+    public NodeBuilderGroupStep.Container createContainerNodeBuilder(String key) {
         return new ContainerNodeBuilder(key);
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Collection createCollectionNodeBuilder(String key) {
+    public NodeBuilderGroupStep.Collection createCollectionNodeBuilder(String key) {
         return new CollectionNodeBuilder(key);
     }
 }

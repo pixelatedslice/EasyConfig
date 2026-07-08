@@ -2,8 +2,8 @@ package com.pixelatedslice.easyconfig.impl.config.node.container.builder;
 
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderHandlers;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderGroupStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderHandlers;
 import com.pixelatedslice.easyconfig.api.validator.null_policy.NullPolicy;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
@@ -14,10 +14,11 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 @NullMarked
 public class ContainerNodeBuilder extends AbstractGroupNodeBuilder
-        implements FactoryNodeBuilderHandlers.Container,
+        implements NodeBuilderHandlers.Container,
         InternalNodeBuilder<ContainerNodeBuilder> {
 
     @Nullable AbstractNode parent;
@@ -25,7 +26,7 @@ public class ContainerNodeBuilder extends AbstractGroupNodeBuilder
     private String key;
 
     public ContainerNodeBuilder(String key) {
-        this.key = key;
+        this.key = Objects.requireNonNull(key);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class ContainerNodeBuilder extends AbstractGroupNodeBuilder
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Container children(NullPolicy nullPolicy,
+    public NodeBuilderGroupStep.Container children(NullPolicy nullPolicy,
             @Nullable BuildStep<?> @Nullable ... nodes) {
         if (nodes == null) {
             return this;
@@ -82,7 +83,7 @@ public class ContainerNodeBuilder extends AbstractGroupNodeBuilder
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Container children(NullPolicy nullPolicy,
+    public NodeBuilderGroupStep.Container children(NullPolicy nullPolicy,
             java.util.@Nullable Collection<? extends @Nullable BuildStep<?>> nodes) {
         if (nodes == null) {
             return this;
@@ -92,7 +93,7 @@ public class ContainerNodeBuilder extends AbstractGroupNodeBuilder
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Container builtChildren(NullPolicy nullPolicy,
+    public NodeBuilderGroupStep.Container builtChildren(NullPolicy nullPolicy,
             @Nullable Node @Nullable ... nodes) {
         if (nodes == null) {
             return this;
@@ -102,7 +103,7 @@ public class ContainerNodeBuilder extends AbstractGroupNodeBuilder
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Container builtChildren(NullPolicy nullPolicy,
+    public NodeBuilderGroupStep.Container builtChildren(NullPolicy nullPolicy,
             java.util.@Nullable Collection<? extends Node> nodes) {
         if (nodes == null) {
             return this;
@@ -112,7 +113,7 @@ public class ContainerNodeBuilder extends AbstractGroupNodeBuilder
     }
 
     @Override
-    public FactoryNodeBuilderGroupStep.Container key(String key) {
+    public NodeBuilderGroupStep.Container key(String key) {
         this.key = key;
         return this;
     }

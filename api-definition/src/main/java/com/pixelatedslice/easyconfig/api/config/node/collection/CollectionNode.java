@@ -5,17 +5,17 @@ import com.google.errorprone.annotations.CheckReturnValue;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderGroupStep;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderKeySteps;
-import com.pixelatedslice.easyconfig.api.config.node.factory.nodes.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.Nodes;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderGroupStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.stream.Stream;
 
 @NullMarked
 public interface CollectionNode extends Node {
-    static FactoryNodeBuilderGroupStep.Collection of(String key) {
-        return Nodes.INSTANCE.collection(key);
+    static NodeBuilderGroupStep.Collection of(String key) {
+        return Nodes.collection(key);
     }
 
     @Override
@@ -36,5 +36,5 @@ public interface CollectionNode extends Node {
     ReturnedNode atIndex(int index);
 
     @Override
-    FactoryNodeBuilderKeySteps.Collection toBuilder();
+    NodeBuilderKeySteps.Collection toBuilder();
 }

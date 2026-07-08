@@ -2,8 +2,8 @@ package com.pixelatedslice.easyconfig.impl.config.node.env.builder;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.Config;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderEnvStep;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.FactoryNodeBuilderHandlers;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderEnvStep;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderHandlers;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
@@ -18,7 +18,7 @@ import java.util.function.Function;
 @SuppressWarnings("PublicMethodNotExposedInInterface")
 @NullMarked
 public class EnvNodeBuilder<T>
-        implements FactoryNodeBuilderHandlers.Env<T>, InternalNodeBuilder<EnvNodeBuilder<T>> {
+        implements NodeBuilderHandlers.Env<T>, InternalNodeBuilder<EnvNodeBuilder<T>> {
 
     private final TypeToken<T> typeToken;
     private @Nullable String key;
@@ -109,13 +109,13 @@ public class EnvNodeBuilder<T>
     }
 
     @Override
-    public FactoryNodeBuilderEnvStep.AdapterValidatorStep<T> variable(String variable) {
+    public NodeBuilderEnvStep.AdapterValidatorStep<T> variable(String variable) {
         this.variable = variable;
         return this;
     }
 
     @Override
-    public FactoryNodeBuilderEnvStep.VariableStep<T> key(String key) {
+    public NodeBuilderEnvStep.VariableStep<T> key(String key) {
         this.key = key;
         return this;
     }

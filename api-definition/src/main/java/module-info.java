@@ -1,10 +1,7 @@
-import com.pixelatedslice.easyconfig.api.config.node.factory.NodeBuilders;
-import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
-
 open module com.pixelatedslice.easyconfig.api {
-    uses SerializerRegistry;
+    uses com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
     uses com.pixelatedslice.easyconfig.api.format.Format;
-    uses NodeBuilders;
+    uses com.pixelatedslice.easyconfig.api.config.node.factory.spi.NodeFactorySpi;
     requires com.google.common;
     requires org.jspecify;
     requires com.google.errorprone.annotations;
@@ -27,6 +24,5 @@ open module com.pixelatedslice.easyconfig.api {
     exports com.pixelatedslice.easyconfig.api.config;
     exports com.pixelatedslice.easyconfig.api.config.node.factory;
     exports com.pixelatedslice.easyconfig.api.config.node.factory.builder;
-    exports com.pixelatedslice.easyconfig.api.config.node.factory.nodes;
-    exports com.pixelatedslice.easyconfig.api.config.node.factory.nodes.common;
+    exports com.pixelatedslice.easyconfig.api.config.node.factory.spi;
 }
