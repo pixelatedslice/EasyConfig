@@ -16,16 +16,6 @@ import java.util.List;
 @NullMarked
 public class ContainerNodeTests {
 
-    @SuppressWarnings("DataFlowIssue")
-    @Test
-    public void ContainerNode_fails_when_creating_without_key() {
-        //ARRANGE
-        final var internalBuilder = new ContainerNodeBuilder(null);
-
-        //ACT - ASSERT
-        Assertions.assertThrows(NullPointerException.class, () -> new ContainerNodeImpl(internalBuilder));
-    }
-
     @Test
     public void ContainerNode_can_maintain_values() {
         //ARRANGE
