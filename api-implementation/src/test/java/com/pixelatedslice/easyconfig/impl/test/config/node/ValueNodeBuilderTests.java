@@ -84,4 +84,30 @@ public class ValueNodeBuilderTests {
         Assertions.assertInstanceOf(ValueNode.class, opNode.get());
         Assertions.assertEquals(type, opNode.get().typeToken());
     }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void NodeBuilder_should_update_value() {
+        //ARRANGE
+        final var key = "My first key";
+        final var oldValue = "Old value";
+        final var newValue = "Old value";
+        final var type = TypeToken.of(String.class);
+
+        //ACT
+        final var result = Nodes.value(type).key(key).value(oldValue).build();
+        final var beforeUpdating = result.value().get();
+
+        try (var editable = result.editable()) {
+            editable.setValue(newValue);
+        }
+
+        final var afterUpdating = result.value().get();
+
+        //ASSERT
+        Assertions.assertEquals(key, result.key());
+        Assertions.assertEquals(type, result.typeToken());
+        Assertions.assertEquals(oldValue, beforeUpdating);
+        Assertions.assertEquals(newValue, afterUpdating);
+    }
 }
