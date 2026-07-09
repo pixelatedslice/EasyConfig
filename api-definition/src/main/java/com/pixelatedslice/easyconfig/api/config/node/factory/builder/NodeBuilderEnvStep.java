@@ -7,7 +7,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 
-@SuppressWarnings("unused")
 @NullMarked
 public interface NodeBuilderEnvStep {
     @NullMarked

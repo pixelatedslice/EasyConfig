@@ -5,7 +5,7 @@ import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderEnvStep;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderGroupStep;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
-import com.pixelatedslice.easyconfig.api.config.node.factory.spi.NodeFactorySpi;
+import com.pixelatedslice.easyconfig.api.config.node.factory.spi.NodeFactoryService;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
@@ -26,7 +26,7 @@ public interface Nodes {
     }
 
     static <T> NodeBuilderKeySteps.Value<T> value(TypeToken<T> typeToken) {
-        return NodeFactorySpi.INSTANCE.createValueNodeBuilder(typeToken);
+        return NodeFactoryService.INSTANCE.createValueNodeBuilder(typeToken);
     }
 
     static <T> ValueNode<T> emptyValue(TypeToken<T> typeToken, String key) {
@@ -42,11 +42,11 @@ public interface Nodes {
     }
 
     static <T> ValueNode<T> value(TypeToken<T> typeToken, String key, @Nullable T defaultValue) {
-        return NodeFactorySpi.INSTANCE.createValueNode(typeToken, key, defaultValue, null);
+        return NodeFactoryService.INSTANCE.createValueNode(typeToken, key, defaultValue, null);
     }
 
     static <T> ValueNode<T> value(TypeToken<T> typeToken, String key, @Nullable T defaultValue, @Nullable T value) {
-        return NodeFactorySpi.INSTANCE.createValueNode(typeToken, key, defaultValue, value);
+        return NodeFactoryService.INSTANCE.createValueNode(typeToken, key, defaultValue, value);
     }
 
     static <T> NodeBuilderKeySteps.Env<T> env(Class<T> simpleType) {
@@ -54,7 +54,7 @@ public interface Nodes {
     }
 
     static <T> NodeBuilderKeySteps.Env<T> env(TypeToken<T> typeToken) {
-        return NodeFactorySpi.INSTANCE.createEnvNodeBuilder(typeToken);
+        return NodeFactoryService.INSTANCE.createEnvNodeBuilder(typeToken);
     }
 
     static <T> EnvNode<T> env(Class<T> simpleType, String key, String variable) {
@@ -68,13 +68,13 @@ public interface Nodes {
     }
 
     static <T> EnvNode<T> env(TypeToken<T> typeToken, String key, String variable) {
-        return NodeFactorySpi.INSTANCE.createEnvNode(typeToken, key, variable, null, null);
+        return NodeFactoryService.INSTANCE.createEnvNode(typeToken, key, variable, null, null);
     }
 
     @SuppressWarnings("MethodWithTooManyParameters")
     static <T> EnvNode<T> env(TypeToken<T> typeToken, String key, String variable,
             @Nullable Function<String, @Nullable T> adapter, @Nullable Validator<T> validator) {
-        return NodeFactorySpi.INSTANCE.createEnvNode(typeToken, key, variable, adapter, validator);
+        return NodeFactoryService.INSTANCE.createEnvNode(typeToken, key, variable, adapter, validator);
     }
 
     static <T> NodeBuilderEnvStep.AdapterValidatorStep<T> envBuilder(Class<T> simpleType, String key,
@@ -84,14 +84,14 @@ public interface Nodes {
 
     static <T> NodeBuilderEnvStep.AdapterValidatorStep<T> envBuilder(TypeToken<T> typeToken, String key,
             String variable) {
-        return NodeFactorySpi.INSTANCE.createEnvNodeBuilder(typeToken, key, variable);
+        return NodeFactoryService.INSTANCE.createEnvNodeBuilder(typeToken, key, variable);
     }
 
     static NodeBuilderGroupStep.Container container(String key) {
-        return NodeFactorySpi.INSTANCE.createContainerNodeBuilder(key);
+        return NodeFactoryService.INSTANCE.createContainerNodeBuilder(key);
     }
 
     static NodeBuilderGroupStep.Collection collection(String key) {
-        return NodeFactorySpi.INSTANCE.createCollectionNodeBuilder(key);
+        return NodeFactoryService.INSTANCE.createCollectionNodeBuilder(key);
     }
 }

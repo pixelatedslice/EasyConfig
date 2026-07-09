@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 @NullMarked
 public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
     private final List<AbstractNode> children = new CopyOnWriteArrayList<>();
-    private String toString = this.generateToString();
 
     public CollectionNodeImpl(InternalNodeBuilder<?> builder) {
         super(builder);
@@ -46,7 +45,6 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
     @Override
     protected void internalAppendChild(AbstractNode node) {
         this.children.add(node);
-        this.toString = this.generateToString();
     }
 
     @Override
@@ -76,6 +74,6 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
 
     @Override
     public String toString() {
-        return this.toString;
+        return this.generateToString();
     }
 }

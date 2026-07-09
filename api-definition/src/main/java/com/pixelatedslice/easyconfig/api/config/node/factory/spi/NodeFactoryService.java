@@ -7,16 +7,18 @@ import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ServiceLoader;
 import java.util.function.Function;
 
+@ApiStatus.OverrideOnly
 @NullMarked
-public interface NodeFactorySpi {
-    NodeFactorySpi INSTANCE = ServiceLoader
-            .load(NodeFactorySpi.class)
+public interface NodeFactoryService {
+    NodeFactoryService INSTANCE = ServiceLoader
+            .load(NodeFactoryService.class)
             .findFirst()
             .orElseThrow(() -> new IllegalStateException("No NodeBuilders implementation found"));
 

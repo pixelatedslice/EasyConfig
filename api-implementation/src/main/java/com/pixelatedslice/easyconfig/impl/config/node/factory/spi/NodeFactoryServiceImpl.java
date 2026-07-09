@@ -6,7 +6,7 @@ import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderEnvStep;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderGroupStep;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
-import com.pixelatedslice.easyconfig.api.config.node.factory.spi.NodeFactorySpi;
+import com.pixelatedslice.easyconfig.api.config.node.factory.spi.NodeFactoryService;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeBuilder;
@@ -18,9 +18,9 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 
-@AutoService(NodeFactorySpi.class)
+@AutoService(NodeFactoryService.class)
 @NullMarked
-public class NodeFactorySpiImpl implements NodeFactorySpi {
+public class NodeFactoryServiceImpl implements NodeFactoryService {
     @Override
     public <T> NodeBuilderKeySteps.Value<T> createValueNodeBuilder(TypeToken<T> typeToken) {
         return new ValueNodeBuilder<>(typeToken);
