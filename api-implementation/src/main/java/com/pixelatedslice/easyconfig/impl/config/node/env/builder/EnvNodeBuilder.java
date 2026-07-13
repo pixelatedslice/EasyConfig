@@ -3,11 +3,11 @@ package com.pixelatedslice.easyconfig.impl.config.node.env.builder;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderEnvStep;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderHandlers;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.node.env.EnvNodeImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.factory.NodeBuilderHandlers;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
