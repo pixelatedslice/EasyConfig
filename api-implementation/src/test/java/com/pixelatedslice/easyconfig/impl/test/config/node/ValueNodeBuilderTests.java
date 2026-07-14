@@ -4,11 +4,16 @@ import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.config.node.factory.Nodes;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
+import com.pixelatedslice.easyconfig.api.exception.ValidationException;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
+import com.pixelatedslice.easyconfig.api.validator.ValidatorContext;
+import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @NullMarked
 public class ValueNodeBuilderTests {
@@ -21,11 +26,7 @@ public class ValueNodeBuilderTests {
         final var value = "value";
 
         //ACT
-        final var node = Nodes.value(String.class)
-                .key(key)
-                .defaultValue(defaultValue)
-                .value(value)
-                .build();
+        final var node = Nodes.value(String.class).key(key).defaultValue(defaultValue).value(value).build();
 
         //ASSERT
         Assertions.assertEquals(key, node.key());
@@ -40,8 +41,7 @@ public class ValueNodeBuilderTests {
 
         //ACT - ASSERT
         //noinspection DataFlowIssue
-        Assertions.assertThrows(NullPointerException.class, () ->
-                Nodes.value(String.class).key(null).build());
+        Assertions.assertThrows(NullPointerException.class, () -> Nodes.value(String.class).key(null).build());
     }
 
     @Test
@@ -71,9 +71,7 @@ public class ValueNodeBuilderTests {
         //ACT
         // final var builder = this.builder().key(key).append(secondKey).of(String.class);
         // final OldNodeBuilder.ContainerFinalStep.Original originalBuilder = builder.complete();
-        final ContainerNode result = Nodes.container(key).children(
-                Nodes.value(String.class).key(secondKey)
-        ).build();
+        final ContainerNode result = Nodes.container(key).children(Nodes.value(String.class).key(secondKey)).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
@@ -109,5 +107,28 @@ public class ValueNodeBuilderTests {
         Assertions.assertEquals(type, result.typeToken());
         Assertions.assertEquals(oldValue, beforeUpdating);
         Assertions.assertEquals(newValue, afterUpdating);
+    }
+
+    @SuppressWarnings("TypeMayBeWeakened")
+    @Test
+    public void NodeBuilder_validate_should_throw_and_be_empty() {
+        // ARRANGE
+        final var key = "Validation Test Node";
+        final var type = TypeToken.of(String.class);
+        final var value = "superman.123";
+
+        final var emailRegex = Pattern.compile("^\\S+@\\S+\\.\\S+$");
+        final Validator<String> validator = (String validationValue, ValidatorContext context) -> {
+            if (!emailRegex.matcher(validationValue).matches()) {
+                context.error("Invalid email address");
+            }
+        };
+
+        // ACT
+        final var node = Nodes.value(type).key(key).value(value).validator(validator).build();
+
+        // ASSERT
+        Assertions.assertThrows(ValidationException.class, node::value);
+        Assertions.assertEquals(Optional.empty(), node.value(ValidationOptions.returnEmpty()));
     }
 }

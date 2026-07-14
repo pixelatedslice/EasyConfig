@@ -13,48 +13,34 @@ import java.util.function.Predicate;
 @FunctionalInterface
 @NullMarked
 public interface Validator<T extends @Nullable Object> {
+    String DEFAULT_ERROR_MESSAGE = "Invalid value: \"%s\". The input does not meet the requirements of the predicate.";
+
     static <T> Validator<T> empty() {
         return (@Nullable T _, ValidatorContext _) -> {
         };
     }
 
-    static <T> void validate(T value, Predicate<? super T> predicate,
-            ValidatorContext context) {
+    static <T> void validate(T value, Predicate<? super T> predicate, ValidatorContext context) {
         if (!predicate.test(value)) {
-            context.error(
-                    "Invalid value: \"%s\". The input does not meet the requirements of the validation predicate.",
-                    value
-            );
+            context.error(DEFAULT_ERROR_MESSAGE, value);
         }
     }
 
-    static void validate(int value, IntPredicate predicate,
-            ValidatorContext context) {
+    static void validate(int value, IntPredicate predicate, ValidatorContext context) {
         if (!predicate.test(value)) {
-            context.error(
-                    "Invalid value: \"%s\". The input does not meet the requirements of the validation predicate.",
-                    value
-            );
+            context.error(DEFAULT_ERROR_MESSAGE, value);
         }
     }
 
-    static void validate(long value, LongPredicate predicate,
-            ValidatorContext context) {
+    static void validate(long value, LongPredicate predicate, ValidatorContext context) {
         if (!predicate.test(value)) {
-            context.error(
-                    "Invalid value: \"%s\". The input does not meet the requirements of the validation predicate.",
-                    value
-            );
+            context.error(DEFAULT_ERROR_MESSAGE, value);
         }
     }
 
-    static void validate(double value, DoublePredicate predicate,
-            ValidatorContext context) {
+    static void validate(double value, DoublePredicate predicate, ValidatorContext context) {
         if (!predicate.test(value)) {
-            context.error(
-                    "Invalid value: \"%s\". The input does not meet the requirements of the validation predicate.",
-                    value
-            );
+            context.error(DEFAULT_ERROR_MESSAGE, value);
         }
     }
 

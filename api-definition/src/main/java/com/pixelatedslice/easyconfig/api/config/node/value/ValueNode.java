@@ -28,11 +28,17 @@ public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
 
     Optional<T> value(ValidateOption<T> option);
 
-    Optional<T> defaultValue();
+    default Optional<T> defaultValue() {
+        return this.defaultValue(ValidationOptions.throwExceptions());
+    }
+
+    Optional<T> defaultValue(ValidateOption<T> option);
 
     default Optional<T> valueOrDefault() {
-        return this.value().or(this::defaultValue);
+        return this.valueOrDefault(ValidationOptions.throwExceptions());
     }
+
+    Optional<T> valueOrDefault(ValidateOption<T> option);
 
     Optional<Serializer<T>> serializer();
 

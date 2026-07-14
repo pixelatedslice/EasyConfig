@@ -6,6 +6,7 @@ import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
+import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
@@ -40,16 +41,25 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
 
     @Override
     public Optional<T> value(ValidateOption<T> option) {
-        return Optional.ofNullable(this.value).flatMap(value -> {
-            final var context = new ValidatorContextImpl();
-            this.validator.validate(value, context);
-            return context.hasError() ? option.onValidationError(value, context) : Optional.of(value);
-        });
+        return Optional.ofNullable(this.value).flatMap((T value) -> this.validate(option, value));
     }
 
     @Override
-    public Optional<T> defaultValue() {
-        return Optional.ofNullable(this.defaultValue);
+    public Optional<T> defaultValue(ValidateOption<T> option) {
+        return Optional.ofNullable(this.defaultValue).flatMap((T defaultValue) -> this.validate(option, defaultValue));
+    }
+
+    @Override
+    public Optional<T> valueOrDefault(ValidateOption<T> option) {
+        return this.value(ValidationOptions.returnEmpty()).or(() -> this.defaultValue(option));
+    }
+
+    private Optional<T> validate(ValidateOption<T> option, @Nullable T validationValue) {
+        final var context = new ValidatorContextImpl();
+        this.validator.validate(validationValue, context);
+        return context.hasError()
+                ? option.onValidationError(validationValue, context)
+                : Optional.ofNullable(validationValue);
     }
 
     @Override
@@ -88,13 +98,19 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     }
 
     private String generateToString() {
-        return "ValueNodeImpl{" +
-                "key='" + this.key() + '\'' +
-                ", type=" + this.token +
-                ", value=" + this.value +
-                ", defaultValue=" + this.defaultValue +
-                ", fullPath=" + String.join(",", this.fullPath()) +
-                '}';
+        return "ValueNodeImpl{"
+               + "key='"
+               + this.key()
+               + '\''
+               + ", type="
+               + this.token
+               + ", value="
+               + this.value
+               + ", defaultValue="
+               + this.defaultValue
+               + ", fullPath="
+               + String.join(",", this.fullPath())
+               + '}';
     }
 
     @Override
