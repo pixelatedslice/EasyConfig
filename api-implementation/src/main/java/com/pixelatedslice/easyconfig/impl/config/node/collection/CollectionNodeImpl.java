@@ -35,9 +35,7 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
 
     @Override
     public ReturnedNode atIndex(int index) {
-        final Node child = ((index < 0) || (index >= this.children.size()))
-                ? null
-                : this.children.get(index);
+        final Node child = ((index < 0) || (index >= this.children.size())) ? null : this.children.get(index);
 
         return new ReturnKnownNodeImpl(child);
     }
@@ -58,22 +56,23 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
         return builder;
     }
 
-    private String generateToString() {
+    @Override
+    public String toString() {
         final var joiner = new java.util.StringJoiner(", ", "[", "]");
         for (final var child : this.children) {
             joiner.add(child.key());
         }
 
-        return "CollectionNodeImpl{" +
-                "key='" + this.key() + '\'' +
-                ", childCount=" + this.children.size() +
-                ", children=" + joiner +
-                ", fullPath=" + String.join(",", this.fullPath()) +
-                '}';
-    }
-
-    @Override
-    public String toString() {
-        return this.generateToString();
+        return "CollectionNodeImpl{"
+               + "key='"
+               + this.key()
+               + '\''
+               + ", childCount="
+               + this.children.size()
+               + ", children="
+               + joiner
+               + ", fullPath="
+               + String.join(",", this.fullPath())
+               + '}';
     }
 }
