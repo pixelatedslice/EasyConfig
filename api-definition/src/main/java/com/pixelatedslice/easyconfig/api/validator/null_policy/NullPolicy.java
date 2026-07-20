@@ -4,5 +4,5 @@ import org.jspecify.annotations.Nullable;
 
 @FunctionalInterface
 public interface NullPolicy {
-    void checkIfNull(@Nullable Object any);
+    void handle(@Nullable Object any);
 }

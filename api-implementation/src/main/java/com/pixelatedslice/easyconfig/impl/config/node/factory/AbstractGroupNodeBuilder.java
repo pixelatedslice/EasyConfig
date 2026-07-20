@@ -16,10 +16,8 @@ import java.util.stream.Stream;
 public abstract class AbstractGroupNodeBuilder {
     protected final List<InternalNodeBuilder<?>> children = new CopyOnWriteArrayList<>();
 
-    protected void internalChildren(
-            NullPolicy nullPolicy,
-            Stream<? extends NodeBuilder.@Nullable BuildStep<?>> nodeStream
-    ) {
+    protected void internalChildren(NullPolicy nullPolicy,
+            Stream<? extends NodeBuilder.@Nullable BuildStep<?>> nodeStream) {
         final var internalBuilders = nodeStream
                 .filter(Objects::nonNull)
                 .map(builder -> this.requireInternalNodeBuilder(nullPolicy, builder))
@@ -28,10 +26,7 @@ public abstract class AbstractGroupNodeBuilder {
         this.children.addAll(internalBuilders);
     }
 
-    protected void internalBuiltChildren(
-            NullPolicy nullPolicy,
-            Stream<? extends @Nullable Node> nodeStream
-    ) {
+    protected void internalBuiltChildren(NullPolicy nullPolicy, Stream<? extends @Nullable Node> nodeStream) {
         final var internalBuilders = nodeStream
                 .filter(Objects::nonNull)
                 .map(node -> this.requireAbstractNode(nullPolicy, node))
@@ -43,26 +38,24 @@ public abstract class AbstractGroupNodeBuilder {
     }
 
     private AbstractNode requireAbstractNode(NullPolicy nullPolicy, @Nullable Node node) {
-        nullPolicy.checkIfNull(node);
+        nullPolicy.handle(node);
 
         if (node instanceof AbstractNode abstractNode) {
             return abstractNode;
         }
 
         final String actual = (node == null) ? "null" : node.getClass().getName();
-        throw new IllegalArgumentException(
-                "Expected an AbstractNode implementation, but got: " + actual);
+        throw new IllegalArgumentException("Expected an AbstractNode implementation, but got: " + actual);
     }
 
     private InternalNodeBuilder<?> requireInternalNodeBuilder(NullPolicy nullPolicy, NodeBuilder step) {
-        nullPolicy.checkIfNull(step);
+        nullPolicy.handle(step);
 
         if (step instanceof InternalNodeBuilder<?> internalNodeBuilder) {
             return internalNodeBuilder;
         }
 
         final String actual = (step == null) ? "null" : step.getClass().getName();
-        throw new IllegalArgumentException(
-                "Expected an InternalNodeBuilder, but got: " + actual);
+        throw new IllegalArgumentException("Expected an InternalNodeBuilder, but got: " + actual);
     }
 }
