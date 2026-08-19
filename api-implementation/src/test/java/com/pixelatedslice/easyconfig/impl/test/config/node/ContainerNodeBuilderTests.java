@@ -1,50 +1,51 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node;
 
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
-import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.factory.Nodes;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@NullMarked
 public class ContainerNodeBuilderTests {
-
-    private NodeBuilder.FirstStep builder() {
-        return new ContainerNodeOriginalBuilder();
-    }
 
     @Test
     public void NodeBuilder_should_build_container_node_with_key() {
         //ARRANGE
-        String key = "My Key";
+        final String key = "My Key";
 
         //ACT
-        var node = builder().key(key).build();
+        // Old: final var node = this.builder().key(key).build();
+        final var node = Nodes.container(key).build();
 
         //ASSERT
         Assertions.assertEquals(key, node.key());
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Test
     public void NodeBuilder_should_throw_exception_with_null_key() {
         //ARRANGE
 
         //ACT - ASSERT
-        //noinspection DataFlowIssue
-        Assertions.assertThrows(NullPointerException.class, () ->
-                builder().key(null).build());
+        // Old: Assertions.assertThrows(NullPointerException.class, () ->
+        //        this.builder().key(null).build());
+
+        Assertions.assertThrows(NullPointerException.class, () -> Nodes.container(null).build());
     }
 
     @Test
     public void NodeBuilder_should_append_with_provided_key() {
         //ARRANGE
-        var key = "My first key";
-        var secondKey = "My second key";
+        final var key = "My first key";
+        final var secondKey = "My second key";
 
         //ACT
-        var result = builder().key(key).append(secondKey).complete().build();
+        // Old: final var result = this.builder().key(key).append(secondKey).complete().build();
+        final var result = Nodes.container(key).children(Nodes.container(secondKey)).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
-        var opNode = result.containerNode(secondKey);
+        final var opNode = result.containerNode(secondKey);
         Assertions.assertTrue(opNode.isPresent());
         Assertions.assertEquals(secondKey, opNode.get().key());
     }
@@ -52,19 +53,25 @@ public class ContainerNodeBuilderTests {
     @Test
     public void NodeBuilder_should_append_child_with_provided_key() {
         //ARRANGE
-        var key = "My first key";
-        var secondKey = "My second key";
-        var thirdKey = "My third key";
+        final var key = "My first key";
+        final var secondKey = "My second key";
+        final var thirdKey = "My third key";
 
         //ACT
-        var result = builder().key(key).append(secondKey).append(thirdKey).complete().complete().build();
+        // Old: final var result = this.builder().key(key).append(secondKey).append(thirdKey).complete().complete()
+        // .build();
+        final var result = Nodes.container(key).children(
+                Nodes.container(secondKey).children(
+                        Nodes.container(thirdKey)
+                )
+        ).build();
 
         //ASSERT
         Assertions.assertEquals(key, result.key());
-        var opNode = result.containerNode(secondKey);
+        final var opNode = result.containerNode(secondKey);
         Assertions.assertTrue(opNode.isPresent());
         Assertions.assertEquals(secondKey, opNode.get().key());
-        var opSecondNode = opNode.get().containerNode(thirdKey);
+        final var opSecondNode = opNode.get().containerNode(thirdKey);
         Assertions.assertTrue(opSecondNode.isPresent());
         Assertions.assertEquals(thirdKey, opSecondNode.get().key());
     }

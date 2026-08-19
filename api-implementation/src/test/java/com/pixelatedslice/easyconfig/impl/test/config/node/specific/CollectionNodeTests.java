@@ -1,35 +1,36 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 
-import com.pixelatedslice.easyconfig.impl.config.node.collection.CollectionNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeBuilder;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@NullMarked
 public class CollectionNodeTests {
 
     @Test
     public void CollectionNode_can_build_correctly() {
         //ARRANGE
-        var builder = new CollectionNodeOriginalBuilder("key").append().complete();
+        final var builder = new CollectionNodeBuilder("key");
 
         //ACT
-        var result = builder.build();
+        final var result = builder.build();
 
         //ASSERT
-        var children = result.stream().map(r -> r.container().orElseThrow()).toList();
-        Assertions.assertEquals(1, children.size());
+        final var children = result.stream().map(r -> r.container().orElseThrow()).toList();
+        Assertions.assertEquals(0, children.size());
     }
 
     @Test
     public void CollectionNode_toBuilder() {
         //ARRANGE
-        var node = (CollectionNodeImpl) new CollectionNodeOriginalBuilder("key").append().complete().build();
+        final var node = new CollectionNodeBuilder("key").build();
 
         //ACT
-        var toBuilder = node.toBuilder();
+        final var toBuilder = node.toBuilder();
 
         //ASSERT
         Assertions.assertEquals("key", toBuilder.key());
-        Assertions.assertEquals(1, toBuilder.children().size());
+        Assertions.assertEquals(0, toBuilder.children().size());
     }
 }

@@ -1,5 +1,6 @@
 dependencies {
     api(libs.guava)
+    compileOnly(libs.jetbrains.annotations)
 }
 
 mavenPublishing {

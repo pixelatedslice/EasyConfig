@@ -1,24 +1,25 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.specific;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
 import com.pixelatedslice.easyconfig.impl.config.node.value.ValueNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeBuilder;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+@NullMarked
 public class ValueNodeTests {
 
     @Test
     public void ValueNode_can_create() {
         // Arrange
-        var builder = new ValueNodeOriginalBuilder<>(TypeToken.of(String.class), "key");
+        final var builder = new ValueNodeBuilder<>(TypeToken.of(String.class), "key", null, null);
 
         // Act
-        var node = new ValueNodeImpl<>(builder);
+        final var node = new ValueNodeImpl<>(builder);
 
         // Assert
         Assertions.assertEquals(TypeToken.of(String.class), node.typeToken());
@@ -28,11 +29,11 @@ public class ValueNodeTests {
     @Test
     public void ValueNode_valueOrDefault_can_receive_default_when_no_value_present() {
         // Arrange
-        var builder = new ValueNodeOriginalBuilder<>(TypeToken.of(String.class), "key");
+        final var builder = new ValueNodeBuilder<>(TypeToken.of(String.class), "key", null, null);
         builder.defaultValue("default");
 
         // Act
-        var node = new ValueNodeImpl<>(builder);
+        final var node = new ValueNodeImpl<>(builder);
 
         // Assert
         Assertions.assertEquals(TypeToken.of(String.class), node.typeToken());
@@ -45,11 +46,11 @@ public class ValueNodeTests {
     @Test
     public void ValueNode_valueOrDefault_can_receive_value_when_no_default_present() {
         // Arrange
-        var builder = new ValueNodeOriginalBuilder<>(TypeToken.of(String.class), "key");
+        final var builder = new ValueNodeBuilder<>(TypeToken.of(String.class), "key", null, null);
         builder.value("value");
 
         // Act
-        var node = new ValueNodeImpl<>(builder);
+        final var node = new ValueNodeImpl<>(builder);
 
         // Assert
         Assertions.assertEquals(TypeToken.of(String.class), node.typeToken());
@@ -62,12 +63,12 @@ public class ValueNodeTests {
     @Test
     public void ValueNode_valueOrDefault_can_receive_value_when_both_default_and_value_are_present() {
         // Arrange
-        var builder = new ValueNodeOriginalBuilder<>(TypeToken.of(String.class), "key");
+        final var builder = new ValueNodeBuilder<>(TypeToken.of(String.class), "key", null, null);
         builder.value("value");
         builder.defaultValue("default");
 
         // Act
-        var node = new ValueNodeImpl<>(builder);
+        final var node = new ValueNodeImpl<>(builder);
 
         // Assert
         Assertions.assertEquals(TypeToken.of(String.class), node.typeToken());
@@ -78,29 +79,29 @@ public class ValueNodeTests {
     }
 
     @Test
-    public void ValueNode_value_validate_fails(){
+    public void ValueNode_value_validate_fails() {
         // Arrange
-        var builder = new ValueNodeOriginalBuilder<>(TypeToken.of(String.class), "key");
+        final var builder = new ValueNodeBuilder<>(TypeToken.of(String.class), "key", null, null);
         builder.value("value");
         builder.validator((_, context) -> context.error("Big error"));
-        var node = new ValueNodeImpl<>(builder);
+        final var node = new ValueNodeImpl<>(builder);
 
         // Act
-        var result = node.value(ValidationOptions.returnEmpty());
+        final var result = node.value(ValidationOptions.returnEmpty());
 
         // Assert
         Assertions.assertEquals(Optional.empty(), result);
     }
 
     @Test
-    public void ValueNode_editable_can_edit_value(){
+    public void ValueNode_editable_can_edit_value() {
         // Arrange
-        var builder = new ValueNodeOriginalBuilder<>(TypeToken.of(String.class), "key");
+        final var builder = new ValueNodeBuilder<>(TypeToken.of(String.class), "key", null, null);
         builder.value("Old value");
-        var node = new ValueNodeImpl<>(builder);
+        final var node = new ValueNodeImpl<>(builder);
 
         // Act
-        try(var editable = node.editable()){
+        try (var editable = node.editable()) {
             editable.setValue("New value");
         }
 
@@ -109,15 +110,15 @@ public class ValueNodeTests {
     }
 
     @Test
-    public void ValueNode_toBuilder_retains_values(){
+    public void ValueNode_toBuilder_retains_values() {
         // Arrange
-        var builder = new ValueNodeOriginalBuilder<>(TypeToken.of(String.class), "key");
+        final var builder = new ValueNodeBuilder<>(TypeToken.of(String.class), "key", null, null);
         builder.value("value");
         builder.defaultValue("default value");
-        var node = new ValueNodeImpl<>(builder);
+        final var node = new ValueNodeImpl<>(builder);
 
         // Act
-        var newBuilder = node.toBuilder();
+        final var newBuilder = node.toBuilder();
 
         // Assert
         Assertions.assertEquals("value", newBuilder.value());

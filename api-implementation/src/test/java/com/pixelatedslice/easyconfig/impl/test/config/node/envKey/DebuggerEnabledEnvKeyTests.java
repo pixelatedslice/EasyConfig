@@ -1,18 +1,20 @@
 package com.pixelatedslice.easyconfig.impl.test.config.node.envKey;
 
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvKeys;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@NullMarked
 public class DebuggerEnabledEnvKeyTests {
 
     @Test
     public void debugger_enabled_has_correct_key() {
         //ARRANGE
-        var key = "DEBUGGER_ENABLED";
+        final var key = "DEBUGGER_ENABLED";
 
         //ACT
-        var result = EnvKeys.DEBUGGING_ENABLED.key();
+        final var result = EnvKeys.DEBUGGING_ENABLED.key();
 
         //ASSERT
         Assertions.assertEquals(key, result);
@@ -21,10 +23,10 @@ public class DebuggerEnabledEnvKeyTests {
     @Test
     public void lang_parses_correctly() {
         //ARRANGE
-        String input = "true";
+        final String input = "true";
 
         //ACT
-        var result = EnvKeys.DEBUGGING_ENABLED.adapter().apply(input);
+        final var result = EnvKeys.DEBUGGING_ENABLED.adapter().apply(input);
 
         //ASSERT
         Assertions.assertNotNull(result);
@@ -34,10 +36,10 @@ public class DebuggerEnabledEnvKeyTests {
     @Test
     public void lang_returns_false_when_invalid() {
         //ARRANGE
-        String input = "invalid";
+        final String input = "invalid";
 
         //ACT
-        var result = EnvKeys.DEBUGGING_ENABLED.adapter().apply(input);
+        final var result = EnvKeys.DEBUGGING_ENABLED.adapter().apply(input);
 
         //ASSERT
         Assertions.assertNotNull(result);

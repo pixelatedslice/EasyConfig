@@ -1,22 +1,23 @@
 package com.pixelatedslice.easyconfig.impl.serializer;
 
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistryOptions;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Objects;
 
+@NullMarked
 public class SerializerRegistryOptionsImpl implements SerializerRegistryOptions {
 
-    private SerializerRegistryOptions.@NonNull DuplicateRegisterStyle duplicateRegistryStyle = DuplicateRegisterStyle.THROW;
+    private SerializerRegistryOptions.DuplicateRegisterStyle duplicateRegistryStyle = DuplicateRegisterStyle.THROW;
 
     @Override
-    public @NonNull SerializerRegistryOptions duplicateRegisterStyle(@NonNull DuplicateRegisterStyle style) {
+    public SerializerRegistryOptions duplicateRegisterStyle(DuplicateRegisterStyle style) {
         this.duplicateRegistryStyle = Objects.requireNonNull(style);
         return this;
     }
 
     @Override
-    public SerializerRegistryOptions.@NonNull DuplicateRegisterStyle duplicateRegisterStyle() {
+    public SerializerRegistryOptions.DuplicateRegisterStyle duplicateRegisterStyle() {
         return this.duplicateRegistryStyle;
     }
 }

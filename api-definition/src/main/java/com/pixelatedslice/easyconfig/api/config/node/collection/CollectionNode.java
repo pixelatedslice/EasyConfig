@@ -3,9 +3,9 @@ package com.pixelatedslice.easyconfig.api.config.node.collection;
 import com.google.common.collect.ImmutableCollection;
 import com.google.errorprone.annotations.CheckReturnValue;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.stream.Stream;
@@ -30,5 +30,5 @@ public interface CollectionNode extends Node {
     ReturnedNode atIndex(int index);
 
     @Override
-    NodeBuilder.CollectionStep toBuilder();
+    NodeBuilderKeySteps.Collection toBuilder();
 }

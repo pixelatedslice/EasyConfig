@@ -2,8 +2,8 @@ package com.pixelatedslice.easyconfig.api.config.node.value;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
@@ -15,9 +15,8 @@ import java.util.Optional;
 
 @NullMarked
 public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
-
     @Override
-    NodeBuilder.ValueFinalStep.Original<T> toBuilder();
+    NodeBuilderKeySteps.Value<T> toBuilder();
 
     default NodeType nodeType() {
         return NodeType.VALUE_NODE;
@@ -29,16 +28,21 @@ public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
 
     Optional<T> value(ValidateOption<T> option);
 
-    Optional<T> defaultValue();
+    default Optional<T> defaultValue() {
+        return this.defaultValue(ValidationOptions.throwExceptions());
+    }
+
+    Optional<T> defaultValue(ValidateOption<T> option);
 
     default Optional<T> valueOrDefault() {
-        return this.value().or(this::defaultValue);
+        return this.valueOrDefault(ValidationOptions.throwExceptions());
     }
+
+    Optional<T> valueOrDefault(ValidateOption<T> option);
 
     Optional<Serializer<T>> serializer();
 
     Validator<T> validator();
 
     TypeToken<T> typeToken();
-
 }

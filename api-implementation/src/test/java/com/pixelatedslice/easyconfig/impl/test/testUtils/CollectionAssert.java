@@ -1,10 +1,13 @@
 package com.pixelatedslice.easyconfig.impl.test.testUtils;
 
+import org.jspecify.annotations.NullMarked;
+
 import org.junit.jupiter.api.Assertions;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
+@NullMarked
 public class CollectionAssert {
 
     public static <Value> void isEqualTo(Collection<Value> expected, Collection<Value> compare, boolean matchOrder) {
@@ -20,12 +23,12 @@ public class CollectionAssert {
             Assertions.assertEquals(expected.size(), compare.size(), "Size do not match");
             return;
         }
-        var expectedIterator = expected.iterator();
-        var compareIterator = compare.iterator();
+        final var expectedIterator = expected.iterator();
+        final var compareIterator = compare.iterator();
         int index = 0;
         while (expectedIterator.hasNext()) {
-            var expectedValue = expectedIterator.next();
-            var compareValue = compareIterator.next();
+            final var expectedValue = expectedIterator.next();
+            final var compareValue = compareIterator.next();
             Assertions.assertEquals(expectedValue, compareValue, "values did not match at " + index);
             index++;
         }
@@ -36,12 +39,12 @@ public class CollectionAssert {
             Assertions.assertEquals(expected.size(), compare.size(), "Size do not match");
             return;
         }
-        var mutableCompare = new LinkedList<>(compare);
+        final var mutableCompare = new LinkedList<>(compare);
         for (var entry : expected) {
             if (mutableCompare.contains(entry)) {
                 mutableCompare.remove(entry);
             } else {
-                Assertions.fail("Could not find entry " + entry.toString());
+                Assertions.fail("Could not find entry " + entry);
                 return;
             }
         }
