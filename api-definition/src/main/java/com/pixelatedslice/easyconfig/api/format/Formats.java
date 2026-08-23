@@ -10,14 +10,25 @@ import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class Formats {
+public final class Formats {
     public static final Collection<Format> FORMATS = ServiceLoader
             .load(Format.class)
             .stream()
             .map(ServiceLoader.Provider::get)
             .collect(Collectors.toUnmodifiableSet());
 
-    public static Optional<Format> fromExtension(String extension){
-        return FORMATS.stream().filter(t -> Arrays.asList(t.fileExtensions()).contains(extension)).findFirst();
+    private Formats() {
+    }
+
+    public static Optional<Format> fromExtension(String extension) {
+        return FORMATS
+                .stream()
+                .filter((Format format) -> Arrays.asList(format.fileExtensions()).contains(extension))
+                .findFirst();
+    }
+
+    @SuppressWarnings("ObjectEquality")
+    public static <F extends Format> Optional<Format> get(Class<F> formatClass) {
+        return FORMATS.stream().filter((Format format) -> format.getClass() == formatClass).findFirst();
     }
 }

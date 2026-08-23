@@ -19,7 +19,7 @@ public interface Format {
     void write(BuiltConfig config, Writer writer);
 
     default String writeString(BuiltConfig config) {
-        var writer = new StringWriter();
+        final var writer = new StringWriter();
         this.write(config, writer);
         return writer.toString();
     }
@@ -34,13 +34,11 @@ public interface Format {
 
     Config read(ConfigStructure structure, Reader reader);
 
-    default Config readFile(ConfigStructure structure, File file)
-            throws FileNotFoundException {
+    default Config readFile(ConfigStructure structure, File file) throws FileNotFoundException {
         return this.read(structure, new FileReader(file));
     }
 
-    default Config readFile(ConfigStructure structure, Path path)
-            throws FileNotFoundException {
+    default Config readFile(ConfigStructure structure, Path path) throws FileNotFoundException {
         return this.readFile(structure, path.toFile());
     }
 

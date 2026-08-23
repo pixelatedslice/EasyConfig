@@ -21,8 +21,8 @@ public class JsonFormat implements Format {
 
     @Override
     public void write(BuiltConfig config, Writer writer) {
-        var entry = ConfigUtils.writeToDataMapper(config, Map.of());
-        ObjectMapper objectMapper = entry.getKey();
+        final var entry = ConfigUtils.writeToDataMapper(config, Map.of());
+        final ObjectMapper objectMapper = entry.getKey();
         objectMapper.writeValue(writer, entry.getValue());
     }
 
