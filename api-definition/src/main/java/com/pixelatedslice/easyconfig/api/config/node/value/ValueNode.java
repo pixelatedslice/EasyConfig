@@ -9,6 +9,7 @@ import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -18,11 +19,11 @@ public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
     @Override
     NodeBuilderKeySteps.Value<T> toBuilder();
 
-    default @NonNull NodeType nodeType() {
+    default NodeType nodeType() {
         return NodeType.VALUE_NODE;
     }
 
-    default @NonNull Optional<@NonNull T> value() {
+    default Optional<T> value() {
         return this.value(ValidationOptions.throwExceptions());
     }
 

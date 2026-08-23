@@ -11,7 +11,6 @@ import com.pixelatedslice.easyconfig.impl.config.node.container.builder.Containe
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @NullMarked
@@ -25,7 +24,7 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
 
     @Override
     public Collection<AbstractNode> internalChildren() {
-        return this.immediateChildren.stream().map(n -> (AbstractNode)n).toList();
+        return this.immediateChildren.stream().map(n -> (AbstractNode) n).toList();
     }
 
     @Override
@@ -49,12 +48,12 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
     }
 
     @Override
-    public @NonNull ReturnedNode node(@NonNull String @NonNull ... path) {
+    public ReturnedNode node(String... path) {
         return travel(this, path);
     }
 
 
-    synchronized void removeNodes(@NonNull Collection<Node> nodes) {
+    synchronized void removeNodes(Collection<Node> nodes) {
         this.immediateChildren.removeAll(nodes);
     }
 

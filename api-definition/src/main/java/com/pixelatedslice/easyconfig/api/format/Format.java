@@ -4,33 +4,31 @@ import com.pixelatedslice.easyconfig.api.config.BuiltConfig;
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
 import org.jspecify.annotations.NullMarked;
-import com.pixelatedslice.easyconfig.api.config.node.NodeBuilder;
-import org.jspecify.annotations.NonNull;
 
 import java.io.*;
 import java.nio.file.Path;
 
 @NullMarked
 public interface Format {
-    @NonNull String @NonNull [] fileExtensions();
+    String[] fileExtensions();
 
-    default @NonNull String preferredFileExtension() {
+    default String preferredFileExtension() {
         return this.fileExtensions()[0];
     }
 
-    void write(@NonNull BuiltConfig config, @NonNull Writer writer);
+    void write(BuiltConfig config, Writer writer);
 
-    default @NonNull String writeString(@NonNull BuiltConfig config) {
+    default String writeString(BuiltConfig config) {
         var writer = new StringWriter();
         write(config, writer);
         return writer.toString();
     }
 
-    default void writeToFile(@NonNull BuiltConfig config, @NonNull File file) throws IOException {
+    default void writeToFile(BuiltConfig config, File file) throws IOException {
         write(config, new FileWriter(file));
     }
 
-    default void writeToFile(@NonNull BuiltConfig config, @NonNull Path path) throws IOException {
+    default void writeToFile(BuiltConfig config, Path path) throws IOException {
         writeToFile(config, path.toFile());
     }
 

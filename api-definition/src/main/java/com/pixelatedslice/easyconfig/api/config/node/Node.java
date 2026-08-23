@@ -5,30 +5,26 @@ import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
 import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
 import org.jspecify.annotations.NullMarked;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 
 @NullMarked
 public interface Node {
-    default @NonNull NodeType nodeType() {
+    default NodeType nodeType() {
         return NodeType.PLAIN_NODE;
     }
 
-    @NonNull String key();
+    String key();
 
-    @NonNull ReturnedNode parent();
+    ReturnedNode parent();
 
-    @NonNull
     @CheckReturnValue
     NodeBuilder toBuilder();
 
-    @NonNull
     @CheckReturnValue
     ConfigStructure toStructure();
 
-    default @NonNull String[] fullPath() {
+    default String[] fullPath() {
         Stream<String> stream = Stream.empty();
         Node current = this;
         while (true) {

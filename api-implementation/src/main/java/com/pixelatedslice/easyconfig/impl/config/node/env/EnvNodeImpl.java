@@ -2,11 +2,13 @@ package com.pixelatedslice.easyconfig.impl.config.node.env;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.env.builder.EnvNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -16,7 +18,6 @@ import java.util.function.Function;
 
 @NullMarked
 public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
-    private final String toString;
     private final String envKey;
     private final Function<String, @Nullable T> adapter;
     private final TypeToken<T> type;
@@ -68,7 +69,7 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public @NonNull OriginalEnvNodeBuilder<T> toBuilder() {
+    public NodeBuilder toBuilder() {
         return (EnvNodeBuilder<T>) new EnvNodeBuilder<>(this.type)
                 .config(this.attached)
                 .parent(this.parent)

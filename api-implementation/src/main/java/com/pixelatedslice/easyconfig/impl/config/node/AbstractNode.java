@@ -7,10 +7,8 @@ import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
 import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.container.ContainerNodeImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.utils.DeepRecursiveGatherer;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
@@ -25,19 +23,19 @@ public abstract class AbstractNode implements Node {
 
     protected final @Nullable AbstractNode parent;
     protected final @Nullable Config attached;
-    private final @NonNull String key;
+    private final String key;
 
-    public AbstractNode(@NonNull InternalNodeBuilder<?> builder) {
+    public AbstractNode(InternalNodeBuilder<?> builder) {
         this.key = Objects.requireNonNull(builder.key());
         this.parent = builder.parent();
         this.attached = builder.config();
     }
 
-    public static ReturnedNode travel(@NonNull Node node, String... path) {
+    public static ReturnedNode travel(Node node, String... path) {
         return travel(node, 0, path);
     }
 
-    private static ReturnedNode travel(@NonNull Node node, int index, String... path) {
+    private static ReturnedNode travel(Node node, int index, String... path) {
         Objects.requireNonNull(node);
         if (path.length == index) {
             return new ReturnKnownNodeImpl(node);
@@ -51,13 +49,11 @@ public abstract class AbstractNode implements Node {
                 .orElseGet(() -> new ReturnKnownNodeImpl(null));
     }
 
-    public static Stream<AbstractNode> walk(@NonNull AbstractNode node) {
-        return Stream.of(node).gather(new DeepRecursiveGatherer<>(n -> {
-            return n.internalChildren();
-        }));
+    public static Stream<AbstractNode> walk(AbstractNode node) {
+        return Stream.of(node).gather(new DeepRecursiveGatherer<>(AbstractNode::internalChildren));
     }
 
-    private static Stream<Node> children(@NonNull Node node) {
+    private static Stream<Node> children(Node node) {
         if (node instanceof ContainerNode container) {
             return container.children().stream();
         }
@@ -72,9 +68,6 @@ public abstract class AbstractNode implements Node {
     protected abstract void internalAppendChild(@NonNull AbstractNode node);
 
     @Override
-    public abstract @NonNull InternalNodeBuilder<?> toBuilder();
-
-    @Override
     public @NonNull String key() {
         return this.key;
     }
@@ -87,10 +80,8 @@ public abstract class AbstractNode implements Node {
     @Override
     public @NonNull ConfigStructure toStructure() {
         var target = this;
-        if(!target.key().isEmpty()){
-            var newBuilder = new ContainerNodeOriginalBuilder();
-            newBuilder.key("");
-            newBuilder.appendChild(this.toBuilder());
+        if (!target.key().isEmpty()) {
+            var newBuilder = new ContainerNodeBuilder("");
             target = newBuilder.build();
         }
         return new ConfigStructureImpl(target, SerializerRegistry.global().createChild());

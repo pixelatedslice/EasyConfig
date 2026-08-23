@@ -10,10 +10,12 @@ import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 
 @NullMarked
 public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
