@@ -11,6 +11,7 @@ import com.pixelatedslice.easyconfig.impl.config.node.ReturnKnownNodeImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.collection.builder.CollectionNodeBuilder;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
@@ -21,6 +22,10 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
 
     public CollectionNodeImpl(InternalNodeBuilder<?> builder) {
         super(builder);
+    }
+
+    public Collection<AbstractNode> internalChildren() {
+        return this.children;
     }
 
     @Override
@@ -64,15 +69,15 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
         }
 
         return "CollectionNodeImpl{"
-               + "key='"
-               + this.key()
-               + '\''
-               + ", childCount="
-               + this.children.size()
-               + ", children="
-               + joiner
-               + ", fullPath="
-               + String.join(",", this.fullPath())
-               + '}';
+                + "key='"
+                + this.key()
+                + '\''
+                + ", childCount="
+                + this.children.size()
+                + ", children="
+                + joiner
+                + ", fullPath="
+                + String.join(",", this.fullPath())
+                + '}';
     }
 }

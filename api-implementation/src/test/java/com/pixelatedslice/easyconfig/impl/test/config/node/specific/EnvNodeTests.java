@@ -28,7 +28,7 @@ public class EnvNodeTests {
         //ARRANGE
         final String key = "key";
         final var token = TypeToken.of(String.class);
-        final var envKey = "LANG";
+        final var envKey = "JAVA_HOME";
         final EnvAdapter<String> adapter = (String t) -> t;
         final var internalBuilder = new EnvNodeBuilder<>(token, key, envKey).adapter(adapter);
 

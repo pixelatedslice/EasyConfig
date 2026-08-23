@@ -9,11 +9,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-@SuppressWarnings("unused")
 @NullMarked
 public interface SerializerRegistry {
     static SerializerRegistry global() {
-        return SerializerRegistryHidden.GLOBAL;
+        return SerializerRegistryHidden.global();
     }
 
     SerializerRegistry createChild();
@@ -28,16 +27,14 @@ public interface SerializerRegistry {
         return this.serializerFor(TypeToken.of(token));
     }
 
-    SerializerRegistry register(Consumer<SerializerRegistryOptions> options,
-            Iterator<Serializer<?>> serializers);
+    SerializerRegistry register(Consumer<SerializerRegistryOptions> options, Iterator<Serializer<?>> serializers);
 
     default SerializerRegistry register(Iterator<Serializer<?>> serializers) {
         return this.register(_ -> {
         }, serializers);
     }
 
-    default SerializerRegistry register(Consumer<SerializerRegistryOptions> options,
-            Iterable<Serializer<?>> serializers) {
+    default SerializerRegistry register(Consumer<SerializerRegistryOptions> options, Iterable<Serializer<?>> serializers) {
         return this.register(options, serializers.iterator());
     }
 
@@ -46,12 +43,10 @@ public interface SerializerRegistry {
         }, serializers.iterator());
     }
 
-    default SerializerRegistry register(Consumer<SerializerRegistryOptions> options,
-            Serializer<?>... serializers) {
+    default SerializerRegistry register(Consumer<SerializerRegistryOptions> options, Serializer<?>... serializers) {
         return this.register(options, List.of(serializers));
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     default SerializerRegistry register(Serializer<?>... serializers) {
         return this.register(_ -> {
         }, serializers);

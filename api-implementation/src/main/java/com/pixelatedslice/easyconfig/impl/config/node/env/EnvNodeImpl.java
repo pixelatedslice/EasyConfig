@@ -2,21 +2,24 @@ package com.pixelatedslice.easyconfig.impl.config.node.env;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
 import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.env.builder.EnvNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
 @NullMarked
 public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
-    private final String toString;
     private final String envKey;
     private final Function<String, @Nullable T> adapter;
     private final TypeToken<T> type;
@@ -28,13 +31,6 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
         this.adapter = Objects.requireNonNull(builder.adapter());
         this.type = Objects.requireNonNull(builder.type());
         this.validator = Objects.requireNonNullElseGet(builder.validator(), Validator::empty);
-
-        this.toString = "EnvNodeImpl{" +
-                "key='" + this.key() + '\'' +
-                ", envKey='" + this.envKey + '\'' +
-                ", type=" + this.type +
-                ", fullPath=" + String.join(",", this.fullPath()) +
-                '}';
     }
 
     @Override
@@ -55,7 +51,7 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public Function<String, @Nullable T> adapter() {
+    public Function<String, T> adapter() {
         return this.adapter;
     }
 
@@ -67,6 +63,11 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     @Override
     public TypeToken<T> typeToken() {
         return this.type;
+    }
+
+    @Override
+    public Collection<AbstractNode> internalChildren() {
+        return List.of();
     }
 
     @Override
@@ -85,7 +86,12 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public String toString() {
-        return this.toString;
+    public String toString(){
+        return "EnvNodeImpl{" +
+                "key='" + this.key() + '\'' +
+                ", envKey='" + this.envKey + '\'' +
+                ", type=" + this.type +
+                ", fullPath=" + String.join(",", this.fullPath()) +
+                '}';
     }
 }

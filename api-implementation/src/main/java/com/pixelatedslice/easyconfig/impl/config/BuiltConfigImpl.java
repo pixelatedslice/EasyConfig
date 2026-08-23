@@ -4,32 +4,34 @@ import com.pixelatedslice.easyconfig.api.config.BuiltConfig;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import org.jspecify.annotations.NullMarked;
+import com.pixelatedslice.easyconfig.impl.config.node.InternalNodeBuilder;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
 @NullMarked
 public class BuiltConfigImpl implements BuiltConfig {
 
-    private final SerializerRegistry serializers;
-    private final Node root;
+    private final @NonNull SerializerRegistry serializers;
+    private final @NonNull Node root;
 
-    public BuiltConfigImpl(Node node) {
+    public BuiltConfigImpl(@NonNull Node node) {
         this(node, SerializerRegistry.global());
     }
 
-    public BuiltConfigImpl(Node node, SerializerRegistry serializers) {
+    public BuiltConfigImpl(@NonNull Node node, @NonNull SerializerRegistry serializers) {
         this.root = Objects.requireNonNull(node);
         this.serializers = Objects.requireNonNull(serializers).createChild();
     }
 
 
     @Override
-    public Node root() {
+    public @NonNull Node root() {
         return this.root;
     }
 
     @Override
-    public SerializerRegistry serializers() {
+    public @NonNull SerializerRegistry serializers() {
         return this.serializers;
     }
 }

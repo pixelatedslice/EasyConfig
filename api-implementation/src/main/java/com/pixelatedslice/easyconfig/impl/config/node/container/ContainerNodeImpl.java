@@ -15,11 +15,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @NullMarked
 public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
+
     private final Collection<Node> immediateChildren = new LinkedBlockingQueue<>();
-    private String toString = this.generateToString();
 
     public ContainerNodeImpl(InternalNodeBuilder<?> builder) {
         super(builder);
+    }
+
+    public Collection<AbstractNode> internalChildren() {
+        return this.immediateChildren.stream().map(n -> (AbstractNode) n).toList();
     }
 
     @Override
@@ -30,12 +34,10 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
     @Override
     protected synchronized void internalAppendChild(AbstractNode node) {
         this.immediateChildren.add(node);
-        this.toString = this.generateToString();
     }
 
     protected synchronized void internalAppendChildren(Collection<? extends AbstractNode> node) {
         this.immediateChildren.addAll(node);
-        this.toString = this.generateToString();
     }
 
     @Override
@@ -61,12 +63,15 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
 
     @Override
     public ContainerNodeBuilder toBuilder() {
-        return new ContainerNodeBuilder(this.key())
+        var builder = new ContainerNodeBuilder(this.key())
                 .parent(this.parent)
                 .config(this.attached);
+        this.immediateChildren.forEach(child -> builder.appendChild((InternalNodeBuilder<?>) child.toBuilder()));
+        return builder;
     }
 
-    private String generateToString() {
+    @Override
+    public String toString() {
         final var joiner = new java.util.StringJoiner(", ", "[", "]");
         for (final var child : this.immediateChildren) {
             joiner.add(child.key());
@@ -78,10 +83,5 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
                 ", children=" + joiner +
                 ", fullPath=" + String.join(",", this.fullPath()) +
                 '}';
-    }
-
-    @Override
-    public String toString() {
-        return this.toString;
     }
 }

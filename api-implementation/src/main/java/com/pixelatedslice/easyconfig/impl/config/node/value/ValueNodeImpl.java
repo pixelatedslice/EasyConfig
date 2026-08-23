@@ -13,17 +13,19 @@ import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @NullMarked
 public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
+
     private final TypeToken<T> token;
     private final Validator<T> validator;
     private final @Nullable Serializer<T> serializer;
     private final @Nullable T defaultValue;
     private @Nullable T value;
-    private String toString = this.generateToString();
 
     public ValueNodeImpl(ValueNodeBuilder<T> builder) {
         super(builder);
@@ -36,7 +38,6 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
 
     synchronized void internalSetValue(@Nullable T value) {
         this.value = value;
-        this.toString = this.generateToString();
     }
 
     @Override
@@ -93,28 +94,29 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     }
 
     @Override
+    public Collection<AbstractNode> internalChildren() {
+        return List.of();
+    }
+
+    @Override
     protected void internalAppendChild(AbstractNode node) {
         throw new IllegalStateException("Value node! should not have called");
     }
 
-    private String generateToString() {
-        return "ValueNodeImpl{"
-               + "key='"
-               + this.key()
-               + '\''
-               + ", type="
-               + this.token
-               + ", value="
-               + this.value
-               + ", defaultValue="
-               + this.defaultValue
-               + ", fullPath="
-               + String.join(",", this.fullPath())
-               + '}';
-    }
-
     @Override
     public String toString() {
-        return this.toString;
+        return "ValueNodeImpl{"
+                + "key='"
+                + this.key()
+                + '\''
+                + ", type="
+                + this.token
+                + ", value="
+                + this.value
+                + ", defaultValue="
+                + this.defaultValue
+                + ", fullPath="
+                + String.join(",", this.fullPath())
+                + '}';
     }
 }

@@ -6,11 +6,14 @@ import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
 import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
+import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
+import com.pixelatedslice.easyconfig.impl.utils.DeepRecursiveGatherer;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -29,6 +32,10 @@ public abstract class AbstractNode implements Node {
 
     public static ReturnedNode travel(Node node, String... path) {
         return travel(node, 0, path);
+    }
+
+    public static Stream<AbstractNode> walk(AbstractNode node) {
+        return Stream.of(node).gather(new DeepRecursiveGatherer<>(AbstractNode::internalChildren));
     }
 
     private static ReturnedNode travel(Node node, int index, String... path) {
@@ -55,10 +62,9 @@ public abstract class AbstractNode implements Node {
                 .map(t -> t.plainNode().orElseThrow()) : Stream.empty();
     }
 
-    protected abstract void internalAppendChild(AbstractNode node);
+    public abstract Collection<AbstractNode> internalChildren();
 
-    @Override
-    public abstract NodeBuilder.KeyStep<?> toBuilder();
+    protected abstract void internalAppendChild(AbstractNode node);
 
     @Override
     public String key() {
@@ -72,10 +78,15 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public ConfigStructure toStructure() {
-        return new ConfigStructureImpl(this);
+        var target = this;
+        if (!target.key().isEmpty()) {
+            var newBuilder = new ContainerNodeBuilder("");
+            newBuilder.appendChild((InternalNodeBuilder<?>) target.toBuilder());
+            target = newBuilder.build();
+        }
+        return new ConfigStructureImpl(target, SerializerRegistry.global().createChild());
     }
 
-    @SuppressWarnings("PublicMethodNotExposedInInterface")
     public @Nullable Config config() {
         if (this.attached != null) {
             return this.attached;

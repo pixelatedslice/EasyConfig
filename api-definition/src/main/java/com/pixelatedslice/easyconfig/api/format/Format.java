@@ -8,7 +8,6 @@ import org.jspecify.annotations.NullMarked;
 import java.io.*;
 import java.nio.file.Path;
 
-@SuppressWarnings("unused")
 @NullMarked
 public interface Format {
     String[] fileExtensions();
@@ -20,7 +19,7 @@ public interface Format {
     void write(BuiltConfig config, Writer writer);
 
     default String writeString(BuiltConfig config) {
-        final var writer = new StringWriter();
+        var writer = new StringWriter();
         this.write(config, writer);
         return writer.toString();
     }
