@@ -4,10 +4,13 @@ import com.pixelatedslice.easyconfig.api.config.BuiltConfig;
 import com.pixelatedslice.easyconfig.api.config.Config;
 import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
 import com.pixelatedslice.easyconfig.api.format.Format;
+import com.pixelatedslice.easyconfig.impl.fileformat.ConfigUtils;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Map;
 
 @NullMarked
 public class JsonFormat implements Format {
@@ -18,7 +21,9 @@ public class JsonFormat implements Format {
 
     @Override
     public void write(BuiltConfig config, Writer writer) {
-        //TODO
+        var entry = ConfigUtils.writeToDataMapper(config, Map.of());
+        ObjectMapper objectMapper = entry.getKey();
+        objectMapper.writeValue(writer, entry.getValue());
     }
 
     @Override

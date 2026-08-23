@@ -1,6 +1,9 @@
 dependencies {
     compileOnly(project(":api-definition"))
+    compileOnly(project(":api-implementation"))
     implementation(project(":api-fileformat-jackson-common"))
+    implementation(libs.jackson.core)
+    implementation(libs.jackson.databind)
 }
 
 mavenPublishing {

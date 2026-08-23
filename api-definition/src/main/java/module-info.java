@@ -25,4 +25,6 @@ open module com.pixelatedslice.easyconfig.api {
     exports com.pixelatedslice.easyconfig.api.config.node.factory;
     exports com.pixelatedslice.easyconfig.api.config.node.factory.builder;
     exports com.pixelatedslice.easyconfig.api.config.node.factory.spi;
+    exports com.pixelatedslice.easyconfig.api.serialization.context;
+    exports com.pixelatedslice.easyconfig.api.config.node.serializer;
 }
