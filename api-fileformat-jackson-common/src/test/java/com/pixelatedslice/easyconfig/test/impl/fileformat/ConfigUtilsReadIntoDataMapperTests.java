@@ -2,9 +2,10 @@ package com.pixelatedslice.easyconfig.test.impl.fileformat;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
+import com.pixelatedslice.easyconfig.api.config.node.factory.Nodes;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
-import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.fileformat.ConfigUtils;
 import com.pixelatedslice.easyconfig.impl.fileformat.serializer.StringSerializer;
 import org.junit.jupiter.api.Assertions;
@@ -28,14 +29,11 @@ public class ConfigUtilsReadIntoDataMapperTests {
             Mockito.when(globalSerializer.createChild()).thenReturn(globalSerializer);
             Mockito.when(globalSerializer.serializerFor(TypeToken.of(String.class))).thenReturn(Optional.of(stringSerializer));
 
-            var node = new ContainerNodeOriginalBuilder()
-                    .key("one")
-                    .append("two")
-                    .of(String.class)
-                    .complete()
-                    .append("Three")
-                    .of(String.class)
-                    .complete()
+            var node = new ContainerNodeBuilder("one")
+                    .children(
+                            Nodes.value(String.class).key("two"),
+                            Nodes.value(String.class).key("three")
+                    )
                     .build();
             var structure = (ConfigStructureImpl) node.toStructure();
 

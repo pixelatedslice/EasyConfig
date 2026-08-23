@@ -10,7 +10,6 @@ import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.utils.DeepRecursiveGatherer;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -35,6 +34,10 @@ public abstract class AbstractNode implements Node {
         return travel(node, 0, path);
     }
 
+    public static Stream<AbstractNode> walk(AbstractNode node) {
+        return Stream.of(node).gather(new DeepRecursiveGatherer<>(AbstractNode::internalChildren));
+    }
+
     private static ReturnedNode travel(Node node, int index, String... path) {
         Objects.requireNonNull(node);
         if (path.length == index) {
@@ -49,10 +52,6 @@ public abstract class AbstractNode implements Node {
                 .orElseGet(() -> new ReturnKnownNodeImpl(null));
     }
 
-    public static Stream<AbstractNode> walk(AbstractNode node) {
-        return Stream.of(node).gather(new DeepRecursiveGatherer<>(AbstractNode::internalChildren));
-    }
-
     private static Stream<Node> children(Node node) {
         if (node instanceof ContainerNode container) {
             return container.children().stream();
@@ -65,20 +64,20 @@ public abstract class AbstractNode implements Node {
 
     public abstract Collection<AbstractNode> internalChildren();
 
-    protected abstract void internalAppendChild(@NonNull AbstractNode node);
+    protected abstract void internalAppendChild(AbstractNode node);
 
     @Override
-    public @NonNull String key() {
+    public String key() {
         return this.key;
     }
 
     @Override
-    public @NonNull ReturnedNode parent() {
+    public ReturnedNode parent() {
         return new ReturnKnownNodeImpl(this.parent);
     }
 
     @Override
-    public @NonNull ConfigStructure toStructure() {
+    public ConfigStructure toStructure() {
         var target = this;
         if (!target.key().isEmpty()) {
             var newBuilder = new ContainerNodeBuilder("");

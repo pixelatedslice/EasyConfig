@@ -20,16 +20,16 @@ public interface Format {
 
     default String writeString(BuiltConfig config) {
         var writer = new StringWriter();
-        write(config, writer);
+        this.write(config, writer);
         return writer.toString();
     }
 
     default void writeToFile(BuiltConfig config, File file) throws IOException {
-        write(config, new FileWriter(file));
+        this.write(config, new FileWriter(file));
     }
 
     default void writeToFile(BuiltConfig config, Path path) throws IOException {
-        writeToFile(config, path.toFile());
+        this.writeToFile(config, path.toFile());
     }
 
     Config read(ConfigStructure structure, Reader reader);

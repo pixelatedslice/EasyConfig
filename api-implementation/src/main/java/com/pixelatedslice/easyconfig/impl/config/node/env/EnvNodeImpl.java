@@ -12,6 +12,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -32,7 +34,7 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public @NonNull String envKey() {
+    public String envKey() {
         return this.envKey;
     }
 
@@ -49,7 +51,7 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public @NonNull Function<String, T> adapter() {
+    public Function<String, T> adapter() {
         return this.adapter;
     }
 
@@ -59,17 +61,22 @@ public class EnvNodeImpl<T> extends AbstractNode implements EnvNode<T> {
     }
 
     @Override
-    public @NonNull TypeToken<T> typeToken() {
+    public TypeToken<T> typeToken() {
         return this.type;
     }
 
     @Override
-    protected void internalAppendChild(@NonNull AbstractNode node) {
+    public Collection<AbstractNode> internalChildren() {
+        return List.of();
+    }
+
+    @Override
+    protected void internalAppendChild(AbstractNode node) {
         throw new IllegalArgumentException("child nodes are not supported on EnvNode");
     }
 
     @Override
-    public NodeBuilder toBuilder() {
+    public EnvNodeBuilder<T> toBuilder() {
         return (EnvNodeBuilder<T>) new EnvNodeBuilder<>(this.type)
                 .config(this.attached)
                 .parent(this.parent)

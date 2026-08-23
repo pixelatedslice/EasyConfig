@@ -2,13 +2,14 @@ package com.pixelatedslice.easyconfig.test.impl.fileformat;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
+import com.pixelatedslice.easyconfig.api.config.node.factory.Nodes;
 import com.pixelatedslice.easyconfig.api.config.node.serializer.SerializerNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.exception.SerializeException;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
 import com.pixelatedslice.easyconfig.api.serialization.context.SerializeContext;
-import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeOriginalBuilder;
+import com.pixelatedslice.easyconfig.impl.config.node.container.builder.ContainerNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.fileformat.ConfigUtils;
 import com.pixelatedslice.easyconfig.impl.fileformat.serializer.StringSerializer;
 import org.jspecify.annotations.NonNull;
@@ -32,16 +33,12 @@ public class ConfigUtilsWriteToDataMapperTests {
             Mockito.when(globalSerializer.createChild()).thenReturn(globalSerializer);
             Mockito.when(globalSerializer.serializerFor(TypeToken.of(String.class))).thenReturn(Optional.of(stringSerializer));
 
-            var node = new ContainerNodeOriginalBuilder()
+            var node = new ContainerNodeBuilder("")
                     .key("one")
-                    .append("two")
-                    .of(String.class)
-                    .defaultValue("TwoValue")
-                    .complete()
-                    .append("Three")
-                    .of(String.class)
-                    .value("ThreeValue")
-                    .complete()
+                    .children(
+                            Nodes.value(String.class).key("two").defaultValue("TwoValue"),
+                            Nodes.value(String.class).key("three").value("ThreeValue")
+                    )
                     .build();
             var config = node.toStructure();
             //Act
@@ -49,7 +46,7 @@ public class ConfigUtilsWriteToDataMapperTests {
 
             //Assert
             Assertions.assertEquals("TwoValue", result.findValue("one").findValue("two").stringValue());
-            Assertions.assertEquals("ThreeValue", result.findValue("one").findValue("Three").stringValue());
+            Assertions.assertEquals("ThreeValue", result.findValue("one").findValue("three").stringValue());
         }
     }
 
@@ -89,17 +86,12 @@ public class ConfigUtilsWriteToDataMapperTests {
             Mockito.when(globalSerializer.serializerFor(TypeToken.of(String.class))).thenReturn(Optional.of(stringSerializer));
             Mockito.when(globalSerializer.serializerFor(String.class)).thenReturn(Optional.of(stringSerializer));
 
-            var node = new ContainerNodeOriginalBuilder()
+            var node = new ContainerNodeBuilder("")
                     .key("one")
-                    .append("two")
-                    .of(String.class)
-                    .defaultValue("TwoValue")
-                    .complete()
-                    .append("Three")
-                    .of(File.class)
-                    .value(new File("child"))
-                    .serializer(fileSerializer)
-                    .complete()
+                    .children(
+                            Nodes.value(String.class).key("two").defaultValue("TwoValue"),
+                            Nodes.value(File.class).key("three").value(new File("child")).serializer(fileSerializer)
+                    )
                     .build();
             var config = node.toStructure();
             //Act
@@ -107,7 +99,7 @@ public class ConfigUtilsWriteToDataMapperTests {
 
             //Assert
             Assertions.assertEquals("TwoValue", result.findValue("one").findValue("two").stringValue());
-            Assertions.assertEquals("child", result.findValue("one").findValue("Three").stringValue());
+            Assertions.assertEquals("child", result.findValue("one").findValue("three").stringValue());
         }
     }
 }

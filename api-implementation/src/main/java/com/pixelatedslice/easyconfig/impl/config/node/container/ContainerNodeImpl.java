@@ -22,7 +22,6 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
         super(builder);
     }
 
-    @Override
     public Collection<AbstractNode> internalChildren() {
         return this.immediateChildren.stream().map(n -> (AbstractNode) n).toList();
     }

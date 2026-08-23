@@ -1,11 +1,11 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
-import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderGroupStep;
+import com.pixelatedslice.easyconfig.api.config.node.serializer.SerializerNode;
+import com.pixelatedslice.easyconfig.api.serialization.context.SerializeContext;
 import org.jspecify.annotations.NullMarked;
 
 @FunctionalInterface
 @NullMarked
 public interface Deserialize<T> {
-    Node deserialize(T value, NodeBuilderGroupStep.Container builder, SerializeContext context);
+    void deserialize(T value, SerializerNode node, SerializeContext context);
 }

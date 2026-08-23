@@ -7,7 +7,6 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.stream.Stream;
 
-
 @NullMarked
 public interface Node {
     default NodeType nodeType() {
@@ -19,7 +18,7 @@ public interface Node {
     ReturnedNode parent();
 
     @CheckReturnValue
-    NodeBuilder toBuilder();
+    NodeBuilder.KeyStep<?> toBuilder();
 
     @CheckReturnValue
     ConfigStructure toStructure();

@@ -10,18 +10,19 @@ import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.config.node.value.builder.ValueNodeBuilder;
 import com.pixelatedslice.easyconfig.impl.validator.ValidatorContextImpl;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @NullMarked
 public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
 
-    private final @NonNull TypeToken<T> token;
-    private final @NonNull Validator<T> validator;
+    private final TypeToken<T> token;
+    private final Validator<T> validator;
     private final @Nullable Serializer<T> serializer;
     private final @Nullable T defaultValue;
     private @Nullable T value;
@@ -68,12 +69,12 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     }
 
     @Override
-    public @NonNull Validator<T> validator() {
+    public Validator<T> validator() {
         return this.validator;
     }
 
     @Override
-    public @NonNull TypeToken<T> typeToken() {
+    public TypeToken<T> typeToken() {
         return this.token;
     }
 
@@ -93,7 +94,12 @@ public class ValueNodeImpl<T> extends AbstractNode implements ValueNode<T> {
     }
 
     @Override
-    protected void internalAppendChild(@NonNull AbstractNode node) {
+    public Collection<AbstractNode> internalChildren() {
+        return List.of();
+    }
+
+    @Override
+    protected void internalAppendChild(AbstractNode node) {
         throw new IllegalStateException("Value node! should not have called");
     }
 

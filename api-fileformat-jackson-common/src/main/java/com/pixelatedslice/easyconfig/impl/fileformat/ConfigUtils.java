@@ -1,14 +1,31 @@
 package com.pixelatedslice.easyconfig.impl.fileformat;
 
+import com.pixelatedslice.easyconfig.api.config.BuiltConfig;
+import com.pixelatedslice.easyconfig.api.config.Config;
+import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
+import com.pixelatedslice.easyconfig.api.exception.SerializeException;
+import com.pixelatedslice.easyconfig.api.exception.SerializerException;
+import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
+import com.pixelatedslice.easyconfig.api.serialization.context.ContextProperty;
+import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
+import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
+import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
+import com.pixelatedslice.easyconfig.impl.fileformat.serializer.NodeSerializerImpl;
+import com.pixelatedslice.easyconfig.impl.fileformat.serializer.SerializerContextImpl;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JsonPointer;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
+import java.util.Map;
 import java.util.Objects;
 
 
 @NullMarked
 public class ConfigUtils {
 
-    public static BuiltConfig readIntoDataMapper(@NonNull ConfigStructureImpl config, @NonNull ObjectMapper mapper, @NonNull ObjectNode node) {
+    public static BuiltConfig readIntoDataMapper(ConfigStructureImpl config, ObjectMapper mapper, ObjectNode node) {
         Objects.requireNonNull(config);
         Objects.requireNonNull(mapper);
         Objects.requireNonNull(node);
@@ -24,7 +41,7 @@ public class ConfigUtils {
         return builtConfig;
     }
 
-    private static <T> void read(@NonNull ValueNode<T> valueNode, @NonNull ObjectMapper mapper, @NonNull ObjectNode objectNode, @NonNull SerializerRegistry serializers) throws SerializeException {
+    private static <T> void read(ValueNode<T> valueNode, ObjectMapper mapper, ObjectNode objectNode, SerializerRegistry serializers) throws SerializeException {
         var serializer = valueNode.serializer().orElseThrow(() -> new SerializerException.MissingSerializerException(valueNode));
         var context = new SerializerContextImpl(mapper, objectNode, Map.of());
         var nodePath = valueNode.fullPath();
@@ -45,7 +62,7 @@ public class ConfigUtils {
         }
     }
 
-    public static Map.@NonNull Entry<ObjectMapper, ObjectNode> writeToDataMapper(@NonNull Config config, @NonNull Map<ContextProperty<?>, Object> properties) {
+    public static Map.Entry<ObjectMapper, ObjectNode> writeToDataMapper(Config config, Map<ContextProperty<?>, Object> properties) {
         Objects.requireNonNull(config);
         Objects.requireNonNull(properties);
         var mapper = new ObjectMapper();
@@ -65,7 +82,7 @@ public class ConfigUtils {
         return Map.entry(mapper, objectNode);
     }
 
-    private static <T> boolean write(@NonNull Config config, @NonNull ValueNode<T> node, @NonNull ObjectMapper mapper, @NonNull ObjectNode objectNode, @NonNull Map<ContextProperty<?>, Object> properties) {
+    private static <T> boolean write(Config config, ValueNode<T> node,  ObjectMapper mapper, ObjectNode objectNode, Map<ContextProperty<?>, Object> properties) {
         var opValue = node.valueOrDefault(ValidationOptions.ignoreValidation());
         if (opValue.isEmpty()) {
             //node is being erased
@@ -80,7 +97,7 @@ public class ConfigUtils {
             System.arraycopy(nodePath, 0, newPath, 1, nodePath.length);
             nodePath = newPath;
         }
-        var nodeSerializer = new NodeSerializerImpl(config.serializers(), mapper, objectNode, nodePath);
+        var nodeSerializer = new NodeSerializerImpl(config.serializers(), mapper, objectNode, node, nodePath);
         serializer.deserialize(opValue.get(), nodeSerializer, context);
         return true;
     }

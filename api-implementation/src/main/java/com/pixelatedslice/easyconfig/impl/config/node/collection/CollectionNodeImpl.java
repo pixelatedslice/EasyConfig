@@ -24,7 +24,6 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
         super(builder);
     }
 
-    @Override
     public Collection<AbstractNode> internalChildren() {
         return this.children;
     }
@@ -70,15 +69,15 @@ public class CollectionNodeImpl extends AbstractNode implements CollectionNode {
         }
 
         return "CollectionNodeImpl{"
-               + "key='"
-               + this.key()
-               + '\''
-               + ", childCount="
-               + this.children.size()
-               + ", children="
-               + joiner
-               + ", fullPath="
-               + String.join(",", this.fullPath())
-               + '}';
+                + "key='"
+                + this.key()
+                + '\''
+                + ", childCount="
+                + this.children.size()
+                + ", children="
+                + joiner
+                + ", fullPath="
+                + String.join(",", this.fullPath())
+                + '}';
     }
 }
