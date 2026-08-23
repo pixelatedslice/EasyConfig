@@ -1,11 +1,7 @@
 package com.pixelatedslice.easyconfig.api.config.node;
 
-import org.jspecify.annotations.NullMarked;
-
-
 import java.util.stream.Stream;
 
-@NullMarked
 public enum NodeType {
     PLAIN_NODE(false),
     CONTAINER_NODE(false),

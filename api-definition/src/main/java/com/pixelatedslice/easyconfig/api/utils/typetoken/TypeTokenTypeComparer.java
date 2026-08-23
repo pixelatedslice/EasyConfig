@@ -1,30 +1,30 @@
 package com.pixelatedslice.easyconfig.api.utils.typetoken;
 
 import com.google.common.reflect.TypeToken;
-import org.jspecify.annotations.NullMarked;
+import com.pixelatedslice.easyconfig.api.utils.primitive.TypeUtils;
+import org.jspecify.annotations.NonNull;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
-
-@NullMarked
+@SuppressWarnings("SequencedCollectionMethodCanBeUsed")
 final class TypeTokenTypeComparer {
     private TypeTokenTypeComparer() {
     }
 
-    static <T> boolean hasCorrectType(T value, TypeToken<?> typeToken) {
+    static <T> boolean hasCorrectType(@NonNull T value, @NonNull TypeToken<?> typeToken) {
         Objects.requireNonNull(value);
         Objects.requireNonNull(typeToken);
 
-        final var baseType = typeToken.getRawType();
+        var baseType = typeToken.getRawType();
 
         if (!baseType.isInstance(value)) {
             return false;
         }
 
-        final var valueClass = value.getClass();
+        var valueClass = value.getClass();
 
         if (TypeTokenUtils.matchingClass(Collection.class, baseType, valueClass)) {
             return iterable(value, typeToken);
@@ -37,11 +37,55 @@ final class TypeTokenTypeComparer {
         return typeToken.getRawType().isInstance(value);
     }
 
-    private static boolean iterable(Object container, TypeToken<?> typeToken) {
-        throw new RuntimeException();
+    private static boolean iterable(@NonNull Object container, @NonNull TypeToken<?> typeToken) {
+        Objects.requireNonNull(container);
+        Objects.requireNonNull(typeToken);
+
+        var generic = TypeTokenUtils.generics(typeToken).get(0);
+        var genericClass = TypeUtils.primitiveToWrapper(generic.getRawType());
+
+        if (container instanceof Iterable<?> iterable) {
+            if ((container instanceof Collection<?> collection) && collection.isEmpty()) {
+                return true;
+            }
+
+            for (var item : iterable) {
+                if (item == null) {
+                    return false;
+                }
+
+                if (!genericClass.isInstance(item) || !hasCorrectType(item, generic)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        if (container.getClass().isArray()) {
+            var length = Array.getLength(container);
+            if (length == 0) {
+                return true;
+            }
+
+            for (var i = 0; i < length; i++) {
+                var item = Array.get(container, i);
+                if (item == null) {
+                    return false;
+                }
+
+                if (!genericClass.isInstance(item) || !hasCorrectType(item, generic)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
-    private static boolean map(Map<?, ?> map, TypeToken<?> typeToken) {
+    private static boolean map(@NonNull Map<?, ?> map, @NonNull TypeToken<?> typeToken) {
         Objects.requireNonNull(map);
         Objects.requireNonNull(typeToken);
 
@@ -49,15 +93,15 @@ final class TypeTokenTypeComparer {
             return true;
         }
 
-        final var generics = TypeTokenUtils.generics(typeToken);
-        final var keyGeneric = generics.get(0);
-        final var keyGenericClass = keyGeneric.getRawType();
-        final var valueGeneric = generics.get(1);
-        final var valueGenericClass = valueGeneric.getRawType();
+        var generics = TypeTokenUtils.generics(typeToken);
+        var keyGeneric = generics.get(0);
+        var keyGenericClass = keyGeneric.getRawType();
+        var valueGeneric = generics.get(1);
+        var valueGenericClass = valueGeneric.getRawType();
 
         for (var entry : map.entrySet()) {
-            final var key = entry.getKey();
-            final var value = entry.getValue();
+            var key = entry.getKey();
+            var value = entry.getValue();
 
             if (!keyGenericClass.isInstance(key)
                     || !valueGenericClass.isInstance(value)

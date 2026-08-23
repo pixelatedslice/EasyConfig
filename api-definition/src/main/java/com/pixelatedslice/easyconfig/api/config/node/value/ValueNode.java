@@ -3,46 +3,39 @@ package com.pixelatedslice.easyconfig.api.config.node.value;
 import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.config.node.value.builder.ValueNodeBuilder;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
 import com.pixelatedslice.easyconfig.api.serialization.Serializer;
 import com.pixelatedslice.easyconfig.api.validator.Validator;
-import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
-import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
-import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
+import java.util.ServiceLoader;
 
-@NullMarked
 public interface ValueNode<T> extends Node, Editable<EditableValueNode<T>> {
-    @Override
-    NodeBuilderKeySteps.Value<T> toBuilder();
+    @SuppressWarnings("unchecked")
+    static <T> @NonNull ValueNodeBuilder<T> builder() {
+        return (ValueNodeBuilder<T>) ServiceLoader.load(ValueNodeBuilder.class).findFirst().orElseThrow();
+    }
 
-    default NodeType nodeType() {
+    @Override
+    @NonNull ValueNodeBuilder<T> toBuilder();
+
+    default @NonNull NodeType nodeType() {
         return NodeType.VALUE_NODE;
     }
 
-    default Optional<T> value() {
-        return this.value(ValidationOptions.throwExceptions());
+    @NonNull Optional<@NonNull T> value();
+
+    @NonNull Optional<@NonNull T> defaultValue();
+
+    default @NonNull Optional<@NonNull T> valueOrDefault() {
+        return this.value().or(this::defaultValue);
     }
 
-    Optional<T> value(ValidateOption<T> option);
+    @NonNull Optional<@NonNull Serializer<@NonNull T>> serializer();
 
-    default Optional<T> defaultValue() {
-        return this.defaultValue(ValidationOptions.throwExceptions());
-    }
+    @NonNull Validator<T> validator();
 
-    Optional<T> defaultValue(ValidateOption<T> option);
-
-    default Optional<T> valueOrDefault() {
-        return this.valueOrDefault(ValidationOptions.throwExceptions());
-    }
-
-    Optional<T> valueOrDefault(ValidateOption<T> option);
-
-    Optional<Serializer<T>> serializer();
-
-    Validator<T> validator();
-
-    TypeToken<T> typeToken();
+    @NonNull TypeToken<T> typeToken();
 }
