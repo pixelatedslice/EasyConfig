@@ -81,6 +81,7 @@ public abstract class AbstractNode implements Node {
         var target = this;
         if (!target.key().isEmpty()) {
             var newBuilder = new ContainerNodeBuilder("");
+            newBuilder.appendChild((InternalNodeBuilder<?>) target.toBuilder());
             target = newBuilder.build();
         }
         return new ConfigStructureImpl(target, SerializerRegistry.global().createChild());

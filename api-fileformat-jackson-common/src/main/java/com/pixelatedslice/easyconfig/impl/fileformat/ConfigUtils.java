@@ -12,7 +12,6 @@ import com.pixelatedslice.easyconfig.impl.config.ConfigStructureImpl;
 import com.pixelatedslice.easyconfig.impl.config.node.AbstractNode;
 import com.pixelatedslice.easyconfig.impl.fileformat.serializer.NodeSerializerImpl;
 import com.pixelatedslice.easyconfig.impl.fileformat.serializer.SerializerContextImpl;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import tools.jackson.core.JsonPointer;
 import tools.jackson.databind.ObjectMapper;
@@ -42,10 +41,10 @@ public class ConfigUtils {
     }
 
     private static <T> void read(ValueNode<T> valueNode, ObjectMapper mapper, ObjectNode objectNode, SerializerRegistry serializers) throws SerializeException {
-        var serializer = valueNode.serializer().orElseThrow(() -> new SerializerException.MissingSerializerException(valueNode));
+        var serializer = valueNode.serializer().or(() -> serializers.serializerFor(valueNode.typeToken())).orElseThrow(() -> new SerializerException.MissingSerializerException(valueNode));
         var context = new SerializerContextImpl(mapper, objectNode, Map.of());
         var nodePath = valueNode.fullPath();
-        if(nodePath.length != 0 && nodePath[0].isEmpty()){
+        if (nodePath.length != 0 && nodePath[0].isEmpty()) {
             nodePath[0] = JsonPointer.SEPARATOR + "";
         }
         if (nodePath.length == 0 || !nodePath[0].equals(JsonPointer.SEPARATOR + "")) {
@@ -82,16 +81,16 @@ public class ConfigUtils {
         return Map.entry(mapper, objectNode);
     }
 
-    private static <T> boolean write(Config config, ValueNode<T> node,  ObjectMapper mapper, ObjectNode objectNode, Map<ContextProperty<?>, Object> properties) {
+    private static <T> boolean write(Config config, ValueNode<T> node, ObjectMapper mapper, ObjectNode objectNode, Map<ContextProperty<?>, Object> properties) {
         var opValue = node.valueOrDefault(ValidationOptions.ignoreValidation());
         if (opValue.isEmpty()) {
             //node is being erased
             return false;
         }
-        var serializer = node.serializer().orElseThrow(() -> new SerializerException.MissingSerializerException(node));
+        var serializer = node.serializer().or(() -> config.serializers().serializerFor(node.typeToken())).orElseThrow(() -> new SerializerException.MissingSerializerException(node));
         var context = new SerializerContextImpl(mapper, objectNode, properties);
         var nodePath = node.fullPath();
-        if(nodePath.length == 0 || !nodePath[0].equals(JsonPointer.SEPARATOR + "")){
+        if (nodePath.length == 0 || !nodePath[0].equals(JsonPointer.SEPARATOR + "")) {
             var newPath = new String[nodePath.length + 1];
             newPath[0] = "" + JsonPointer.SEPARATOR;
             System.arraycopy(nodePath, 0, newPath, 1, nodePath.length);

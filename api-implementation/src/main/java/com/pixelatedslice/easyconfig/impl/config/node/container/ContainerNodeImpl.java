@@ -63,9 +63,11 @@ public class ContainerNodeImpl extends AbstractNode implements ContainerNode {
 
     @Override
     public ContainerNodeBuilder toBuilder() {
-        return new ContainerNodeBuilder(this.key())
+        var builder = new ContainerNodeBuilder(this.key())
                 .parent(this.parent)
                 .config(this.attached);
+        this.immediateChildren.forEach(child -> builder.appendChild((InternalNodeBuilder<?>) child.toBuilder()));
+        return builder;
     }
 
     @Override
