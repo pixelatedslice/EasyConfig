@@ -6,16 +6,16 @@ import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.exception.NodeException;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
-import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 public sealed interface NodeIterator<N extends Node> extends Iterator<N>
         permits NodeIterator.Container, NodeIterator.Env, NodeIterator.Value {
     non-sealed interface Container extends NodeIterator<ContainerNode> {
-        static @NonNull Optional<@NonNull ContainerNode> find(
-                @NonNull Collection<? extends @NonNull Node> nestedNodes,
-                @NonNull String @NonNull ... providedKeys
+        static Optional<ContainerNode> find(
+                Collection<? extends Node> nestedNodes,
+                String... providedKeys
         ) {
             Objects.requireNonNull(nestedNodes);
             Objects.requireNonNull(providedKeys);
@@ -24,11 +24,11 @@ public sealed interface NodeIterator<N extends Node> extends Iterator<N>
                 return Optional.empty();
             }
 
-            List<String> keys = List.of(providedKeys);
+            final List<String> keys = List.of(providedKeys);
             var currentNestedNodes = nestedNodes;
-            int last = keys.size() - 1;
+            final int last = keys.size() - 1;
             for (int i = 0; i <= last; i++) {
-                String wanted = keys.get(i);
+                final String wanted = keys.get(i);
                 ContainerNode next = null;
                 for (Node node : currentNestedNodes) {
                     if (!(node instanceof ContainerNode containerNode)) {
@@ -53,9 +53,9 @@ public sealed interface NodeIterator<N extends Node> extends Iterator<N>
     }
 
     non-sealed interface Value extends NodeIterator<ValueNode<?>> {
-        static <T> @NonNull Optional<@NonNull ValueNode<T>> find(
-                @NonNull ContainerNode rootContainer,
-                @NonNull TypeToken<@NonNull T> typeToken, @NonNull String @NonNull ... providedKeys
+        static <T> Optional<ValueNode<T>> find(
+                ContainerNode rootContainer,
+                TypeToken<T> typeToken, String... providedKeys
         ) {
             Objects.requireNonNull(rootContainer);
             Objects.requireNonNull(typeToken);
@@ -66,7 +66,7 @@ public sealed interface NodeIterator<N extends Node> extends Iterator<N>
             }
 
             if (providedKeys.length == 1) {
-                var nodeKey = providedKeys[0];
+                final var nodeKey = providedKeys[0];
                 for (var node : rootContainer.children()) {
                     if (!(node instanceof ValueNode<?> valueNode)) {
                         continue;
@@ -84,30 +84,31 @@ public sealed interface NodeIterator<N extends Node> extends Iterator<N>
                         );
                     }
 
-                    @SuppressWarnings("unchecked") var casted = (ValueNode<T>) valueNode;
+                    @SuppressWarnings("unchecked") final var casted = (ValueNode<T>) valueNode;
                     return Optional.of(casted);
                 }
                 return Optional.empty();
             }
-            String[] parentKeys = Arrays.copyOf(providedKeys, providedKeys.length - 1);
-            var nodeKey = providedKeys[providedKeys.length - 1];
-            var sectionOptional = Container.find(rootContainer.children(), parentKeys);
-            return sectionOptional.flatMap((@NonNull ContainerNode section) -> section.valueNode(typeToken, nodeKey));
+            final String[] parentKeys = Arrays.copyOf(providedKeys, providedKeys.length - 1);
+            final var nodeKey = providedKeys[providedKeys.length - 1];
+            final var sectionOptional = Container.find(rootContainer.children(), parentKeys);
+            return sectionOptional.flatMap((ContainerNode section) -> section.valueNode(typeToken, nodeKey));
         }
     }
 
     non-sealed interface Env extends NodeIterator<EnvNode<?>> {
-        static <T> @NonNull Optional<@NonNull EnvNode<T>> find(
-                @NonNull ContainerNode rootContainer,
-                @NonNull TypeToken<@NonNull T> typeToken, @NonNull String @NonNull ... providedKeys
+        @SuppressWarnings("unchecked")
+        static <T> Optional<EnvNode<T>> find(
+                ContainerNode rootContainer,
+                TypeToken<T> typeToken, String... providedKeys
         ) {
-            var opt = Value.find(rootContainer, typeToken, providedKeys);
+            final var opt = Value.find(rootContainer, typeToken, providedKeys);
 
             if (opt.isEmpty()) {
                 return Optional.empty();
             }
 
-            var found = opt.get();
+            final var found = opt.get();
             if (!(found instanceof EnvNode<?>)) {
                 throw NodeException.DID_NOT_EXPECT_NODE_TYPE(found.key(), NodeType.ENV_NODE, found.nodeType());
             }

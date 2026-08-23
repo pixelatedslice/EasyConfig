@@ -5,26 +5,32 @@ import com.pixelatedslice.easyconfig.api.config.node.collection.CollectionNode;
 import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
+@SuppressWarnings("unused")
+@NullMarked
 public interface ReturnedNode {
-    @NonNull Optional<@NonNull Node> plainNode();
+    boolean hasNode();
 
-    @NonNull Optional<@NonNull ContainerNode> container();
+    Optional<String> nodeKey();
 
-    @NonNull Optional<@NonNull CollectionNode> collectionNode();
+    Optional<Node> plainNode();
 
-    <T> @NonNull Optional<@NonNull ValueNode<T>> value(@NonNull Class<T> simpleType);
+    Optional<ContainerNode> container();
 
-    <T> @NonNull Optional<@NonNull ValueNode<T>> value(@NonNull TypeToken<T> typeToken);
+    Optional<CollectionNode> collectionNode();
 
-    @NonNull Optional<@NonNull ValueNode<?>> unsafeValue();
+    <T> Optional<ValueNode<T>> value(Class<T> simpleType);
 
-    <T> @NonNull Optional<@NonNull EnvNode<T>> env(@NonNull Class<T> simpleType);
+    <T> Optional<ValueNode<T>> value(TypeToken<T> typeToken);
 
-    <T> @NonNull Optional<@NonNull EnvNode<T>> env(@NonNull TypeToken<T> typeToken);
+    Optional<ValueNode<?>> unsafeValue();
 
-    @NonNull Optional<@NonNull EnvNode<?>> unsafeEnv();
+    <T> Optional<EnvNode<T>> env(Class<T> simpleType);
+
+    <T> Optional<EnvNode<T>> env(TypeToken<T> typeToken);
+
+    Optional<EnvNode<?>> unsafeEnv();
 }
