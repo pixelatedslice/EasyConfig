@@ -1,8 +1,6 @@
 dependencies {
-    implementation(project(":api-definition"))
-    implementation(project(":api-implementation"))
-    implementation(libs.jackson.core)
-    implementation(libs.jackson.databind)
+    compileOnly(project(":api-definition"))
+    api(libs.jackson.core)
 }
 
 mavenPublishing {

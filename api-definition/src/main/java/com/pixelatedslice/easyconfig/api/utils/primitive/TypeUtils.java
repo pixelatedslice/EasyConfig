@@ -1,15 +1,12 @@
 package com.pixelatedslice.easyconfig.api.utils.primitive;
 
-import org.jspecify.annotations.NullMarked;
-
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
-@NullMarked
 public final class TypeUtils {
     private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER = Map.of(
             boolean.class, Boolean.class,
@@ -26,12 +23,12 @@ public final class TypeUtils {
     private TypeUtils() {
     }
 
-    public static Class<?> primitiveToWrapper(Class<?> clazz) {
+    public static Class<?> primitiveToWrapper(@NonNull Class<?> clazz) {
         Objects.requireNonNull(clazz);
         return PRIMITIVE_TO_WRAPPER.getOrDefault(clazz, clazz);
     }
 
-    public static <T> String toString(@Nullable T array) {
+    public static <T> @NonNull String toString(@Nullable T array) {
         return switch (array) {
             case null -> "null";
             case int[] ints -> Arrays.toString(ints);

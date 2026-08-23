@@ -1,13 +1,13 @@
 package com.pixelatedslice.easyconfig.api.serialization;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelatedslice.easyconfig.api.config.node.serializer.SerializerNode;
-import org.jspecify.annotations.NullMarked;
+import com.pixelatedslice.easyconfig.api.serialization.format.FormatSerializer;
+import com.pixelatedslice.easyconfig.api.serialization.node.NodeSerializer;
+import org.jspecify.annotations.NonNull;
 
-@NullMarked
-public interface Serializer<T> extends Serialize<T>, Deserialize<T> {
+public sealed interface Serializer<T>
+        permits BuiltInSerializer, FormatSerializer, NodeSerializer {
+    @NonNull TypeToken<T> supportedType();
 
-    TypeToken<T> type();
-
-    void buildStructure(SerializerNode builder);
+    @NonNull SerializerType serializerType();
 }

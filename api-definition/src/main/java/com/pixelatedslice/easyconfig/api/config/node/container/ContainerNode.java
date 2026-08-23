@@ -5,49 +5,66 @@ import com.google.common.reflect.TypeToken;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
+import com.pixelatedslice.easyconfig.api.config.node.container.builder.ContainerNodeBuilder;
+import com.pixelatedslice.easyconfig.api.config.node.container.builder.ContainerNodeBuilderChildrenStep;
 import com.pixelatedslice.easyconfig.api.config.node.env.EnvNode;
-import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
 import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
 import com.pixelatedslice.easyconfig.api.editable.Editable;
+import com.pixelatedslice.easyconfig.api.exception.TypeException;
 import com.pixelatedslice.easyconfig.api.utils.typetoken.TypeTokenUtils;
-import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ServiceLoader;
 
-@SuppressWarnings("unused")
-@NullMarked
 public interface ContainerNode extends Node, Editable<EditableContainerNode> {
-    default NodeType nodeType() {
-        return NodeType.CONTAINER_NODE;
+    static @NonNull ContainerNodeBuilder builder() {
+        return ServiceLoader.load(ContainerNodeBuilder.class).findFirst().orElseThrow();
     }
 
     @Override
-    NodeBuilderKeySteps.Container toBuilder();
+    @NonNull ContainerNodeBuilder toBuilder();
+
+    default @NonNull ContainerNodeBuilderChildrenStep childContainerBuilder(@NonNull String key) {
+        return builder().key(key).parent(this);
+    }
+
+    default @NonNull NodeType nodeType() {
+        return NodeType.CONTAINER_NODE;
+    }
 
     ImmutableList<Node> children();
 
-    boolean isRootNode();
+    default boolean isRootNode() {
+        return false;
+    }
 
-    ReturnedNode node(String... path);
+    @NonNull ReturnedNode node(@NonNull String @NonNull ... path);
 
-    default Optional<ContainerNode> containerNode(String... path) {
+    default @NonNull Optional<@NonNull ContainerNode> containerNode(@NonNull String @NonNull ... path) {
         return this.node(path).container();
     }
 
-    default <T> Optional<ValueNode<T>> valueNode(
-            Class<T> simpleType,
-            String... path
+    default <T> @NonNull Optional<@NonNull ValueNode<T>> valueNode(
+            @NonNull Class<T> simpleType,
+            @NonNull String @NonNull ... path
     ) {
         Objects.requireNonNull(simpleType);
         Objects.requireNonNull(path);
 
-        return this.valueNode(TypeTokenUtils.getSimpleOrThrow(simpleType), path);
+        var typeToken = TypeToken.of(simpleType);
+
+        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
+            throw TypeException.CLASS_USED_IN_PLACE_OF_TYPETOKEN(simpleType);
+        }
+
+        return this.valueNode(typeToken, path);
     }
 
-    default <T> Optional<ValueNode<T>> valueNode(
-            TypeToken<T> typeToken,
-            String... path
+    default <T> @NonNull Optional<@NonNull ValueNode<T>> valueNode(
+            @NonNull TypeToken<T> typeToken,
+            @NonNull String @NonNull ... path
     ) {
         Objects.requireNonNull(typeToken);
         Objects.requireNonNull(path);
@@ -55,23 +72,52 @@ public interface ContainerNode extends Node, Editable<EditableContainerNode> {
         return this.node(path).value(typeToken);
     }
 
-    default <T> Optional<EnvNode<T>> envNode(
-            Class<T> simpleType,
-            String... path
+    default <T> @NonNull Optional<@NonNull EnvNode<T>> envNode(
+            @NonNull Class<T> simpleType,
+            @NonNull String @NonNull ... path
     ) {
         Objects.requireNonNull(simpleType);
         Objects.requireNonNull(path);
 
-        return this.envNode(TypeTokenUtils.getSimpleOrThrow(simpleType), path);
+        var typeToken = TypeToken.of(simpleType);
+
+        if (!TypeTokenUtils.isSimpleTypeToken(typeToken)) {
+            throw TypeException.CLASS_USED_IN_PLACE_OF_TYPETOKEN(simpleType);
+        }
+
+        return this.envNode(typeToken, path);
     }
 
-    default <T> Optional<EnvNode<T>> envNode(
-            TypeToken<T> typeToken,
-            String... path
+    default <T> @NonNull Optional<@NonNull EnvNode<T>> envNode(
+            @NonNull TypeToken<T> typeToken,
+            @NonNull String @NonNull ... path
     ) {
         Objects.requireNonNull(typeToken);
         Objects.requireNonNull(path);
 
         return this.node(path).env(typeToken);
+    }
+
+    interface Root extends ContainerNode {
+        @Override
+        default @NonNull String key() {
+            return "root";
+        }
+
+        @Override
+        @NonNull
+        default String[] fullPath() {
+            return new String[]{"root"};
+        }
+
+        @Override
+        default @NonNull Optional<@NonNull ContainerNode> parent() {
+            return Optional.empty();
+        }
+
+        @Override
+        default boolean isRootNode() {
+            return true;
+        }
     }
 }

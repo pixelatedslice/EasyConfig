@@ -1,13 +1,17 @@
 package com.pixelatedslice.easyconfig.api.config;
 
-import com.pixelatedslice.easyconfig.api.config.node.Node;
-import com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry;
-import org.jspecify.annotations.NullMarked;
+import com.pixelatedslice.easyconfig.api.builder.BuilderStep;
+import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
+import com.pixelatedslice.easyconfig.api.format.Format;
+import org.jspecify.annotations.NonNull;
 
-@NullMarked
 public interface Config {
-    Node root();
+    @NonNull Format formatInstance();
 
-    SerializerRegistry serializers();
+    ContainerNode.@NonNull Root root();
 
+    @FunctionalInterface
+    interface Builder<Next extends BuilderStep> {
+        @NonNull Next format(@NonNull Format formatInstance);
+    }
 }

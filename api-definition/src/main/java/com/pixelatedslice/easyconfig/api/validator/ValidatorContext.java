@@ -1,15 +1,10 @@
 package com.pixelatedslice.easyconfig.api.validator;
 
-import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
-
-import java.util.Collection;
-
-@NullMarked
 public interface ValidatorContext {
-    void error(String message, Object... variables);
+    void error(@NonNull String message, @Nullable Object @NonNull ... variables);
 
-    boolean hasError();
-
-    Collection<String> errors();
+    void throwIfErrorsExist();
 }
