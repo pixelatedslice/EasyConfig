@@ -1,32 +1,34 @@
 package com.pixelatedslice.easyconfig.api.config.node.collection;
 
 import com.google.common.collect.ImmutableCollection;
+import com.google.errorprone.annotations.CheckReturnValue;
 import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
 import com.pixelatedslice.easyconfig.api.config.node.ReturnedNode;
-import com.pixelatedslice.easyconfig.api.config.node.collection.builder.CollectionNodeBuilder;
-import org.jspecify.annotations.NonNull;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
+import org.jspecify.annotations.NullMarked;
 
-import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
+@NullMarked
 public interface CollectionNode extends Node {
-
-    static @NonNull CollectionNodeBuilder builder() {
-        return ServiceLoader.load(CollectionNodeBuilder.class).findFirst().orElseThrow();
-    }
-
     @Override
-    @NonNull CollectionNodeBuilder toBuilder();
-
-    @Override
-    default @NonNull NodeType nodeType() {
+    default NodeType nodeType() {
         return NodeType.COLLECTION_NODE;
     }
 
+
+    @CheckReturnValue
     ImmutableCollection<ReturnedNode> nodes();
 
+
+    @CheckReturnValue
     Stream<ReturnedNode> stream();
 
+
+    @CheckReturnValue
     ReturnedNode atIndex(int index);
+
+    @Override
+    NodeBuilderKeySteps.Collection toBuilder();
 }

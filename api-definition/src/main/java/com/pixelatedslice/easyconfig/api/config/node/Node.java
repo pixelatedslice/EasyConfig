@@ -1,37 +1,45 @@
 package com.pixelatedslice.easyconfig.api.config.node;
 
-import com.pixelatedslice.easyconfig.api.config.node.builder.GenericNodeBuilder;
-import com.pixelatedslice.easyconfig.api.config.node.container.ContainerNode;
-import org.jspecify.annotations.NonNull;
+import com.google.errorprone.annotations.CheckReturnValue;
+import com.pixelatedslice.easyconfig.api.config.ConfigStructure;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilder;
+import org.jspecify.annotations.NullMarked;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.stream.Stream;
 
+@NullMarked
 public interface Node {
-    @NonNull GenericNodeBuilder<?> toBuilder();
-
-    default @NonNull NodeType nodeType() {
+    default NodeType nodeType() {
         return NodeType.PLAIN_NODE;
     }
 
-    @NonNull String key();
+    String key();
 
-    @NonNull Optional<@NonNull ContainerNode> parent();
+    ReturnedNode parent();
 
-    default @NonNull String[] fullPath() {
-        var list = new ArrayList<String>();
+    @CheckReturnValue
+    NodeBuilder.KeyStep<?> toBuilder();
+
+    @CheckReturnValue
+    ConfigStructure toStructure();
+
+    default String[] fullPath() {
+        Stream<String> stream = Stream.empty();
         Node current = this;
-
         while (true) {
-            list.add(current.key());
-
-            if (current.parent().isEmpty()) {
+            stream = Stream.concat(stream, Stream.of(current.key()));
+            if (current.parent().plainNode().isEmpty()) {
                 break;
             }
-
-            current = current.parent().get();
+            current = current.parent().plainNode().get();
         }
 
-        return list.reversed().toArray(String[]::new);
+        final var result = stream.toArray(String[]::new);
+        final var reversed = new String[result.length];
+        for (int i = 0; i < result.length; i++) {
+            reversed[result.length - (1 + i)] = result[i];
+        }
+
+        return reversed;
     }
 }

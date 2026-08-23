@@ -1,5 +1,5 @@
 dependencies {
-    api(project(":api-definition"))
+    implementation(project(":api-definition"))
 }
 
 mavenPublishing {

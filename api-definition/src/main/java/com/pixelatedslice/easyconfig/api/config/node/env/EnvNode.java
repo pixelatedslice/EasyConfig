@@ -1,25 +1,39 @@
 package com.pixelatedslice.easyconfig.api.config.node.env;
 
+import com.google.common.reflect.TypeToken;
+import com.pixelatedslice.easyconfig.api.config.node.Node;
 import com.pixelatedslice.easyconfig.api.config.node.NodeType;
-import com.pixelatedslice.easyconfig.api.config.node.env.builder.EnvNodeBuilder;
-import com.pixelatedslice.easyconfig.api.config.node.value.ValueNode;
-import org.jspecify.annotations.NonNull;
+import com.pixelatedslice.easyconfig.api.config.node.factory.builder.NodeBuilderKeySteps;
+import com.pixelatedslice.easyconfig.api.validator.Validator;
+import com.pixelatedslice.easyconfig.api.validator.option.ValidateOption;
+import com.pixelatedslice.easyconfig.api.validator.option.ValidationOptions;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
-import java.util.ServiceLoader;
+import java.util.Optional;
+import java.util.function.Function;
 
-public interface EnvNode<T> extends ValueNode<T> {
-    @SuppressWarnings("unchecked")
-    static <T> @NonNull EnvNodeBuilder<T> builder() {
-        return (EnvNodeBuilder<T>) ServiceLoader.load(EnvNodeBuilder.class).findFirst().orElseThrow();
-    }
-
-    // TODO: Make EnvNodeBuilder extend ValueNodeBuilder somehow.
-    //    @Override
-    //    @NonNull EnvNodeBuilder<T> toBuilder();
-
-    default @NonNull NodeType nodeType() {
+@NullMarked
+public interface EnvNode<T> extends Node {
+    default NodeType nodeType() {
         return NodeType.ENV_NODE;
     }
 
-    @NonNull String envKey();
+    String envKey();
+
+    default Optional<T> value() {
+        return this.value(ValidationOptions.throwExceptions());
+    }
+
+    Optional<T> value(ValidateOption<T> validateOption);
+
+
+    Function<String, @Nullable T> adapter();
+
+    Validator<T> validator();
+
+    TypeToken<T> typeToken();
+
+    @Override
+    NodeBuilderKeySteps.Env<T> toBuilder();
 }

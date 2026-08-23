@@ -4,7 +4,8 @@ open module com.pixelatedslice.easyconfig.impl.fileformat.json {
     requires com.pixelatedslice.easyconfig.api;
     requires com.pixelatedslice.easyconfig.impl.fileformat.common;
     requires jdk.compiler;
-    requires tools.jackson.core;
+    requires com.pixelatedslice.easyconfig.impl;
+    requires tools.jackson.databind;
 
     exports com.pixelatedslice.easyconfig.impl.fileformat.json;
 }

@@ -1,14 +1,16 @@
-import com.pixelatedslice.easyconfig.api.serialization.BuiltInSerializer;
+import com.pixelatedslice.easyconfig.api.config.node.factory.spi.NodeFactoryService;
+import com.pixelatedslice.easyconfig.impl.config.node.factory.spi.NodeFactoryServiceImpl;
 
 open module com.pixelatedslice.easyconfig.impl {
-    uses BuiltInSerializer;
+    exports com.pixelatedslice.easyconfig.impl.config.node;
+    exports com.pixelatedslice.easyconfig.impl.config.node.container.builder;
+    exports com.pixelatedslice.easyconfig.impl.config;
     requires com.google.common;
     requires org.jspecify;
     requires com.pixelatedslice.easyconfig.api;
     requires com.google.auto.service;
+    requires com.google.errorprone.annotations;
 
-    exports com.pixelatedslice.easyconfig.impl.serialization;
-
-    provides com.pixelatedslice.easyconfig.api.serialization.SerializerRegistry
-            with com.pixelatedslice.easyconfig.impl.serialization.SerializerRegistryImpl;
+    provides NodeFactoryService
+            with NodeFactoryServiceImpl;
 }
